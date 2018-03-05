@@ -1,4 +1,4 @@
-package com.uaes.esw.gwmc30demo.domain.model.road;
+package com.uaes.esw.gwmc30demo.domain.model.journey;
 
 public class Route {
     private int distance;

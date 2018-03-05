@@ -15,7 +15,7 @@ public interface DriverService {
     boolean register(String cellPhone, String password);
     //登录
     boolean login(String cellPhone, String password, String DeviceID);
-    //等出
+    //登出
     boolean logout(String cellPhone, String DeviceID);
     //绑定车
     boolean bindingVehicle(String cellPhone, String vehicle);

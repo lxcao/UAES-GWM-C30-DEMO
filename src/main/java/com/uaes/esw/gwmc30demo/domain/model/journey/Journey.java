@@ -1,8 +1,8 @@
-package com.uaes.esw.gwmc30demo.domain.model.road;
+package com.uaes.esw.gwmc30demo.domain.model.journey;
 
 import java.util.List;
 
-public class journey {
+public class Journey {
     private Location source;
     private Location destination;
     List<Route> routes;
