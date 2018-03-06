@@ -1,5 +1,9 @@
 package com.uaes.esw.gwmc30demo.domain.model.journey;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data @Builder
 public class Location {
     private String locationName;
     //经度

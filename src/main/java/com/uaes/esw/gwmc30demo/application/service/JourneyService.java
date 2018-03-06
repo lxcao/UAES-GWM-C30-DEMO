@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface JourneyService {
     //得到规划的里程
-    List<Journey> getJourney();
+    public Journey getJourney(String journeyString);
     //返回规划里程的充电时间
-    List<List<Charger>> feedbackChargeTimeByChargerType();
+    public String chargingOnDemandByJourney(String journeyString);
 }

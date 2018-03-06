@@ -2,8 +2,12 @@ package com.uaes.esw.gwmc30demo.domain.model.journey;
 
 import java.util.List;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data @Builder
 public class Journey {
     private Location source;
     private Location destination;
-    List<Route> routes;
+    private List<Route> routes;
 }

@@ -1,10 +1,9 @@
 package com.uaes.esw.gwmc30demo.domain.model.vehicle;
 
+import lombok.Builder;
 import lombok.Data;
 
-@Data
+@Data @Builder
 public class Battery {
-    private String id;
-    private int type;
     private int soc;
 }

@@ -1,7 +1,11 @@
 package com.uaes.esw.gwmc30demo.domain.model.journey;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data @Builder
 public class Route {
     private int distance;
-    private String expectTimeConsuming;
-    private String way;
+    private int expectTimeConsuming;
+    private String label;
 }
