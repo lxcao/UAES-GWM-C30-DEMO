@@ -1,7 +1,7 @@
 package com.uaes.esw.gwmc30demo.constant;
 
 public class CalculateChargingTimeConstants {
-    public final static int PARAMETER_KWH_PER_KM = 16000;
-    public final static int PARAMETER_AH = 82;
-    public final static int PARAMETER_V = 360;
+    public final static double PARAMETER_KWH_PER_KM = 16000.0;
+    public final static double PARAMETER_AH = 82.0;
+    public final static double PARAMETER_V = 360.0;
 }

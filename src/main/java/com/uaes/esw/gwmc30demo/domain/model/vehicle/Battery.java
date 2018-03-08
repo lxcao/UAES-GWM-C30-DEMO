@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data @Builder
 public class Battery {
-    private int soc;
+    private double soc;
 }

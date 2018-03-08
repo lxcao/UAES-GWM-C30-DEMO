@@ -30,6 +30,10 @@ public class RedisFactory {
         return getPool().getResource();
     }
 
+    public static void releaseOneJedis2Pool(Jedis jedis) {
+        jedis.close();
+    }
+
     public static void main(String[] args) {
         Jedis jedisClient = RedisFactory.getOneJedisFromPool();
     }

@@ -8,5 +8,4 @@ public class Charger {
     //类型 AC或者DC
     private String type;
     private double chargingPower;
-    private double chargingTime;
 }
