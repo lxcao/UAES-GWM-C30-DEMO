@@ -26,11 +26,11 @@ public class ChargingOnDemand{
                 .locationName("source").build();
         Location destinationLocation = Location.builder().lat("33.333").lng("44.444")
                 .locationName("destination").build();
-        Route fastestRoute = Route.builder().distance(10).expectTimeConsuming(3600)
+        Route fastestRoute = Route.builder().distance(100).expectTimeConsuming(3600)
                 .label("fastest").build();
-        Route lessCostRoute = Route.builder().distance(14).expectTimeConsuming(3900)
+        Route lessCostRoute = Route.builder().distance(140).expectTimeConsuming(3900)
                 .label("lessCost").build();
-        Route lessTrafficRoute = Route.builder().distance(16).expectTimeConsuming(6900)
+        Route lessTrafficRoute = Route.builder().distance(200).expectTimeConsuming(6900)
                 .label("lessTraffic").build();
         List routeList = new ArrayList();
         routeList.add(fastestRoute);
