@@ -11,7 +11,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 
 public interface IVehicleRepository {
     //得到车辆的当前快照
-     static Vehicle getVehicleSnapshot(){
+     static Vehicle getVehicleSnapshot(String vinCode){
 
 /*        Map<String, String> vehicleHashSet = hgetall(REDIS_VEHICLE_HASH_NAME);
         Battery c30Battery = Battery.builder()
@@ -22,7 +22,7 @@ public interface IVehicleRepository {
                 .maxMileage(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_MAXMILEAGE))).build();*/
 
          Battery c30Battery = Battery.builder().soc(getLastOneSOCInZset()).build();
-         Vehicle c30Vehicle = Vehicle.builder().battery(c30Battery).vin("111111")
+         Vehicle c30Vehicle = Vehicle.builder().battery(c30Battery).vin(vinCode)
                  .maxMileage(GWM_C30_MAX_MILEAGE).build();
 
         return c30Vehicle;

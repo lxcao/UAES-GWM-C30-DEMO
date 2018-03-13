@@ -2,17 +2,30 @@ package com.uaes.esw.gwmc30demo.domain.service;
 
 import com.uaes.esw.gwmc30demo.domain.model.charger.Charger;
 import com.uaes.esw.gwmc30demo.domain.model.drivingAnalytics.RouteCharging;
+import com.uaes.esw.gwmc30demo.domain.model.journey.Journey;
 import com.uaes.esw.gwmc30demo.domain.model.journey.Route;
 import com.uaes.esw.gwmc30demo.domain.model.vehicle.Vehicle;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.uaes.esw.gwmc30demo.constant.CalculateChargingTimeConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.charger.IChargerRepository.getChargerList;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface ChargingDomainService {
+
+    static String calChargeTimeByChargerType4Journey(Journey journey, Vehicle vehicle){
+        List<Route> routes = journey.getRoutes();
+        List <RouteCharging> routeChargingsList = routes.stream()
+                .map(route -> calChargeTimeByChargerType(route, vehicle))
+                .collect(Collectors.toList());
+        String routeChargingListJSON = transferFromObject2JSON(routeChargingsList);
+        return routeChargingListJSON;
+    }
+
     static RouteCharging calChargeTimeByChargerType(Route route, Vehicle vehicle){
         RouteCharging routeChaging = RouteCharging.builder()
                 .route(route)
