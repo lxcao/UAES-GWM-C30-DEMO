@@ -43,7 +43,7 @@ public interface ChargingDomainService {
     }
 
     static double calChargingTime(int distance, double soc, double chargerPowerKW){
-        double element = (double)distance*PARAMETER_WH/PARAMETER_HKM-soc*PARAMETER_AH*PARAMETER_V/PARAMETER_K;
+        double element = (double)distance*PARAMETER_WH/PARAMETER_HKM-soc*PARAMETER_AH*PARAMETER_V;
         return element/chargerPowerKW;
     }
 }
