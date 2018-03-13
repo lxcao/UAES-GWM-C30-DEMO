@@ -11,7 +11,9 @@ public class HttpHandler {
             res.type(HTTP_CONFIG_CONTENT_TYPE);
             res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
             System.out.println(req.body());
-            return chargingOnDemandByJourney(req.body());
+            String resString = chargingOnDemandByJourney(req.body());
+            System.out.println(resString);
+            return resString;
         });
     }
 }
