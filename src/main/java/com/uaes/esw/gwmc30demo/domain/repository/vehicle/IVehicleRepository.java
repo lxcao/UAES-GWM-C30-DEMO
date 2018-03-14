@@ -5,9 +5,6 @@ import com.uaes.esw.gwmc30demo.domain.model.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.vehicle.Vehicle;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
@@ -44,25 +41,7 @@ public interface IVehicleRepository {
         setSOC2VehicleSnapshot(vehicleHashName, String.valueOf(getLastOneSOCInZset()));
     }
 
-    //每500毫秒轮询并更新Vehicle Hash
-    static void updateVehicleSnapShotManager(){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            while(true){
-                updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
-                try{
-                    TimeUnit.MILLISECONDS.sleep(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
-    //开始和车辆相关的数据操作
-    static void startVehicleDataService(){
-        updateVehicleSnapShotManager();
-    }
 
     //得到最新的SOC
     static double getLastOneSOCInZset(){
