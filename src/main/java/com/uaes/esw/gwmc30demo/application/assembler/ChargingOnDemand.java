@@ -6,12 +6,12 @@ import com.uaes.esw.gwmc30demo.domain.model.journey.Location;
 import com.uaes.esw.gwmc30demo.domain.model.journey.Route;
 import com.uaes.esw.gwmc30demo.domain.model.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.vehicle.Vehicle;
-import com.uaes.esw.gwmc30demo.domain.service.ChargingDomainService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.uaes.esw.gwmc30demo.application.service.JourneyService.chargingOnDemandByJourney;
 import static com.uaes.esw.gwmc30demo.application.service.JourneyService.getJourney;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.service.ChargingDomainService.calChargeTimeByChargerType;
@@ -19,6 +19,11 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public class ChargingOnDemand{
+
+    public static String chargingOnDemandByJourneyAssembler(String journeyString){
+        //TODO: should be parse by gson to get the vinCode from journeyString
+        return chargingOnDemandByJourney("111111", journeyString);
+    }
 
 
     private void testGetJourney(){

@@ -33,4 +33,10 @@ public interface RedisHandler {
         return lastString;
     }
 
+    static void setValue2HashField(String key, String field, String value){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        jedisClient.hset(key, field, value);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+    }
+
 }

@@ -10,8 +10,12 @@ public class HttpFactory {
         Spark.port(port);
     }
 
-    public static void main(String[] args) {
+    public static void startApplicationService(){
         setHttpServerProperties(HTTP_CONFIG_PORT);
         setRouter();
+    }
+
+    public static void main(String[] args) {
+        startApplicationService();
     }
 }
