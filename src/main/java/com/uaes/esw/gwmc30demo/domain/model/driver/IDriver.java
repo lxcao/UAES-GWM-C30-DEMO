@@ -5,6 +5,8 @@ public interface IDriver {
     boolean register(Driver driver);
     //登录
     boolean login(Driver driver);
-    //等出
+    //登出
     boolean logout(Driver driver);
+    //是否已经登录
+    boolean isLogin(Driver driver);
 }
