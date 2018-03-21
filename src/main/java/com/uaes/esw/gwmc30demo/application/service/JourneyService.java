@@ -10,13 +10,13 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 public interface JourneyService {
 
     //得到规划的里程
-    public static Journey getJourney(String journeyString){
+    static Journey getJourney(String journeyString){
         Journey journey = transferFromJSON2Object(journeyString,Journey.class);
         return journey;
     }
 
     //返回该车的规划里程的充电时间
-    public static String chargingOnDemandByJourney(String vinCode, String journeyString){
+    static String chargingOnDemandByJourney(String vinCode, String journeyString){
         Journey journey = transferFromJSON2Object(journeyString,Journey.class);
         Vehicle c30VehicleSnapshot = getVehicleSnapshot(vinCode);
         System.out.println("soc="+c30VehicleSnapshot.getBattery().getSoc());

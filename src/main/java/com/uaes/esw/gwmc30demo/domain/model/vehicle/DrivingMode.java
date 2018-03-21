@@ -1,9 +1,9 @@
 package com.uaes.esw.gwmc30demo.domain.model.vehicle;
+import lombok.Builder;
+import lombok.Data;
 
+@Data @Builder
 public class DrivingMode {
-    private int maxSpeed;
-    private int energyRecovery;
-    private int powerCorresponding;
-    private int smoothness;
-    private int accessoryPerformance;
+    private String drivingModeType;
+    private DrivingModeConfigure drivingModeConfigure;
 }

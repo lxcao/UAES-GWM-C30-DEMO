@@ -15,6 +15,13 @@ public interface RedisHandler {
         return hashMap;
     }
 
+    static long hSet(String hashName, String field, String value){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        long result = jedisClient.hset(hashName, field, value);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
     static Set<String> zRangeByPosition(String zsetName, int start, int end){
         Jedis jedisClient = RedisFactory.getOneJedisFromPool();
         Set<String> setResult = jedisClient.zrange(zsetName,start,end);
@@ -33,10 +40,32 @@ public interface RedisHandler {
         return lastString;
     }
 
-    static void setValue2HashField(String key, String field, String value){
+    static long setValue2HashField(String key, String field, String value){
         Jedis jedisClient = RedisFactory.getOneJedisFromPool();
-        jedisClient.hset(key, field, value);
+        long result = jedisClient.hset(key, field, value);
         RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
+    static long inputValue2SET(String setName, String member){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        long result = jedisClient.sadd(setName, member);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
+    static boolean isValueInSET(String setName, String member){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        boolean result = jedisClient.sismember(setName, member);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
+    static long removeValueInSET(String setName, String member){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        long result = jedisClient.srem(setName,member);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
     }
 
 }

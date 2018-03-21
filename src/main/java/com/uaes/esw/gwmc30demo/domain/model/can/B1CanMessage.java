@@ -5,7 +5,7 @@ import lombok.Data;
 @Data @Builder
 public class B1CanMessage {
     long unixtimestamp;
-    int pack_Soc_BMS;
-    String devicename;
+    double pack_Soc_BMS;
+    //String devicename;
     String id;
 }

@@ -1,22 +1,51 @@
 package com.uaes.esw.gwmc30demo.application.service;
 
-import com.uaes.esw.gwmc30demo.domain.model.journey.Road;
-import com.uaes.esw.gwmc30demo.domain.model.vehicle.DrivingMode;
-import com.uaes.esw.gwmc30demo.domain.model.vehicle.Vehicle;
-import com.uaes.esw.gwmc30demo.domain.model.weather.Weather;
+import com.uaes.esw.gwmc30demo.domain.model.driver.*;
+import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
+
+
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface VehicleService {
 
-    //得到所有的驾驶模式
-    String getAllDrivingMode(String vin);
-    //得到当前的SOC
-    int getCurrentSOC(String vin);
 
-    Weather getWeather(Road road);
+    static String queryDrivingMode(String queryStr){
+        QueryDMReq queryDMReq = transferFromJSON2Object(queryStr, QueryDMReq.class);
+        Driver driver = IDriver.getDriverInfo(queryDMReq.getDriver().getCellPhone());
+        QueryDMRes queryDMRes = QueryDMRes.builder().dateTime(queryDMReq.getDateTime())
+                .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
+/*        String defaultDrivingMode = driver.getDefaultDM();
+        System.out.println("defaultDrivingMode="+defaultDrivingMode);
+        DrivingMode defaultDM = IVehicleRepository.getDrivingMode(defaultDrivingMode,driver);
+        String currentDrivingMode = driver.getCurrentDM();
+        System.out.println("currentDrivingMode="+currentDrivingMode);
+        DrivingMode currentDM = IVehicleRepository.getDrivingMode(currentDrivingMode,driver);
+        List<DrivingMode> DrivingModeList = new ArrayList<>();
+        DrivingModeList.add(defaultDM);
+        DrivingModeList.add(currentDM);
+        queryDMRes.setDrivingMode(DrivingModeList);*/
+        queryDMRes.setDrivingMode(IVehicleRepository.getAllDrivingMode(driver));
+        return transferFromObject2JSON(queryDMRes);
+    }
 
-    DrivingMode provideDrivingMode(Weather weather);
+    static String setDefaultDrivingMode(String setStr){
+        SetDMReq setDMReq = transferFromJSON2Object(setStr, SetDMReq.class);
+        IVehicleRepository.setDefaultDM(setDMReq.getDriver());
+        Driver driver = IDriver.getDriverInfo(setDMReq.getDriver().getCellPhone());
+        SetDMRes setDMRes = SetDMRes.builder().dateTime(setDMReq.getDateTime())
+                .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
+        return transferFromObject2JSON(setDMRes);
+    }
 
-    int getSpeedLimitation(Road road);
+    static String setCurrentDrivingMode(String setStr){
+        SetDMReq setDMReq = transferFromJSON2Object(setStr, SetDMReq.class);
+        IVehicleRepository.setCurrentDM(setDMReq.getDriver());
+        Driver driver = IDriver.getDriverInfo(setDMReq.getDriver().getCellPhone());
+        SetDMRes setDMRes = SetDMRes.builder().dateTime(setDMReq.getDateTime())
+                .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
+        return transferFromObject2JSON(setDMRes);
+    }
 
-    boolean setVehicleSpeed(Vehicle vehicle, int speed);
 }
