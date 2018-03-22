@@ -1,18 +1,16 @@
-package com.uaes.esw.gwmc30demo.application.service;
+package com.uaes.esw.gwmc30demo.domain.service;
 
 import com.uaes.esw.gwmc30demo.domain.model.driver.*;
+import com.uaes.esw.gwmc30demo.domain.model.drivingModeSce.QueryDMReq;
+import com.uaes.esw.gwmc30demo.domain.model.drivingModeSce.QueryDMRes;
+import com.uaes.esw.gwmc30demo.domain.model.drivingModeSce.SetDMReq;
+import com.uaes.esw.gwmc30demo.domain.model.drivingModeSce.SetDMRes;
 import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 
-
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
-import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
-import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
-public interface VehicleService {
-
-
-    static String queryDrivingMode(String queryStr){
-        QueryDMReq queryDMReq = transferFromJSON2Object(queryStr, QueryDMReq.class);
+public interface DrivingModeDomainService {
+    static QueryDMRes queryDrivingModeDomainService(QueryDMReq queryDMReq){
         Driver driver = IDriver.getDriverInfo(queryDMReq.getDriver().getCellPhone());
         QueryDMRes queryDMRes = QueryDMRes.builder().dateTime(queryDMReq.getDateTime())
                 .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
@@ -27,25 +25,22 @@ public interface VehicleService {
         DrivingModeList.add(currentDM);
         queryDMRes.setDrivingMode(DrivingModeList);*/
         queryDMRes.setDrivingMode(IVehicleRepository.getAllDrivingMode(driver));
-        return transferFromObject2JSON(queryDMRes);
+        return queryDMRes;
     }
 
-    static String setDefaultDrivingMode(String setStr){
-        SetDMReq setDMReq = transferFromJSON2Object(setStr, SetDMReq.class);
+    static SetDMRes setDefaultDrivingModeDomainService(SetDMReq setDMReq){
         IVehicleRepository.setDefaultDM(setDMReq.getDriver());
         Driver driver = IDriver.getDriverInfo(setDMReq.getDriver().getCellPhone());
         SetDMRes setDMRes = SetDMRes.builder().dateTime(setDMReq.getDateTime())
                 .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
-        return transferFromObject2JSON(setDMRes);
+        return setDMRes;
     }
 
-    static String setCurrentDrivingMode(String setStr){
-        SetDMReq setDMReq = transferFromJSON2Object(setStr, SetDMReq.class);
+    static SetDMRes setCurrentDrivingModeDomainService(SetDMReq setDMReq){
         IVehicleRepository.setCurrentDM(setDMReq.getDriver());
         Driver driver = IDriver.getDriverInfo(setDMReq.getDriver().getCellPhone());
         SetDMRes setDMRes = SetDMRes.builder().dateTime(setDMReq.getDateTime())
                 .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
-        return transferFromObject2JSON(setDMRes);
+        return setDMRes;
     }
-
 }

@@ -1,4 +1,4 @@
-package com.uaes.esw.gwmc30demo.domain.model.journey;
+package com.uaes.esw.gwmc30demo.domain.model.journeySce;
 
 import java.util.List;
 

@@ -4,13 +4,13 @@ import spark.Spark;
 
 import java.time.LocalDateTime;
 
-import static com.uaes.esw.gwmc30demo.application.assembler.ChargingOnDemand.chargingOnDemandByJourneyAssembler;
-import static com.uaes.esw.gwmc30demo.application.assembler.DriverLogIn.driverLogin;
-import static com.uaes.esw.gwmc30demo.application.assembler.DriverLogOut.driverLogout;
-import static com.uaes.esw.gwmc30demo.application.assembler.DriverRegister.driverRegister;
-import static com.uaes.esw.gwmc30demo.application.assembler.QueryDrivingStyle.queryDrivingStyle;
-import static com.uaes.esw.gwmc30demo.application.assembler.SetCurrentDrivingStyle.setCurrentDrivingStyle;
-import static com.uaes.esw.gwmc30demo.application.assembler.SetDefaultDrivingStyle.setDefaultDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.ChargingOnDemand.chargingOnDemandByJourneyAssembler;
+import static com.uaes.esw.gwmc30demo.application.service.DriverLogIn.driverLogin;
+import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLogout;
+import static com.uaes.esw.gwmc30demo.application.service.DriverRegister.driverRegister;
+import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingStyle.queryDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.SetCurrentDrivingStyle.setCurrentDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.SetDefaultDrivingStyle.setDefaultDrivingStyle;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
 
 public class HttpHandler {

@@ -1,6 +1,6 @@
-package com.uaes.esw.gwmc30demo.application.assembler;
+package com.uaes.esw.gwmc30demo.application.service;
 
-import static com.uaes.esw.gwmc30demo.application.service.JourneyService.chargingOnDemandByJourney;
+import static com.uaes.esw.gwmc30demo.application.assembler.JourneyService.chargingOnDemandByJourney;
 
 public interface ChargingOnDemand{
 
