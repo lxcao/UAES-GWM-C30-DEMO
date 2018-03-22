@@ -30,4 +30,10 @@ public interface DriverService {
         return transferFromObject2JSON(logOutRes);
     }
 
+    //是否已经登录
+    static boolean isLogIn(String loginString){
+        LogInReq logInReq = transferFromJSON2Object(loginString, LogInReq.class);
+        return LogInDomainService.isLogInDomainService(logInReq);
+    }
+
 }

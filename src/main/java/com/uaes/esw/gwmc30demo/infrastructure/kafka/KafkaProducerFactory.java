@@ -10,49 +10,47 @@ import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 
 public class KafkaProducerFactory {
 
-    private String broker_list;
-    private KafkaProducer<Integer, String> producer;
-    private String client_id;
-    private String topic;
+    private static  KafkaProducer<String, String> producer;
 
-    public KafkaProducerFactory(String client_id, String topic) {
-        this.broker_list = KAFKA_CONFIG_BOOTSTRAP_SERVERS_CONFIG;
-        this.client_id = client_id;
-        this.topic = topic;
-    }
-
-    private KafkaProducer<Integer, String> createProducer(String broker_list, String client_id) {
+    private static KafkaProducer<String, String> createProducer() {
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker_list);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, this.client_id);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KAFKA_CONFIG_KEY_DESERIALIZER_CLASS_CONFIG);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KAFKA_CONFIG_VALUE_DESERIALIZER_CLASS_CONFIG);
-        KafkaProducer<Integer, String> producer = new KafkaProducer<>(props);
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_CONFIG_BOOTSTRAP_SERVERS_CONFIG);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, KAFKA_CONFIG_CLIENT_ID);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KAFKA_CONFIG_SERIALIZER_CLASS_CONFIG);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KAFKA_CONFIG_SERIALIZER_CLASS_CONFIG);
+        KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         return producer;
     }
 
-    public void sendMessage(int key, String msg) throws Exception {
-        //System.out.println(this.broker_list);
-        //System.out.println(this.client_id);
-        this.producer = createProducer(this.broker_list, this.client_id);
-
-        this.producer.send(new ProducerRecord<>(this.topic, key, msg)).get();
-
-    }
-
-    public void close() {
-        this.producer.close();
-        if (this.producer != null) {
-            this.producer = null;
+    public static void sendMessage(String key, String msg) {
+        try{
+            producer = getKafkaProducer();
+            //System.out.println(this.broker_list);
+            //System.out.println(this.client_id);
+            producer.send(new ProducerRecord<>(KAFKA_CONFIG_TOPIC, key, msg)).get();
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
+    private static void closeKafkaProducer() {
+        producer.close();
+        if (producer != null) {
+            producer = null;
+        }
+    }
 
-        KafkaProducerFactory kafka = new KafkaProducerFactory("uaes-poc-test001", "uaes-bigdata-01");
+    private static KafkaProducer<String, String> getKafkaProducer(){
+        if(producer == null){
+            producer = createProducer();
+        }
+        return producer;
+    }
+
+    public static void main(String[] args) {
         System.out.println("try to send message");
         try {
-            kafka.sendMessage(1, "testMessage1");
+            sendMessage("1", "testMessage1");
 
             System.out.println("success");
         } catch (Exception e) {

@@ -154,6 +154,11 @@ public interface IDrivingModeRepository {
         setValue2HashField(hashName, REDIS_DRIVER_HASH_KEY_DEFAULTDM, driver.getDefaultDM());
     }
 
+    static DrivingMode getCurrentDM(Driver driver){
+        String currentDM = driver.getCurrentDM();
+        return getDrivingMode(currentDM, driver);
+    }
+
     //保存DRIVING_MODE_CST
     static void setCustomerDM(Driver driver, DrivingMode dm){
         String cstDrivingModeHashName = REDIS_DRIVER_CST_DM_HASH_NAME_PREFIX
@@ -187,4 +192,6 @@ public interface IDrivingModeRepository {
                 .build();
         return dm;
     }
+
+
 }

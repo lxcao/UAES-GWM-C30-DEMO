@@ -27,9 +27,9 @@ public class KafkaConsumerFactory {
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, KAFKA_CONFIG_AUTO_COMMIT_INTERVAL_MS_CONFIG);
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, KAFKA_CONFIG_SESSION_TIMEOUT_MS_CONFIG);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                KAFKA_CONFIG_KEY_DESERIALIZER_CLASS_CONFIG);
+                KAFKA_CONFIG_DESERIALIZER_CLASS_CONFIG);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                KAFKA_CONFIG_VALUE_DESERIALIZER_CLASS_CONFIG);
+                KAFKA_CONFIG_DESERIALIZER_CLASS_CONFIG);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, KAFKA_CONFIG_AUTO_OFFSET_RESET_CONFIG);
 
         this.kafkaConsumer = new KafkaConsumer<>(props);

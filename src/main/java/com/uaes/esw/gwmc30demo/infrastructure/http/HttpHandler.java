@@ -10,6 +10,7 @@ import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLog
 import static com.uaes.esw.gwmc30demo.application.service.DriverRegister.driverRegister;
 import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingStyle.queryDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetCurrentDrivingStyle.setCurrentDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.SetCustomerDrivingStyle.setCustomerDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetDefaultDrivingStyle.setDefaultDrivingStyle;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
 
@@ -85,8 +86,8 @@ public class HttpHandler {
         Spark.post(HTTP_URL_SET_CUSTOMER_DRIVINGMODE,(req, res) -> {
             res.type(HTTP_CONFIG_CONTENT_TYPE);
             res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_SET_CURRENT_DRIVINGMODE, req.body());
-            String resString = setCurrentDrivingStyle(req.body());
+            debugPrintInput(HTTP_URL_SET_CUSTOMER_DRIVINGMODE, req.body());
+            String resString = setCustomerDrivingStyle(req.body());
             debugPrintOutput(resString);
             return resString;
         });

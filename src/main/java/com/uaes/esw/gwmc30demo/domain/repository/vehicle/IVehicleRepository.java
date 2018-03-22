@@ -1,12 +1,21 @@
 package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
+import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
+import com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository;
+import com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility;
+import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
 
 import java.util.Map;
+import java.util.Random;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
+import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.KAFKA_CONFIG_CURRENT_DM_KEY;
+import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.KAFKA_CONFIG_DEFAULT_DM_KEY;
+import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.KAFKA_CONFIG_NORMAL_DM_KEY;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
@@ -52,6 +61,33 @@ public interface IVehicleRepository {
             pack_Soc_BMS = soc *PERCENTAGE;
 
         return pack_Soc_BMS;
+    }
+
+    //发送Current DrivingMode到Vehicle
+    static void sendCurrentDM2Vehicle(Driver driver){
+        DrivingMode currentDM = IDrivingModeRepository.getDrivingMode(driver.getCurrentDM(),driver);
+        String currentDMStr = JSONUtility.transferFromObject2JSON(currentDM);
+        System.out.println("Send CurrentDM2Vehicle="+currentDMStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
+    }
+
+    //发送Default DrivingMode到Vehicle
+    static void sendDefaultDM2Vehicle(Driver driver){
+        DrivingMode defaultDM = IDrivingModeRepository.getDrivingMode(driver.getDefaultDM(),driver);
+        String defaultDMStr = JSONUtility.transferFromObject2JSON(defaultDM);
+        System.out.println("Send DefaultDM2Vehicle="+defaultDMStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
+    }
+
+    //发送Normal DrivingMode到Vehicle
+    static void sendNormalDM2Vehicle(Driver driver){
+         DrivingMode normalDM = IDrivingModeRepository.getVehicleNORDrivingMode();
+         String normalDMStr = JSONUtility.transferFromObject2JSON(normalDM);
+        System.out.println("Send NormalDM2Vehicle="+normalDMStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
     }
 
 }

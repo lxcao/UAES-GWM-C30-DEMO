@@ -6,6 +6,7 @@ import com.uaes.esw.gwmc30demo.domain.model.scenario.drivingMode.QueryDMRes;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.drivingMode.SetDMReq;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.drivingMode.SetDMRes;
 import com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository;
+import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
 
@@ -39,6 +40,8 @@ public interface DrivingModeDomainService {
     static SetDMRes setCurrentDrivingModeDomainService(SetDMReq setDMReq){
         IDrivingModeRepository.setCurrentDM(setDMReq.getDriver());
         Driver driver = IDriver.getDriverInfo(setDMReq.getDriver().getCellPhone());
+        // set current driving mode to vehicle
+        IVehicleRepository.sendCurrentDM2Vehicle(driver);
         SetDMRes setDMRes = SetDMRes.builder().dateTime(setDMReq.getDateTime())
                 .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
         return setDMRes;
