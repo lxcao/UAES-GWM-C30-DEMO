@@ -12,4 +12,5 @@ public class InfraHttpConstants {
     public final static String HTTP_URL_QUERY_DRIVINGMODE = "/v1/gwm/c30/queryDrivingMode";
     public final static String HTTP_URL_SET_DEFAULT_DRIVINGMODE = "/v1/gwm/c30/setDefaultDrivingMode";
     public final static String HTTP_URL_SET_CURRENT_DRIVINGMODE = "/v1/gwm/c30/setCurrentDrivingMode";
+    public final static String HTTP_URL_SET_CUSTOMER_DRIVINGMODE = "/v1/gwm/c30/setCustomerDrivingMode";
 }

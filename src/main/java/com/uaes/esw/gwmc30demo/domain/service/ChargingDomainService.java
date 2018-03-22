@@ -1,10 +1,10 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
-import com.uaes.esw.gwmc30demo.domain.model.charger.Charger;
-import com.uaes.esw.gwmc30demo.domain.model.drivingAnalytics.RouteCharging;
-import com.uaes.esw.gwmc30demo.domain.model.journeySce.Journey;
-import com.uaes.esw.gwmc30demo.domain.model.journeySce.Route;
-import com.uaes.esw.gwmc30demo.domain.model.vehicle.Vehicle;
+import com.uaes.esw.gwmc30demo.domain.model.entity.charger.Charger;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.drivingAnalytics.RouteCharging;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.journey.Journey;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.journey.Route;
+import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
 
 import java.util.HashMap;
 import java.util.List;

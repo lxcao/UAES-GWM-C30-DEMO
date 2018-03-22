@@ -82,5 +82,13 @@ public class HttpHandler {
             debugPrintOutput(resString);
             return resString;
         });
+        Spark.post(HTTP_URL_SET_CUSTOMER_DRIVINGMODE,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_SET_CURRENT_DRIVINGMODE, req.body());
+            String resString = setCurrentDrivingStyle(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
     }
 }

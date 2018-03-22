@@ -1,6 +1,6 @@
 package com.uaes.esw.gwmc30demo.domain.repository.charger;
 
-import com.uaes.esw.gwmc30demo.domain.model.charger.Charger;
+import com.uaes.esw.gwmc30demo.domain.model.entity.charger.Charger;
 
 import java.util.ArrayList;
 import java.util.List;

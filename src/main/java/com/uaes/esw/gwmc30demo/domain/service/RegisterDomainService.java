@@ -1,9 +1,9 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
-import com.uaes.esw.gwmc30demo.domain.model.driver.Driver;
-import com.uaes.esw.gwmc30demo.domain.model.driver.IDriver;
-import com.uaes.esw.gwmc30demo.domain.model.logInOutSce.RegisterReq;
-import com.uaes.esw.gwmc30demo.domain.model.logInOutSce.RegisterRes;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.IDriver;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.logInOut.RegisterReq;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.logInOut.RegisterRes;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_EXISTED;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_FAILURE;

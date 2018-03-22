@@ -1,6 +1,6 @@
 package com.uaes.esw.gwmc30demo.application.assembler;
 
-import com.uaes.esw.gwmc30demo.domain.model.logInOutSce.*;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.logInOut.*;
 import com.uaes.esw.gwmc30demo.domain.service.LogInDomainService;
 import com.uaes.esw.gwmc30demo.domain.service.LogOutDomainService;
 import com.uaes.esw.gwmc30demo.domain.service.RegisterDomainService;

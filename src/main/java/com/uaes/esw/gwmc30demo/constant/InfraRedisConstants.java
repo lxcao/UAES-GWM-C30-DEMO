@@ -30,5 +30,11 @@ public class InfraRedisConstants {
     public final static String REDIS_DRIVER_LOGIN_SET = "gwm:c30:driver:login:set";
     public final static String REDIS_VEHICLE_LIST = "gwm:c30:vehicle:list";
 
-
+    public final static String REDIS_DRIVER_CST_DM_HASH_NAME_PREFIX = "gwm:c30:driver:";
+    public final static String REDIS_DRIVER_CST_DM_HASH_NAME_SUFFIX = ":cstdm:hash";
+    public final static String REDIS_DRIVER_CST_DM_HASH_KEY_SP = "sp"; //SPEED
+    public final static String REDIS_DRIVER_CST_DM_HASH_KEY_ER = "er"; //ENERGY_RECOVERY
+    public final static String REDIS_DRIVER_CST_DM_HASH_KEY_PC = "pc"; //POWER_CORRESPONDING
+    public final static String REDIS_DRIVER_CST_DM_HASH_KEY_SM = "sm"; //SMOOTHNESS
+    public final static String REDIS_DRIVER_CST_DM_HASH_KEY_AP = "ap"; //ACCESSORY_PERFORMANCE
 }

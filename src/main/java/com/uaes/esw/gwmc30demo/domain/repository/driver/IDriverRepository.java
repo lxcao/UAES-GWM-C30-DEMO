@@ -1,37 +1,15 @@
 package com.uaes.esw.gwmc30demo.domain.repository.driver;
 
-import com.uaes.esw.gwmc30demo.domain.model.driver.Driver;
-import com.uaes.esw.gwmc30demo.domain.model.vehicle.DrivingMode;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 
 import java.util.Map;
 
 import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE_NOR;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.*;
 
 public interface IDriverRepository {
-    //是否存在
-    boolean isExist(Driver driver);
-    //增加
-    boolean createDriver(Driver driver);
-    //删除
-    boolean deleteDriver(Driver driver);
-    //更新
-    boolean updateDriver(Driver driver);
-    //查询
-    Driver queryDriver(String cellPhone);
-
-    //得到司机缺省模式
-    static DrivingMode getDefaultDrivingMode(Driver driver){
-        //TODO: 从司机hash中取到缺省模式
-        return null;
-    }
-
-    //得到司机当前模式
-    static DrivingMode getCurrentDrivingMode(Driver driver){
-        //TODO: 从司机hash中取到当前模式
-        return null;
-    }
 
     //得到司机的信息
     static Driver getDriverInfo(String cellPhone){
@@ -55,12 +33,19 @@ public interface IDriverRepository {
     }
 
     static void fillDriverInfo(Driver driver){
-        String hashName = REDIS_DRIVER_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_HASH_NAME_SUFFIX;
-        RedisHandler.hSet(hashName,REDIS_DRIVER_HASH_KEY_CELLPHONE, driver.getCellPhone());
-        RedisHandler.hSet(hashName,REDIS_DRIVER_HASH_KEY_PASSWORD, driver.getPassword());
-        RedisHandler.hSet(hashName,REDIS_DRIVER_HASH_KEY_VIN, REDIS_VEHICLE_VIN_CODE);
-        RedisHandler.hSet(hashName,REDIS_DRIVER_HASH_KEY_DEFAULTDM, DRIVING_MODE_NOR);
-        RedisHandler.hSet(hashName,REDIS_DRIVER_HASH_KEY_CURRENTDM, DRIVING_MODE_NOR);
+        String driverHashName = REDIS_DRIVER_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_HASH_NAME_SUFFIX;
+        RedisHandler.hSet(driverHashName,REDIS_DRIVER_HASH_KEY_CELLPHONE, driver.getCellPhone());
+        RedisHandler.hSet(driverHashName,REDIS_DRIVER_HASH_KEY_PASSWORD, driver.getPassword());
+        RedisHandler.hSet(driverHashName,REDIS_DRIVER_HASH_KEY_VIN, REDIS_VEHICLE_VIN_CODE);
+        RedisHandler.hSet(driverHashName,REDIS_DRIVER_HASH_KEY_DEFAULTDM, DRIVING_MODE_NOR);
+        RedisHandler.hSet(driverHashName,REDIS_DRIVER_HASH_KEY_CURRENTDM, DRIVING_MODE_NOR);
+
+        String cstDrivingModeHashName = REDIS_DRIVER_CST_DM_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_CST_DM_HASH_NAME_SUFFIX;
+        RedisHandler.hSet(cstDrivingModeHashName,REDIS_DRIVER_CST_DM_HASH_KEY_SP,String.valueOf(CST_MAX_SPEED));
+        RedisHandler.hSet(cstDrivingModeHashName,REDIS_DRIVER_CST_DM_HASH_KEY_ER,String.valueOf(CST_ENERGY_RECOVERY));
+        RedisHandler.hSet(cstDrivingModeHashName,REDIS_DRIVER_CST_DM_HASH_KEY_PC,String.valueOf(CST_POWER_CORRESPONDING));
+        RedisHandler.hSet(cstDrivingModeHashName,REDIS_DRIVER_CST_DM_HASH_KEY_SM,String.valueOf(CST_SMOOTHNESS));
+        RedisHandler.hSet(cstDrivingModeHashName,REDIS_DRIVER_CST_DM_HASH_KEY_AP,String.valueOf(CST_ACCESSORY_PERFORMANCE));
     }
 
     static boolean isLoginExist(String cellPhone){

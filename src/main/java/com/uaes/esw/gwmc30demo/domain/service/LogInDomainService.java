@@ -1,9 +1,9 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
-import com.uaes.esw.gwmc30demo.domain.model.driver.Driver;
-import com.uaes.esw.gwmc30demo.domain.model.driver.IDriver;
-import com.uaes.esw.gwmc30demo.domain.model.logInOutSce.LogInReq;
-import com.uaes.esw.gwmc30demo.domain.model.logInOutSce.LogInRes;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
+import com.uaes.esw.gwmc30demo.domain.model.entity.driver.IDriver;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.logInOut.LogInReq;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.logInOut.LogInRes;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_EXISTED;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_FAILURE;
@@ -24,6 +24,7 @@ public interface LogInDomainService {
             if(isLoginSuccessful){
                 logInRes.setResponseCode(RESPONSE_CODE_SUCCESS);
                 logInRes.setDriver(driver);
+                //TODO: send current driving mode to vehicle
             }
             else{
                 logInRes.setResponseCode(RESPONSE_CODE_FAILURE);
