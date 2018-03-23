@@ -150,7 +150,7 @@ public interface IDrivingModeRepository {
     static void setDefaultDM(Driver driver){
         String hashName = REDIS_DRIVER_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_HASH_NAME_SUFFIX;
         System.out.println("hashName="+hashName);
-        System.out.println("defaultDM="+driver.getDefaultDM());
+        System.out.println("setDefaultDM="+driver.getDefaultDM());
         setValue2HashField(hashName, REDIS_DRIVER_HASH_KEY_DEFAULTDM, driver.getDefaultDM());
     }
 
@@ -163,6 +163,8 @@ public interface IDrivingModeRepository {
     static void setCustomerDM(Driver driver, DrivingMode dm){
         String cstDrivingModeHashName = REDIS_DRIVER_CST_DM_HASH_NAME_PREFIX
                 +driver.getCellPhone()+REDIS_DRIVER_CST_DM_HASH_NAME_SUFFIX;
+        System.out.println("hashName="+cstDrivingModeHashName);
+        System.out.println("setCustomerDM="+dm.getDrivingModeConfigure().toString());
         setValue2HashField(cstDrivingModeHashName, REDIS_DRIVER_CST_DM_HASH_KEY_SP,
                 String.valueOf(dm.getDrivingModeConfigure().getMaxSpeed()));
         setValue2HashField(cstDrivingModeHashName, REDIS_DRIVER_CST_DM_HASH_KEY_ER,
