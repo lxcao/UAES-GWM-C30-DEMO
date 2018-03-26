@@ -37,4 +37,8 @@ public class InfraRedisConstants {
     public final static String REDIS_DRIVER_CST_DM_HASH_KEY_PC = "pc"; //POWER_CORRESPONDING
     public final static String REDIS_DRIVER_CST_DM_HASH_KEY_SM = "sm"; //SMOOTHNESS
     public final static String REDIS_DRIVER_CST_DM_HASH_KEY_AP = "ap"; //ACCESSORY_PERFORMANCE
+
+    public final static String REDIS_WEATHER_01_SET_NAME = "weather:01:set";
+    public final static String REDIS_WEATHER_02_SET_NAME = "weather:02:set";
+    public final static String REDIS_WEATHER_03_SET_NAME = "weather:03:set";
 }
