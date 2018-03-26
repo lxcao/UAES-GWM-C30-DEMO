@@ -49,9 +49,7 @@ public interface IVehicleRepository {
     static void updateVehicleSnapShot(String vehicleHashName){
         setSOC2VehicleSnapshot(vehicleHashName, String.valueOf(getLastOneSOCInZset()));
     }
-
-
-
+    
     //得到最新的SOC
     static double getLastOneSOCInZset(){
             double pack_Soc_BMS = 0.0;

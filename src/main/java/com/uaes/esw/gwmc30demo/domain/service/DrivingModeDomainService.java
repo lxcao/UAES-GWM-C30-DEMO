@@ -28,6 +28,7 @@ public interface DrivingModeDomainService {
         DrivingModeList.add(currentDM);
         queryDMRes.setDrivingMode(DrivingModeList);*/
         queryDMRes.setDrivingMode(IDrivingModeRepository.getAllDrivingMode(driver));
+        queryDMRes.setVehicle(IVehicleRepository.getVehicleSnapshot(driver.getVin()));
         return queryDMRes;
     }
 

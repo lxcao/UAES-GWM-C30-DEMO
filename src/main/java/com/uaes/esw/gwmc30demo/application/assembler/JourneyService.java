@@ -1,6 +1,7 @@
 package com.uaes.esw.gwmc30demo.application.assembler;
 
-import com.uaes.esw.gwmc30demo.domain.model.scenario.journey.Journey;
+
+import com.uaes.esw.gwmc30demo.domain.model.entity.journey.Journey;
 
 import static com.uaes.esw.gwmc30demo.domain.service.ChargingDomainService.calChargeTimeByChargerType4Journey;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;

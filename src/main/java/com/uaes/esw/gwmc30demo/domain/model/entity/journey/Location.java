@@ -1,4 +1,4 @@
-package com.uaes.esw.gwmc30demo.domain.model.scenario.journey;
+package com.uaes.esw.gwmc30demo.domain.model.entity.journey;
 
 import lombok.Builder;
 import lombok.Data;

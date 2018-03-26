@@ -1,6 +1,6 @@
 package com.uaes.esw.gwmc30demo.domain.model.scenario.drivingAnalytics;
 
-import com.uaes.esw.gwmc30demo.domain.model.scenario.journey.Route;
+import com.uaes.esw.gwmc30demo.domain.model.entity.journey.Route;
 
 import java.util.Map;
 
