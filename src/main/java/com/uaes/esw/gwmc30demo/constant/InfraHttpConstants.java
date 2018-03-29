@@ -13,6 +13,10 @@ public class InfraHttpConstants {
     public final static String HTTP_URL_SET_DEFAULT_DRIVINGMODE = "/v1/gwm/c30/setDefaultDrivingMode";
     public final static String HTTP_URL_SET_CURRENT_DRIVINGMODE = "/v1/gwm/c30/setCurrentDrivingMode";
     public final static String HTTP_URL_SET_CUSTOMER_DRIVINGMODE = "/v1/gwm/c30/setCustomerDrivingMode";
+    public final static String HTTP_URL_QUERY_ES_BY_THIS_TIME = "/v1/gwm/c30/queryESByThisTime";
+    public final static String HTTP_URL_QUERY_ES_BY_TODAY = "/v1/gwm/c30/queryESByToday";
+    public final static String HTTP_URL_QUERY_ES_BY_THIS_WEEK = "/v1/gwm/c30/queryESByThisWeek";
+    public final static String HTTP_URL_QUERY_ES_BY_CUSTOMER = "/v1/gwm/c30/queryESByCustomer";
 
     public final static String HTTP_URL_SENIVERSE_WEATHER_NOW_URL = "https://api.seniverse.com/v3/weather/now.json";
     public final static String HTTP_URL_SENIVERSE_AIR_NOW_URL = "https://api.seniverse.com/v3/air/now.json";
@@ -23,7 +27,7 @@ public class InfraHttpConstants {
     public final static String HTTP_URL_SENIVERSE_UNIT_KEY = "unit";
     public final static String HTTP_URL_SENIVERSE_UNIT_VALUE = "c";
     public final static String HTTP_URL_SENIVERSE_LOCATION_KEY = "location";
-    public final static int HTTP_URL_SENIVERSE_QUERY_INTERVAL_SECONDS= 5;
+    public final static int HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES= 1;
     public final static String HTTP_URL_SENIVERSE_SCOPE_KEY = "scope";
     public final static String HTTP_URL_SENIVERSE_SCOPE_VALUE = "all";
 }

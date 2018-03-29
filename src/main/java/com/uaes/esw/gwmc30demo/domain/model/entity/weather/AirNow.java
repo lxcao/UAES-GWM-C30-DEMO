@@ -3,8 +3,6 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class Weather {
-    String location;
-    WeatherNow weatherNow;
-    AirNow airNow;
+public class AirNow {
+    double aqi;
 }

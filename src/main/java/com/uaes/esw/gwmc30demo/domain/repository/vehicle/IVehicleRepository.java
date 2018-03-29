@@ -88,11 +88,11 @@ public interface IVehicleRepository {
     }
 
     //发送Weather到Vehicle
-    static void sendWeather2Vehicle(Weather weatherNow){
-         String weatherNowStr = JSONUtility.transferFromObject2JSON(weatherNow);
-        System.out.println("Send WeatherNow="+weatherNowStr);
+    static void sendWeather2Vehicle(Weather weather){
+         String weatherStr = JSONUtility.transferFromObject2JSON(weather);
+        System.out.println("Send Weather2Vehicle="+weatherStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherNowStr);
+        KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
 
     }
 

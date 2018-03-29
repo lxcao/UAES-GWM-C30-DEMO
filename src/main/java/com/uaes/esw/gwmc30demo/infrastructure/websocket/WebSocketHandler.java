@@ -37,7 +37,7 @@ public class WebSocketHandler {
     }
 
     //Send string message to all user
-    public void sendStrMessage(String msg){
+    public static void sendStrMessage(String msg){
 
         WebSocketFactory.userUserNameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try{

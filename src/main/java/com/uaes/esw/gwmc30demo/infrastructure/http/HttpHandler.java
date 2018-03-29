@@ -9,6 +9,10 @@ import static com.uaes.esw.gwmc30demo.application.service.DriverLogIn.driverLogi
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLogout;
 import static com.uaes.esw.gwmc30demo.application.service.DriverRegister.driverRegister;
 import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingStyle.queryDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByCustomer.queryESByCustomer;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByThisTime.queryESByThisTime;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByThisWeek.queryESByThisWeek;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByToday.queryESByToday;
 import static com.uaes.esw.gwmc30demo.application.service.SetCurrentDrivingStyle.setCurrentDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetCustomerDrivingStyle.setCustomerDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetDefaultDrivingStyle.setDefaultDrivingStyle;
@@ -88,6 +92,38 @@ public class HttpHandler {
             res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
             debugPrintInput(HTTP_URL_SET_CUSTOMER_DRIVINGMODE, req.body());
             String resString = setCustomerDrivingStyle(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_ES_BY_THIS_TIME,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_THIS_TIME, req.body());
+            String resString = queryESByThisTime(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_ES_BY_TODAY,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_TODAY, req.body());
+            String resString = queryESByToday(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_ES_BY_THIS_WEEK,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_THIS_WEEK, req.body());
+            String resString = queryESByThisWeek(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_ES_BY_CUSTOMER,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_CUSTOMER, req.body());
+            String resString = queryESByCustomer(req.body());
             debugPrintOutput(resString);
             return resString;
         });

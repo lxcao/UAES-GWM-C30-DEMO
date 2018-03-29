@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_UNIT_VALUE;
+
 public class HttpClientUtil {
     private static PoolingHttpClientConnectionManager cm;
     private static String EMPTY_STR = "";
@@ -66,15 +69,27 @@ public class HttpClientUtil {
 
     /********单例模式声明开始********************/
     //类初始化时，自行实例化，饿汉式单例模式
-    /*
-    private static final HttpClientUtil httpClient = new HttpClientUtil();
+/*    private static final HttpClientUtil httpClient = new HttpClientUtil();
 
     public static HttpClientUtil getHttpClientInstance(){
         return httpClient;
-    }
-    */
+    }*/
+
     /************************单例模式声明结束********/
 
+
+/*    //创建 SingleObject 的一个对象
+    private static HttpClientUtil instance = new HttpClientUtil();
+
+    //让构造函数为 private，这样该类就不会被实例化
+    private HttpClientUtil(){}
+
+    //获取唯一可用的对象
+    public static HttpClientUtil getInstance(){
+        return instance;
+    }*/
+
+    public HttpClientUtil(){}
 
     /**
      *
@@ -87,6 +102,7 @@ public class HttpClientUtil {
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params) throws URISyntaxException {
+        System.out.println("url="+url);
         URIBuilder ub = new URIBuilder();
         ub.setPath(url);
 
@@ -261,14 +277,20 @@ public class HttpClientUtil {
 
     public static void main( String[] args )
     {
-        String url = "https://api.seniverse.com/v3/weather/now.json";
+/*        String url = "https://api.seniverse.com/v3/weather/now.json";
         Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
         Map<String,Object> params =  new HashMap<>();
         params.put("location","shanghai");
         params.put("key","bb9axx0tiad0dntp");
         params.put("language","en");
-        params.put("unit","c");
+        params.put("unit","c");*/
+        String url = HTTP_URL_SENIVERSE_WEATHER_NOW_URL;
+        Map<String,Object> params =  new HashMap<>();
+        params.put(HTTP_URL_SENIVERSE_LOCATION_KEY,"shanghai");
+        params.put(HTTP_URL_SENIVERSE_KEY_KEY,HTTP_URL_SENIVERSE_KEY_VALUE);
+        params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
+        params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         try{
             System.out.println(httpGetRequest(url,params));
         }
