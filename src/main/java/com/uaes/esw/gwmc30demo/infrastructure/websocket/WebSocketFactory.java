@@ -31,12 +31,12 @@ public class WebSocketFactory {
         });
     }
 
-    public static void startWebSocket(String path, int port){
+    public static void setWebSocketProperties(String path){
         webSocket(path, WebSocketHandler.class);
         //cannot set -1
         webSocketIdleTimeoutMillis(Integer.MAX_VALUE);
-        port(port);
-        init();
+        //port(port);
+        //init();
         calClientsNumber();
     }
 
@@ -46,7 +46,7 @@ public class WebSocketFactory {
 
     public static void main(String[] args) {
 
-        startWebSocket(WEBSOCKET_URL_ENERGY_SAVING_REMIND,WEBSOCKET_PORT);
+        setWebSocketProperties(WEBSOCKET_URL_ENERGY_SAVING_REMIND);
         todoBusiness();
 
     }

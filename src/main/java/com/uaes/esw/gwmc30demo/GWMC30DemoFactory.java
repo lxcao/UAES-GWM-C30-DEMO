@@ -17,27 +17,32 @@ import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleReposito
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
-import static com.uaes.esw.gwmc30demo.infrastructure.websocket.WebSocketFactory.startWebSocket;
+import static com.uaes.esw.gwmc30demo.infrastructure.websocket.WebSocketFactory.setWebSocketProperties;
 
 public class GWMC30DemoFactory {
     //开始Restful服务
-    public static void startApplicationService(){
+    public static void startRestfulService(){
+        setWebSocketProperties(WEBSOCKET_URL_ENERGY_SAVING_REMIND);
         setHttpServerProperties(HTTP_CONFIG_PORT);
         setRouter();
+
     }
 
     //开始WebSocket服务
-    public static void startWebSocketService(){
-        startWebSocket(WEBSOCKET_URL_ENERGY_SAVING_REMIND,WEBSOCKET_PORT);
-        while(true){
-            sendOutRemindNotice();
-            try{
-                TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
-            }catch (Exception e){
-                e.printStackTrace();
+    public static void startPushMessageService(){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            while(true){
+                sendOutRemindNotice();
+                try{
+                    TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
-        }
+        });
     }
+
 
     //每500毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
@@ -77,7 +82,8 @@ public class GWMC30DemoFactory {
     public static void main(String[] args) {
         startVehicleDataService();
         queryWeatherManager(WEATHER_LOCATION);
-        startApplicationService();
+        startRestfulService();
+        startPushMessageService();
 
     }
 }

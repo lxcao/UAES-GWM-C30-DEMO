@@ -11,7 +11,6 @@ import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUC
 
 public interface EnergySavingDomainService {
     static QueryESRes queryESThisTimeDomainService(QueryESReq esReq){
-
         return testQuery(esReq);
     }
 

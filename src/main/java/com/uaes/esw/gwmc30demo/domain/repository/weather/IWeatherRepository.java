@@ -4,7 +4,6 @@ import com.uaes.esw.gwmc30demo.constant.InfraRedisConstants;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.AirNow;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.Weather;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.WeatherNow;
-import com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientUtil;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 import org.json.JSONObject;
 
@@ -13,6 +12,7 @@ import java.util.Map;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientHandler.httpGetRequest;
 
 public interface IWeatherRepository {
 
@@ -26,9 +26,8 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         try{
-            //TODO: not executed
-            System.out.println("Start queryWeatherNow");
-            String weatherNowResult = HttpClientUtil.httpGetRequest(url,params);
+            System.out.println("Start queryWeatherNow @ "+location);
+            String weatherNowResult = httpGetRequest(url,params);
             System.out.println("Get WeatherNow="+weatherNowResult);
             JSONObject weatherNowResultJSONObj = new JSONObject(weatherNowResult);
             JSONObject resultJSONObj = weatherNowResultJSONObj.getJSONArray(WEATHER_JSON_KEY_RESULT)
@@ -63,14 +62,17 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         params.put(HTTP_URL_SENIVERSE_SCOPE_KEY,HTTP_URL_SENIVERSE_SCOPE_VALUE);
-        System.out.println("Start queryAirNow");
+        System.out.println("Start queryAirNow @ "+location);
         double aqi = 0.0;
         try{
-            String airNowResult = HttpClientUtil.httpGetRequest(url,params);
+            String airNowResult = httpGetRequest(url,params);
             System.out.println("Get AirNow="+airNowResult);
             JSONObject airNowResultJSONObj = new JSONObject(airNowResult);
-            //TODO: get aqi from JSON
-            airNow.setAqi(aqi);
+            JSONObject resultJSONObj = airNowResultJSONObj.getJSONArray(AIR_JSON_KEY_RESULT)
+                    .getJSONObject(AIR_JSON_ARRAY_INDEX);
+            String apiValue = resultJSONObj.getJSONObject(AIR_JSON_KEY_AIR)
+                    .getJSONObject(AIR_JSON_KEY_CITY).getString(AIR_JSON_KEY_AQI);
+            airNow.setAqi(Double.valueOf(apiValue));
         }
         catch(Exception e){
             e.printStackTrace();

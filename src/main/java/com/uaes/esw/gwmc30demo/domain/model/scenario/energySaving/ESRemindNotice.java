@@ -1,6 +1,5 @@
 package com.uaes.esw.gwmc30demo.domain.model.scenario.energySaving;
 
-import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import lombok.Builder;
 import lombok.Data;
 

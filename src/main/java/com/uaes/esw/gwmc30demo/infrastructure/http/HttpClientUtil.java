@@ -1,3 +1,4 @@
+/*
 package com.uaes.esw.gwmc30demo.infrastructure.http;
 
 import org.apache.http.HttpEntity;
@@ -26,11 +27,11 @@ import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_UNIT_VALUE;
 
 public class HttpClientUtil {
-    private static PoolingHttpClientConnectionManager cm;
-    private static String EMPTY_STR = "";
-    private static String UTF_8 = "UTF-8";
+    static PoolingHttpClientConnectionManager cm;
+    static String EMPTY_STR = "";
+    static String UTF_8 = "UTF-8";
 
-    private static void init(){
+    public static void init(){
         if(cm == null){
             cm = new PoolingHttpClientConnectionManager();
             cm.setMaxTotal(50);//整个连接池最大连接数
@@ -42,15 +43,18 @@ public class HttpClientUtil {
         }
     }
 
-    /**
+    */
+/**
      * 通过连接池获取HttpClient
      * @return
-     */
-    private static CloseableHttpClient getHttpClient(){
+     *//*
+
+    public static CloseableHttpClient getHttpClient(){
         init();
         CloseableHttpClient closedHttpClient = HttpClients.custom().setConnectionManager(cm).build();
 
-        /*
+        */
+/*
         // 设置连接的超时时间5s
         closedHttpClient.getHttpConnectionManager().getParams()
                 .setConnectionTimeout(connectionTimeout);
@@ -60,24 +64,32 @@ public class HttpClientUtil {
         //初始化httpclient客户端
         closedHttpClient.setConnectionManager(httpClientConnectionManager)
                         .setDefaultRequestConfig(requestConfig).setUserAgent(NewsConstant.USER_AGENT).setRedirectStrategy(redirectStrategy).build();
-         */
+         *//*
+
         return closedHttpClient;
 
 
     }
 
 
-    /********单例模式声明开始********************/
+    */
+/********单例模式声明开始********************//*
+
     //类初始化时，自行实例化，饿汉式单例模式
+*/
 /*    private static final HttpClientUtil httpClient = new HttpClientUtil();
 
     public static HttpClientUtil getHttpClientInstance(){
         return httpClient;
-    }*/
-
-    /************************单例模式声明结束********/
+    }*//*
 
 
+    */
+/************************单例模式声明结束********//*
+
+
+
+*/
 /*    //创建 SingleObject 的一个对象
     private static HttpClientUtil instance = new HttpClientUtil();
 
@@ -87,30 +99,36 @@ public class HttpClientUtil {
     //获取唯一可用的对象
     public static HttpClientUtil getInstance(){
         return instance;
-    }*/
+    }*//*
 
-    public HttpClientUtil(){}
 
-    /**
+    */
+/**
      *
      * @param url
      * @return
-     */
+     *//*
+
     public static String httpGetRequest(String url){
         HttpGet httpGet = new HttpGet(url);
         return getResult(httpGet);
     }
 
-    public static String httpGetRequest(String url, Map<String, Object> params) throws URISyntaxException {
-        System.out.println("url="+url);
-        URIBuilder ub = new URIBuilder();
-        ub.setPath(url);
+    public static String httpGetRequest(String url, Map<String, Object> params){
+        try{
+            System.out.println("url="+url);
+            URIBuilder ub = new URIBuilder();
+            ub.setPath(url);
 
-        ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
-        ub.setParameters(pairs);
+            ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
+            ub.setParameters(pairs);
 
-        HttpGet httpGet = new HttpGet(ub.build());
-        return getResult(httpGet);
+            HttpGet httpGet = new HttpGet(ub.build());
+            return getResult(httpGet);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String httpGetRequest(String url, Map<String, Object> headers,
@@ -199,12 +217,14 @@ public class HttpClientUtil {
     }
 
 
-    /**
+    */
+/**
      * 处理Http请求
      * @param request
      * @return
-     */
-    private static String getResult(HttpRequestBase request){
+     *//*
+
+    public static String getResult(HttpRequestBase request){
 
         CloseableHttpClient httpClient = getHttpClient();
         try{
@@ -232,14 +252,16 @@ public class HttpClientUtil {
     }
 
 
-    /**
+    */
+/**
      * 下载文件
      * @param  request
      * @param  destFileName   xxx.jpg/xxx.png/xxx.txt
      * @throws  ClientProtocolException
      * @throws IOException
-     */
-    private static boolean getFile(HttpRequestBase request, String destFileName){
+     *//*
+
+    public static boolean getFile(HttpRequestBase request, String destFileName){
 
         CloseableHttpClient httpClient = getHttpClient();
         try{
@@ -277,6 +299,7 @@ public class HttpClientUtil {
 
     public static void main( String[] args )
     {
+*/
 /*        String url = "https://api.seniverse.com/v3/weather/now.json";
         Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
@@ -284,7 +307,8 @@ public class HttpClientUtil {
         params.put("location","shanghai");
         params.put("key","bb9axx0tiad0dntp");
         params.put("language","en");
-        params.put("unit","c");*/
+        params.put("unit","c");*//*
+
         String url = HTTP_URL_SENIVERSE_WEATHER_NOW_URL;
         Map<String,Object> params =  new HashMap<>();
         params.put(HTTP_URL_SENIVERSE_LOCATION_KEY,"shanghai");
@@ -299,3 +323,4 @@ public class HttpClientUtil {
         }
     }
 }
+*/
