@@ -11,11 +11,19 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface EnergySavingService {
-    static String queryESThisTime(String queryStr){
+
+    static String queryESCurrent(String queryStr){
         QueryESReq esReq = transferFromJSON2Object(queryStr, QueryESReq.class);
         if(LogInDomainService.notLogInDomainService(esReq.getDriver(),esReq.getDateTime()))
             return LogInDomainService.feedbackNotLogInDomainService(esReq.getDriver(),esReq.getDateTime());
-        QueryESRes esRes =queryESThisTimeDomainService(esReq);
+        QueryESRes esRes =queryESCurrentDomainService(esReq);
+        return transferFromObject2JSON(esRes);
+    }
+    static String queryESLastCycle(String queryStr){
+        QueryESReq esReq = transferFromJSON2Object(queryStr, QueryESReq.class);
+        if(LogInDomainService.notLogInDomainService(esReq.getDriver(),esReq.getDateTime()))
+            return LogInDomainService.feedbackNotLogInDomainService(esReq.getDriver(),esReq.getDateTime());
+        QueryESRes esRes =queryESLastCycleDomainService(esReq);
         return transferFromObject2JSON(esRes);
     }
 

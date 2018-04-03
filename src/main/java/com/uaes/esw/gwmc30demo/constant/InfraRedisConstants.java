@@ -16,6 +16,21 @@ public class InfraRedisConstants {
     public final static String REDIS_VEHICLE_HASH_KEY_MAXMILEAGE = "mmg";
 
     public final static String REDIS_BMS_B1_ZSET = "can:B1:zset";
+    public final static String REDIS_VCU_61_ZSET = "can:61:zset";
+    public final static String REDIS_VCU_62_ZSET = "can:62:zset";
+    public final static String REDIS_VCU_63_ZSET = "can:63:zset";
+    public final static String REDIS_VCU_64_ZSET = "can:64:zset";
+    public final static String REDIS_VCU_65_ZSET = "can:65:zset";
+    public final static String REDIS_VCU_66_ZSET = "can:66:zset";
+    public final static String REDIS_VCU_67_ZSET = "can:67:zset";
+    public final static String REDIS_VCU_68_ZSET = "can:68:zset";
+    public final static String REDIS_VCU_69_ZSET = "can:69:zset";
+    public final static String REDIS_VCU_70_ZSET = "can:70:zset";
+    public final static String REDIS_VCU_71_ZSET = "can:71:zset";
+    public final static String REDIS_VCU_72_ZSET = "can:72:zset";
+    public final static String REDIS_VCU_73_ZSET = "can:73:zset";
+    public final static String REDIS_VCU_75_ZSET = "can:75:zset";
+    public final static String REDIS_VCU_76_ZSET = "can:76:zset";
 
     public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
 

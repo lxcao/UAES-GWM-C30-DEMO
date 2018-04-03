@@ -9,8 +9,9 @@ import static com.uaes.esw.gwmc30demo.application.service.DriverLogIn.driverLogi
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLogout;
 import static com.uaes.esw.gwmc30demo.application.service.DriverRegister.driverRegister;
 import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingStyle.queryDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByCurrent.queryESByCurrent;
 import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByCustomer.queryESByCustomer;
-import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByThisTime.queryESByThisTime;
+import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByLastCycle.queryESByLastCycle;
 import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByThisWeek.queryESByThisWeek;
 import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByToday.queryESByToday;
 import static com.uaes.esw.gwmc30demo.application.service.SetCurrentDrivingStyle.setCurrentDrivingStyle;
@@ -95,11 +96,19 @@ public class HttpHandler {
             debugPrintOutput(resString);
             return resString;
         });
-        Spark.post(HTTP_URL_QUERY_ES_BY_THIS_TIME,(req, res) -> {
+        Spark.post(HTTP_URL_QUERY_ES_BY_CURRENT,(req, res) -> {
             res.type(HTTP_CONFIG_CONTENT_TYPE);
             res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_THIS_TIME, req.body());
-            String resString = queryESByThisTime(req.body());
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_CURRENT, req.body());
+            String resString = queryESByCurrent(req.body());
+            debugPrintOutput(resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_ES_BY_LAST_CYCLE,(req, res) -> {
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            debugPrintInput(HTTP_URL_QUERY_ES_BY_LAST_CYCLE, req.body());
+            String resString = queryESByLastCycle(req.body());
             debugPrintOutput(resString);
             return resString;
         });

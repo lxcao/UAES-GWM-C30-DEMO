@@ -14,4 +14,5 @@ public class CommonConstants {
     public final static String DATE_TIME_FORMATTER = "yyyy-MM-dd HH:mm:ss";
     public final static String TIME_BEGIN = "00:00:00";
     public final static String TIME_END = "23:59:59";
+
 }
