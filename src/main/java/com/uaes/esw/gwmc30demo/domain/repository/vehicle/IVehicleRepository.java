@@ -22,8 +22,6 @@ import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 public interface IVehicleRepository {
     //得到车辆的当前快照
      static Vehicle getVehicleSnapshot(String vinCode){
-
-         //TODO: should get hash by vinCode
         Map<String, String> vehicleHashSet = hGetAll(REDIS_VEHICLE_HASH_NAME);
         Battery c30Battery = Battery.builder()
                 .soc(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_SOC))).build();
@@ -52,7 +50,7 @@ public interface IVehicleRepository {
     //得到最新的SOC
     static double getLastOneSOCInZset(){
             double pack_Soc_BMS = 0.0;
-            String lastString = getLastStringFromZset(REDIS_BMS_B1_ZSET);
+            String lastString = getLastOneStringFromZset(REDIS_BMS_B1_ZSET);
             B1CanMessage b1CanMessage = transferFromJSON2Object(lastString,B1CanMessage.class);
             double soc = b1CanMessage.getPack_Soc_BMS();
             pack_Soc_BMS = soc *PERCENTAGE;

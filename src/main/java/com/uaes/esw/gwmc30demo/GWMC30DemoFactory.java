@@ -14,6 +14,7 @@ import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
+import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycle;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
@@ -44,12 +45,13 @@ public class GWMC30DemoFactory {
     }
 
 
-    //每500毫秒轮询并更新Vehicle Hash
+    //每300毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while(true){
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
+                getAndStoreLastEnergySavingCycle();
                 try{
                     TimeUnit.MILLISECONDS.sleep(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
                 }catch (Exception e){

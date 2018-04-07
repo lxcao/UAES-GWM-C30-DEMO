@@ -32,7 +32,7 @@ public class InfraRedisConstants {
     public final static String REDIS_VCU_75_ZSET = "can:75:zset";
     public final static String REDIS_VCU_76_ZSET = "can:76:zset";
 
-    public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
+    public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 300;
 
     public final static String REDIS_DRIVER_HASH_NAME_PREFIX = "gwm:c30:driver:";
     public final static String REDIS_DRIVER_HASH_NAME_SUFFIX = ":hash";
@@ -56,4 +56,10 @@ public class InfraRedisConstants {
     public final static String REDIS_WEATHER_01_SET_NAME = "weather:01:set";
     public final static String REDIS_WEATHER_02_SET_NAME = "weather:02:set";
     public final static String REDIS_WEATHER_03_SET_NAME = "weather:03:set";
+
+    public final static int REDIS_ZSET_INDEX_LAST_ONE = -1;
+    public final static int REDIS_ZSET_INDEX_PREVIOUS_ONE = -2;
+
+    public final static String REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET = "gwm:c30:es:dc:zset";
+
 }

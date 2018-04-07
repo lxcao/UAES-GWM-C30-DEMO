@@ -31,4 +31,8 @@ public interface DateTimeUtils {
         String endToday = LocalDate.now().toString() + SPACE + TIME_END;
         return transfer2UnixTime(endToday);
     }
+
+    static long getDateTimeNowTimeStamp(){
+        return LocalDateTime.now().atZone(ZoneId.of(ZONE_ID)).toInstant().toEpochMilli();
+    }
 }
