@@ -10,6 +10,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 
+import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.createBatteryStatus;
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.createESRemind;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
@@ -26,6 +27,7 @@ public class WebSocketHandler {
         System.out.println("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
         //send out once connected
         sendStrMessage(transferFromObject2JSON(createESRemind()));
+        sendStrMessage(transferFromObject2JSON(createBatteryStatus()));
     }
 
     @OnWebSocketClose

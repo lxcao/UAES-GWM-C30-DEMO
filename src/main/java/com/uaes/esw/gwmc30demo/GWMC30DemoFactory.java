@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutRemindNotice;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
@@ -35,6 +36,7 @@ public class GWMC30DemoFactory {
         executor.submit(() -> {
             while(true){
                 sendOutRemindNotice();
+                sendOutBatteryStatusNotice();
                 try{
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                 }catch (Exception e){
