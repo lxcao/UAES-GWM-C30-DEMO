@@ -4,12 +4,14 @@ import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.concurrent.*;
 
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_CONFIG_MONITOR_INTERVAL_SECONDS;
+import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_PORT;
+import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static spark.Spark.*;
 
 public class WebSocketFactory {
 
-    private static int monitorInterval = REDIS_CONFIG_MONITOR_INTERVAL;
+    private static int monitorInterval = WEBSOCKET_CONFIG_MONITOR_INTERVAL_SECONDS;
 
     static ConcurrentMap<Session, String> userUserNameMap = new ConcurrentHashMap<>();
 
@@ -29,12 +31,12 @@ public class WebSocketFactory {
         });
     }
 
-    public static void start(String path, int port){
+    public static void setWebSocketProperties(String path){
         webSocket(path, WebSocketHandler.class);
         //cannot set -1
         webSocketIdleTimeoutMillis(Integer.MAX_VALUE);
-        port(port);
-        init();
+        //port(port);
+        //init();
         calClientsNumber();
     }
 
@@ -44,7 +46,7 @@ public class WebSocketFactory {
 
     public static void main(String[] args) {
 
-        start("/simulatecanmessage",6767);
+        setWebSocketProperties(WEBSOCKET_URL_ENERGY_SAVING_REMIND);
         todoBusiness();
 
     }
