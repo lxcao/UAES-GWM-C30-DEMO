@@ -35,13 +35,13 @@ public class GWMC30DemoFactory {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while(true){
-                sendOutRemindNotice();
-                sendOutBatteryStatusNotice();
                 try{
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                sendOutRemindNotice();
+                sendOutBatteryStatusNotice();
             }
         });
     }

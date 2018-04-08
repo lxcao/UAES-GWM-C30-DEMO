@@ -48,7 +48,7 @@ public class WebSocketHandler {
 
         WebSocketFactory.userUserNameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try{
-                //System.out.println(LocalDateTime.now().toString()+" "+msg);
+                System.out.println(LocalDateTime.now().toString()+" "+msg);
                 session.getRemote().sendString(msg);
 
             }catch (Exception e){
