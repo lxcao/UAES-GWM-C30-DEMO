@@ -22,12 +22,12 @@ public class KafkaProducerFactory {
         return producer;
     }
 
-    public static void sendMessage(String key, String msg) {
+    public static void sendMessage(String topic, String key, String msg) {
         try{
             producer = getKafkaProducer();
             //System.out.println(this.broker_list);
             //System.out.println(this.client_id);
-            producer.send(new ProducerRecord<>(KAFKA_CONFIG_TOPIC, key, msg)).get();
+            producer.send(new ProducerRecord<>(topic, key, msg)).get();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -50,7 +50,7 @@ public class KafkaProducerFactory {
     public static void main(String[] args) {
         System.out.println("try to send message");
         try {
-            sendMessage("1", "testMessage1");
+            sendMessage("topic","1", "testMessage1");
 
             System.out.println("success");
         } catch (Exception e) {

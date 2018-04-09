@@ -34,7 +34,4 @@ public class RedisFactory {
         jedis.close();
     }
 
-    public static void main(String[] args) {
-        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
-    }
 }

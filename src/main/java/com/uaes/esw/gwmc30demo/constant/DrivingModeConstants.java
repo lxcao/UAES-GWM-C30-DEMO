@@ -8,6 +8,13 @@ public class DrivingModeConstants {
     public final static String DRIVING_MODE_POW = "4"; //POWER_MODE
     public final static String DRIVING_MODE_CST = "5"; //CUSTOMER_MODE
 
+    public final static String DRIVING_MODE_ABB_EEM = "EEM"; //ENHANCED_ECONOMY_MODE
+    public final static String DRIVING_MODE_ABB_ECO = "ECO"; //ECONOMY_MODE
+    public final static String DRIVING_MODE_ABB_NOR = "NOR"; //NORMAL_MODE
+    public final static String DRIVING_MODE_ABB_EPM = "EPM"; //ENHANCED_POWER_MODE
+    public final static String DRIVING_MODE_ABB_POW = "POW"; //POWER_MODE
+    public final static String DRIVING_MODE_ABB_CST = "CST"; //CUSTOMER_MODE
+
     public final static int EEM_MAX_SPEED = 0;
     public final static int EEM_ENERGY_RECOVERY = 0;
     public final static int EEM_POWER_CORRESPONDING = 0;

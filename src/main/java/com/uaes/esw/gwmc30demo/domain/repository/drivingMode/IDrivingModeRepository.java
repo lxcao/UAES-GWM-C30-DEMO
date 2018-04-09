@@ -183,11 +183,11 @@ public interface IDrivingModeRepository {
                 +driver.getCellPhone()+REDIS_DRIVER_CST_DM_HASH_NAME_SUFFIX;
         Map<String, String> customerDMMap = hGetAll(cstDrivingModeHashName);
         DrivingModeConfigure dmc = DrivingModeConfigure.builder()
-                .accessoryPerformance(Integer.valueOf(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_AP)))
-                .energyRecovery(Integer.valueOf(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_ER)))
-                .maxSpeed(Integer.valueOf(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_SP)))
-                .powerCorresponding(Integer.valueOf(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_PC)))
-                .smoothness(Integer.valueOf(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_SM)))
+                .accessoryPerformance(Integer.parseInt(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_AP)))
+                .energyRecovery(Integer.parseInt(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_ER)))
+                .maxSpeed(Integer.parseInt(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_SP)))
+                .powerCorresponding(Integer.parseInt(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_PC)))
+                .smoothness(Integer.parseInt(customerDMMap.get(REDIS_DRIVER_CST_DM_HASH_KEY_SM)))
                 .build();
         DrivingMode dm = DrivingMode.builder().drivingModeConfigure(dmc)
                 .drivingModeType(DRIVING_MODE_CST)

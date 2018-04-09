@@ -13,3 +13,4 @@ public class B1CanMessage {
     int Pack_ChrgSts_BMS; //电池系统充电状态
     String id;
 }
+
