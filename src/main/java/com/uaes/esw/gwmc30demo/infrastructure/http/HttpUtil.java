@@ -3,6 +3,7 @@ package com.uaes.esw.gwmc30demo.infrastructure.http;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class HttpUtil {
                 //获得输出流
                 OutputStream out=conn.getOutputStream();
                 //对输出流封装成高级输出流
-                BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(out));
+                BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
                 //将参数封装成键值对的形式
                 Set<Map.Entry<String, String>> p= param.entrySet();
                 for(Map.Entry s:p){
@@ -60,7 +61,7 @@ public class HttpUtil {
                 //从连接中获取输入流
                 InputStream in=conn.getInputStream();
                 //对输入流进行封装
-                reader=new BufferedReader(new InputStreamReader(in));
+                reader=new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                 String str=null;
                 sb=new StringBuffer();
                 //从输入流中读取数据

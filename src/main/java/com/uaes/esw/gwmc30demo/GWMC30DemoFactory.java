@@ -33,7 +33,7 @@ public class GWMC30DemoFactory {
     //开始WebSocket服务
     public static void startPushMessageService(){
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        executor.execute(() -> {
             while(true){
                 try{
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
@@ -50,7 +50,7 @@ public class GWMC30DemoFactory {
     //每300毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        executor.execute(() -> {
             while(true){
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
                 getAndStoreLastEnergySavingCycle();
@@ -66,7 +66,7 @@ public class GWMC30DemoFactory {
     //每隔5分钟查询天气，缺省是上海 shanghai
     static void queryWeatherManager(String location){
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        executor.execute(() -> {
             while(true){
                 updateWeather2VehicleDomainService(location);
                 try{
