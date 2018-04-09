@@ -46,7 +46,6 @@ public class GWMC30DemoFactory {
         });
     }
 
-
     //每300毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
         ExecutorService executor = Executors.newSingleThreadExecutor();

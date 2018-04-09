@@ -12,7 +12,15 @@ public class InfraRedisConstants {
     public final static String REDIS_VEHICLE_VIN_CODE = "LGWEESK55HE001050";
     public final static String REDIS_VEHICLE_HASH_NAME = "gwm:c30:"+REDIS_VEHICLE_VIN_CODE+":hash";
     public final static String REDIS_VEHICLE_HASH_KEY_VIN = "vin";
-    public final static String REDIS_VEHICLE_HASH_KEY_SOC = "soc";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_SOC = "soc";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_CURRENT = "batteryCurrent";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_VOLTAGE = "batteryVoltage";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE = "batteryTemperature";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_BALANCE_STATUS = "batteryBalanceStatus";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_STATUS = "batteryChargingStatus";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX = "socMax";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN = "socMin";
+    public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME = "batteryChargingTime";
     public final static String REDIS_VEHICLE_HASH_KEY_MAXMILEAGE = "mmg";
 
     public final static String REDIS_BMS_B1_ZSET = "can:B1:zset";
