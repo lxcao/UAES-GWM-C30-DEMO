@@ -48,24 +48,19 @@ public interface EnergySavingDomainService {
 
     static ESRemindNotice createESRemind(){
         ESRemind esRemind = IEnergySavingRepository.getRemind();
-        ESRemindNotice esRemindNotice = ESRemindNotice.builder()
+        return ESRemindNotice.builder()
                 .esRemind(esRemind).dateTime(DateTimeUtils.getDateTimeString()).build();
-        return esRemindNotice;
     }
 
     static boolean isHVPowerOnNow(){
         int hvPowerOnValue = getHVPowerOnStatusNow();
-        if(hvPowerOnValue == 0)
-            return false;
-        return true;
+        return hvPowerOnValue != 0;
     }
 
     static boolean isHVPowerStatusChangeFromOn2Off(){
         int hvPowerOnNowValue = getHVPowerOnStatusNow();
         int hvPowerOnPreviousValue = getHVPowerOnStatusPrevious();
-        if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0)
-            return true;
-        return false;
+        return hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0;
     }
 
     static void getAndStoreLastEnergySavingCycle(){
@@ -381,19 +376,28 @@ public interface EnergySavingDomainService {
     static QueryESRes getTodayCycleES(QueryESReq esReq){
         Set<String> energySavingTodaySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 getTodayBeginUnixTime(),getTodayEndUnixTime());
+        System.out.println("getTodayCycleES from "+getTodayBeginUnixTime()
+                +" to "+getTodayEndUnixTime());
+        System.out.println("number of energySavingTodaySet="+energySavingTodaySet.size());
         return getCycleESByPeriod(esReq, energySavingTodaySet);
     }
 
     static QueryESRes getWeeklyCycleES(QueryESReq esReq){
-        Set<String> energySavingTodaySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
+        Set<String> energySavingWeeklySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 getBeforeOneWeekBeginUnixTime(),getTodayEndUnixTime());
-        return getCycleESByPeriod(esReq, energySavingTodaySet);
+        System.out.println("getWeeklyCycleES from "+getBeforeOneWeekBeginUnixTime()
+                +" to "+getTodayEndUnixTime());
+        System.out.println("number of energySavingWeeklySet="+energySavingWeeklySet.size());
+        return getCycleESByPeriod(esReq, energySavingWeeklySet);
     }
 
     static QueryESRes getCustomerCycleES(QueryESReq esReq){
-        Set<String> energySavingTodaySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
+        Set<String> energySavingCustomerSet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 transfer2UnixTime(esReq.getStartDateTime()),transfer2UnixTime(esReq.getEndDateTime()));
-        return getCycleESByPeriod(esReq, energySavingTodaySet);
+        System.out.println("getCustomerCycleES from "+transfer2UnixTime(esReq.getStartDateTime())
+                +" to "+transfer2UnixTime(esReq.getEndDateTime()));
+        System.out.println("number of energySavingCustomerSet="+energySavingCustomerSet.size());
+        return getCycleESByPeriod(esReq, energySavingCustomerSet);
     }
 
     static QueryESRes getLastCycleES(QueryESReq esReq){
@@ -406,10 +410,11 @@ public interface EnergySavingDomainService {
 
     static QueryESRes getCycleESByPeriod(QueryESReq esReq, Set<String> energySavingSet){
         System.out.println("esReq="+esReq);
-        EnergySavingCanMessage energySavingCanMessageAll = EnergySavingCanMessage.builder().build();
+        EnergySavingCanMessage energySavingCanMessageAll = initialEnergySavingCanMessage();
         energySavingSet.forEach(est -> {
             EnergySavingCanMessage energySavingCanMessage = transferFromJSON2Object(
                     est,EnergySavingCanMessage.class);
+            System.out.println("energySavingCanMessage="+energySavingCanMessage);
             energySavingCanMessageAll.setVcu61CanMessage(energySavingCanMessageAll
                     .getVcu61CanMessage().adding(energySavingCanMessage.getVcu61CanMessage()));
             energySavingCanMessageAll.setVcu62CanMessage(energySavingCanMessageAll
@@ -444,6 +449,7 @@ public interface EnergySavingDomainService {
     }
 
     static QueryESRes opsEnergySavingCanMessage(QueryESReq esReq, EnergySavingCanMessage energySavingCanMessage){
+        System.out.println("OpsEnergySavingCanMessage="+energySavingCanMessage);
         VCU61CanMessage vcu61CanMessage = energySavingCanMessage.getVcu61CanMessage();
         System.out.println("vcu61CanMessage="+vcu61CanMessage);
         VCU62CanMessage vcu62CanMessage = energySavingCanMessage.getVcu62CanMessage();
