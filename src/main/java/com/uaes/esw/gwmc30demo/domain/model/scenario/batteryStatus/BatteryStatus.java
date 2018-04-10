@@ -10,4 +10,7 @@ public class BatteryStatus {
     double Pack_Temp_BMS; //电池系统温度
     int Pack_ChrgSts_BMS; //电池系统充电状态
     double Pack_ChrgReTime_BMS; //电池系统充电剩余时间
+    int Pack_BalcSts_BMS; //电池系统均衡状态
+    double Pack_CellSocMax_BMS; //电池系统最高单体SOC
+    double Pack_CellSOCMin_BMS; //电池系统最低单体SOC
 }

@@ -7,6 +7,7 @@ import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.Weather;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.batteryStatus.BatteryBalanceInstruction;
 import com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility;
 import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
@@ -26,11 +27,19 @@ public interface IVehicleRepository {
      static Vehicle getVehicleSnapshot(String vinCode){
         Map<String, String> vehicleHashSet = hGetAll(REDIS_VEHICLE_HASH_NAME);
         Battery c30Battery = Battery.builder()
-                .soc(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC))).build();
+                .soc(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC)))
+                .balanceStatus(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_BALANCE_STATUS)))
+                .chargingStatus(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_STATUS)))
+                .chargingTime(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME)))
+                .current(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CURRENT)))
+                .voltage(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_VOLTAGE)))
+                .socMax(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX)))
+                .socMin(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN)))
+                .temperature(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE))).build();
         Vehicle c30Vehicle = Vehicle.builder()
                 .battery(c30Battery)
                 .vin(vinCode)
-                .maxMileage(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_MAXMILEAGE))).build();
+                .maxMileage(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_MAXMILEAGE))).build();
 
 /*         Battery c30Battery = Battery.builder().soc(getLastOneSOCInZset()).build();
          Vehicle c30Vehicle = Vehicle.builder().battery(c30Battery).vin(vinCode)
@@ -128,7 +137,13 @@ public interface IVehicleRepository {
         System.out.println("Send Weather2Vehicle="+weatherStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
-
     }
 
+    //发送电池均衡指令到Vehicle
+    static void sendBatteryBalance2Vehicle(BatteryBalanceInstruction batteryBalanceInstruction){
+        String batteryBIStr = JSONUtility.transferFromObject2JSON(batteryBalanceInstruction);
+        System.out.println("Send BatteryBI2Vehicle="+batteryBIStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_BATTERYBI_TOPIC,KAFKA_BATTERYBI_KEY,batteryBIStr);
+    }
 }

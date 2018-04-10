@@ -7,15 +7,17 @@ import com.uaes.esw.gwmc30demo.domain.model.scenario.batteryStatus.StopBatteryBa
 import com.uaes.esw.gwmc30demo.domain.service.LogInDomainService;
 import com.uaes.esw.gwmc30demo.infrastructure.websocket.WebSocketHandler;
 
-import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.createBatteryStatus;
-import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.startBBDomainService;
-import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.stopBBDomainService;
+import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface BatteryService {
     static void sendOutBatteryStatusNotice(){
-        WebSocketHandler.sendStrMessage(transferFromObject2JSON(createBatteryStatus()));
+        WebSocketHandler.sendStrMessage(transferFromObject2JSON(createBatteryStatusNotice()));
+    }
+
+    static void sendOutBatteryBalanceNotice(){
+        WebSocketHandler.sendStrMessage(transferFromObject2JSON(createBatteryBalanceNotice()));
     }
 
     static String startPackBatteryBalance(String startBBReq){

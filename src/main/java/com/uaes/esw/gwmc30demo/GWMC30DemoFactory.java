@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryBalanceNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutRemindNotice;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
@@ -42,6 +43,7 @@ public class GWMC30DemoFactory {
                 }
                 sendOutRemindNotice();
                 sendOutBatteryStatusNotice();
+                sendOutBatteryBalanceNotice();
             }
         });
     }

@@ -72,4 +72,6 @@ public class InfraRedisConstants {
 
     public final static String REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET = "gwm:c30:es:dc:zset";
 
+    public final static String REDIS_BATTERY_BALANCE_START_POINT_ZSET = "gwm:c30:bb:start:zset";
+    public final static String REDIS_BATTERY_BALANCE_STOP_POINT_ZSET = "gwm:c30:bb:stop:zset";
 }

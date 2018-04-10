@@ -19,4 +19,6 @@ public class InfraKafkaConstants {
     public final static String KAFKA_DIRVING_MODE_TOPIC = "gwm-c30-dm";
     public final static String KAFKA_WEATHER_TOPIC = "gwm-c30-weather";
     public final static String KAFKA_WEATHER_KEY = "weather";
+    public final static String KAFKA_BATTERYBI_TOPIC = "gwm-c30-batterybi";
+    public final static String KAFKA_BATTERYBI_KEY = "batterybi";
 }

@@ -5,5 +5,6 @@ import lombok.Data;
 @Data @Builder
 public class BatteryBalanceNotice {
     BatteryBalance batteryBalance;
+    BatteryStatus batteryStatus;
     String dateTime;
 }
