@@ -5,9 +5,12 @@ import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 
 import java.util.Map;
 
+import static com.uaes.esw.gwmc30demo.constant.DriverConstants.DRIVER_DUMMY_CELL_PHONE;
+import static com.uaes.esw.gwmc30demo.constant.DriverConstants.DRIVER_DUMMY_PASSWORD;
 import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE_NOR;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.GMW_C30_VIN_CODE;
 
 public interface IDriverRepository {
 
@@ -58,6 +61,17 @@ public interface IDriverRepository {
 
     static long removeLoginDriver(String cellPhone){
         return RedisHandler.removeValueInSET(REDIS_DRIVER_LOGIN_SET,cellPhone);
+    }
+
+    static Driver createDummyDriver(){
+        Driver dummyDriver = Driver.builder()
+                .cellPhone(DRIVER_DUMMY_CELL_PHONE)
+                .password(DRIVER_DUMMY_PASSWORD)
+                .currentDM(DRIVING_MODE_NOR)
+                .defaultDM(DRIVING_MODE_NOR)
+                .vin(GMW_C30_VIN_CODE)
+                .build();
+        return dummyDriver;
     }
 
 }

@@ -7,6 +7,7 @@ import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
@@ -16,6 +17,7 @@ import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE
 import static com.uaes.esw.gwmc30demo.constant.EnergySavingConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.EnergySavingConstants.ELECTRICITY_SAVING_ONE;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET;
+import static com.uaes.esw.gwmc30demo.domain.repository.driver.IDriverRepository.createDummyDriver;
 import static com.uaes.esw.gwmc30demo.domain.repository.energySaving.IEnergySavingRepository.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
@@ -561,6 +563,25 @@ public interface EnergySavingDomainService {
                 .build();
         System.out.println("queryESRes="+queryESRes);
         return queryESRes;
+    }
+
+    static ESCurrentCycleNotice getESCurrentCycleInfoNotice(){
+        QueryESReq queryESReq = QueryESReq.builder()
+                .dateTime(getDateTimeString())
+                .driver(createDummyDriver())
+                .build();
+        QueryESRes queryESRes = getCurrentES(queryESReq);
+        ESCurrentCycleInfo esCurrentCycleInfo = ESCurrentCycleInfo.builder()
+                .esSummary(queryESRes.getEsSummary())
+                .componentsPercentSum(queryESRes.getComponentsPercentSum())
+                .CPByDM(queryESRes.getCPByDM())
+                .per100KMByDM(queryESRes.getPer100KMByDM())
+                .build();
+        ESCurrentCycleNotice esCurrentCycleNotice = ESCurrentCycleNotice.builder()
+                .esCurrentCycleInfo(esCurrentCycleInfo)
+                .dateTime(getDateTimeString())
+                .build();
+        return esCurrentCycleNotice;
     }
 
 }

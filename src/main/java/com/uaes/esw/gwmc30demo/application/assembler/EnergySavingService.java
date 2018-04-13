@@ -1,6 +1,5 @@
 package com.uaes.esw.gwmc30demo.application.assembler;
 
-import com.uaes.esw.gwmc30demo.domain.model.scenario.energySaving.ESRemindNotice;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.energySaving.QueryESReq;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.energySaving.QueryESRes;
 import com.uaes.esw.gwmc30demo.domain.service.LogInDomainService;
@@ -51,7 +50,12 @@ public interface EnergySavingService {
         return transferFromObject2JSON(esRes);
     }
 
-    static void sendOutRemindNotice(){
+    static void sendOutEnergySavingRemindNotice(){
         WebSocketHandler.sendStrMessage(transferFromObject2JSON(createESRemind()));
+    }
+
+    static void sendOutEnergySavingCurrentCycleNotice(){
+        if(isHVPowerOnNow())
+            WebSocketHandler.sendStrMessage(transferFromObject2JSON(getESCurrentCycleInfoNotice()));
     }
 }
