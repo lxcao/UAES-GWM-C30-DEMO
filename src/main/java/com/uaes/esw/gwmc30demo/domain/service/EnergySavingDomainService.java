@@ -451,7 +451,7 @@ public interface EnergySavingDomainService {
     }
 
     static QueryESRes opsEnergySavingCanMessage(QueryESReq esReq, EnergySavingCanMessage energySavingCanMessage){
-        System.out.println("OpsEnergySavingCanMessage="+energySavingCanMessage);
+        //System.out.println("OpsEnergySavingCanMessage="+energySavingCanMessage);
         VCU61CanMessage vcu61CanMessage = energySavingCanMessage.getVcu61CanMessage();
         System.out.println("vcu61CanMessage="+vcu61CanMessage);
         VCU62CanMessage vcu62CanMessage = energySavingCanMessage.getVcu62CanMessage();
@@ -502,7 +502,7 @@ public interface EnergySavingDomainService {
                 .EPowerDM(calEPMEnergyKWHPer100KM(vcu71CanMessage,vcu72CanMessage))
                 .EEconomyDM(calEEMEnergyKWHPer100KM(vcu63CanMessage,vcu64CanMessage))
                 .build();
-        System.out.println("per100KMByDM="+per100KMByDM.toString());
+        //System.out.println("per100KMByDM="+per100KMByDM.toString());
         Map<String,ComponentsPercent> cpByDM = new HashMap<>();
         ComponentsPercent componentsPercentEEM = ComponentsPercent.builder()
                 .RESTEnergyPert(calEEMRESTEnergyPert(vcu63CanMessage,vcu64CanMessage))
@@ -510,7 +510,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calEEMDCDCEnergyPert(vcu63CanMessage))
                 .MTEnergyPert(calEEMMTEnergyPert(vcu63CanMessage))
                 .build();
-        System.out.println("componentsPercentEEM="+componentsPercentEEM.toString());
+        //System.out.println("componentsPercentEEM="+componentsPercentEEM.toString());
         cpByDM.put(DRIVING_MODE_ABB_EEM,componentsPercentEEM);
         ComponentsPercent componentsPercentECO = ComponentsPercent.builder()
                 .RESTEnergyPert(calECORESTEnergyPert(vcu65CanMessage,vcu66CanMessage))
@@ -518,7 +518,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calECODCDCEnergyPert(vcu65CanMessage))
                 .MTEnergyPert(calECOMTEnergyPert(vcu65CanMessage))
                 .build();
-        System.out.println("componentsPercentECO="+componentsPercentECO);
+        //System.out.println("componentsPercentECO="+componentsPercentECO);
         cpByDM.put(DRIVING_MODE_ABB_ECO,componentsPercentECO);
         ComponentsPercent componentsPercentNOR = ComponentsPercent.builder()
                 .RESTEnergyPert(calNORRESTEnergyPert(vcu67CanMessage,vcu68CanMessage))
@@ -526,7 +526,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calNORDCDCEnergyPert(vcu67CanMessage))
                 .MTEnergyPert(calNORMTEnergyPert(vcu67CanMessage))
                 .build();
-        System.out.println("componentsPercentNOR="+componentsPercentNOR);
+        //System.out.println("componentsPercentNOR="+componentsPercentNOR);
         cpByDM.put(DRIVING_MODE_ABB_NOR,componentsPercentNOR);
         ComponentsPercent componentsPercentEPM = ComponentsPercent.builder()
                 .RESTEnergyPert(calEPMRESTEnergyPert(vcu71CanMessage,vcu72CanMessage))
@@ -534,7 +534,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calEPMDCDCEnergyPert(vcu71CanMessage))
                 .MTEnergyPert(calEPMMTEnergyPert(vcu71CanMessage))
                 .build();
-        System.out.println("componentsPercentEPM="+componentsPercentEPM);
+        //System.out.println("componentsPercentEPM="+componentsPercentEPM);
         cpByDM.put(DRIVING_MODE_ABB_EPM,componentsPercentEPM);
         ComponentsPercent componentsPercentPOW = ComponentsPercent.builder()
                 .RESTEnergyPert(calPOWRESTEnergyPert(vcu69CanMessage,vcu70CanMessage))
@@ -542,7 +542,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calPOWDCDCEnergyPert(vcu69CanMessage))
                 .MTEnergyPert(calPOWMTEnergyPert(vcu69CanMessage))
                 .build();
-        System.out.println("componentsPercentPOW="+componentsPercentPOW);
+        //System.out.println("componentsPercentPOW="+componentsPercentPOW);
         cpByDM.put(DRIVING_MODE_ABB_POW,componentsPercentPOW);
         ComponentsPercent componentsPercentCST = ComponentsPercent.builder()
                 .RESTEnergyPert(calCSTRESTEnergyPert(vcu75CanMessage,vcu76CanMessage))
@@ -550,7 +550,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calCSTDCDCEnergyPert(vcu75CanMessage))
                 .MTEnergyPert(calCSTMTEnergyPert(vcu75CanMessage))
                 .build();
-        System.out.println("componentsPercentCST="+componentsPercentCST);
+        //System.out.println("componentsPercentCST="+componentsPercentCST);
         cpByDM.put(DRIVING_MODE_ABB_CST,componentsPercentCST);
         QueryESRes queryESRes = QueryESRes.builder()
                 .driver(esReq.getDriver())
