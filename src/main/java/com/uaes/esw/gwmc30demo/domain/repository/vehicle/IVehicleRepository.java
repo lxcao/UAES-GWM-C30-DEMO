@@ -2,6 +2,7 @@ package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B2CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU73CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
@@ -35,7 +36,8 @@ public interface IVehicleRepository {
                 .voltage(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_VOLTAGE)))
                 .socMax(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX)))
                 .socMin(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN)))
-                .temperature(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE))).build();
+                .temperature(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE)))
+                .hvPower(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_HVPOWER))).build();
         Vehicle c30Vehicle = Vehicle.builder()
                 .battery(c30Battery)
                 .vin(vinCode)
@@ -60,7 +62,6 @@ public interface IVehicleRepository {
 
     //轮询各个CAN的zset，取到最新的值，存放到Vehicle的hash中
     static void updateVehicleSnapShot(String vehicleHashName){
-        //setSOC2VehicleSnapshot(vehicleHashName, String.valueOf(getLastOneSOCInZset()));
         setBatteryInfo2VehicleSnapshot(vehicleHashName, getLastOneBatteryInfoFromZset());
     }
 
@@ -90,6 +91,10 @@ public interface IVehicleRepository {
                 String.valueOf(b2CanMessage.getPack_CellSocMin_BMS()));
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME,
                 String.valueOf(b2CanMessage.getPack_ChrgReTime_BMS()));
+        String last73String = getLastOneStringFromZset(REDIS_VCU_73_ZSET);
+        VCU73CanMessage vcu73CanMessage = transferFromJSON2Object(last73String, VCU73CanMessage.class);
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_HVPOWER,
+                String.valueOf(vcu73CanMessage.getHV_PowerOn()));
         return batteryHash;
     }
 

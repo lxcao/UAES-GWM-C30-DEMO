@@ -22,6 +22,7 @@ public class InfraRedisConstants {
     public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN = "socMin";
     public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME = "batteryChargingTime";
     public final static String REDIS_VEHICLE_HASH_KEY_MAXMILEAGE = "mmg";
+    public final static String REDIS_VEHICLE_HASH_KEY_HVPOWER = "hvPower";
 
     public final static String REDIS_BMS_B1_ZSET = "can:B1:zset";
     public final static String REDIS_BMS_B2_ZSET = "can:B2:zset";

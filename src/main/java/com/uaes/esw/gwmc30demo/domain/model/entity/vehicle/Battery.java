@@ -14,4 +14,5 @@ public class Battery {
     double socMax;
     double socMin;
     double chargingTime; //充电剩余时间
+    int hvPower; //高压上电标志
 }
