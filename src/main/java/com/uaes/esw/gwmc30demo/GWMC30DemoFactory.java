@@ -38,6 +38,9 @@ public class GWMC30DemoFactory {
             while(true){
                 try{
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                    //节能之当前驾驶信息
+                    sendOutEnergySavingCurrentCycleNotice();
+                    TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                     //节能提醒空调开窗
                     sendOutEnergySavingRemindNotice();
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
@@ -46,9 +49,7 @@ public class GWMC30DemoFactory {
                     TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                     //正在均衡的状态和如果均衡的效果
                     sendOutBatteryBalanceNotice();
-                    TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
-                    //节能之当前驾驶信息
-                    sendOutEnergySavingCurrentCycleNotice();
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
