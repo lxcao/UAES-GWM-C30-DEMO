@@ -20,7 +20,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientFactory.EMPT
 public class HttpClientHandler {
     public static String httpGetRequest(String url, Map<String, Object> params){
         try{
-            System.out.println("url="+url);
+            //System.out.println("url="+url);
             URIBuilder ub = new URIBuilder();
             ub.setPath(url);
 

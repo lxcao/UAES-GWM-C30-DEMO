@@ -17,4 +17,7 @@ public class BatteryBalanceConstants {
     public final static double BATTERY_AVERAGE_BALANCE_CURRENT_A = 0.1;
     public final static double BATTERY_PARAMETER_HUNDRED = 100.0;
     public final static double BATTERY_PARAMETER_THOUSAND = 1000.0;
+    public final static double BATTERY_CHARGE_REQUIRE_THRESHOLD = 20.0;
+    public final static int BATTERY_CHARGE_REQUIRE = 1;
+    public final static int BATTERY_CHARGE_NO_REQUIRE = 0;
 }

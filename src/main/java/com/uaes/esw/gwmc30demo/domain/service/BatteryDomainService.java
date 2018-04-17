@@ -28,6 +28,7 @@ public interface BatteryDomainService {
                 .Pack_BalcSts_BMS(b1CanMessage.getPack_BalcSts_BMS())
                 .Pack_CellSocMax_BMS(b2CanMessage.getPack_CellSocMax_BMS())
                 .Pack_CellSOCMin_BMS(b2CanMessage.getPack_CellSocMin_BMS())
+                .Pack_ChrgReq_BMS(calChargeRequire(getBatterySnapshot(GMW_C30_VIN_CODE)))
                 .build();
         return batteryStatus;
     }
@@ -67,6 +68,12 @@ public interface BatteryDomainService {
 
     static double calSOCDeltaValue(Battery battery){
         return battery.getSocMax() - battery.getSocMin();
+    }
+
+    static int calChargeRequire(Battery battery){
+        if(battery.getSoc() < BATTERY_CHARGE_REQUIRE_THRESHOLD)
+            return BATTERY_CHARGE_REQUIRE;
+        return BATTERY_CHARGE_NO_REQUIRE;
     }
 
     static double getBatterySOC(Battery battery){
