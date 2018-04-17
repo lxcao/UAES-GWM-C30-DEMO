@@ -13,4 +13,5 @@ public class BatteryStatus {
     int Pack_BalcSts_BMS; //电池系统均衡状态
     double Pack_CellSocMax_BMS; //电池系统最高单体SOC
     double Pack_CellSOCMin_BMS; //电池系统最低单体SOC
+    int Pack_ChrgReq_BMS; // 是否需要充电
 }
