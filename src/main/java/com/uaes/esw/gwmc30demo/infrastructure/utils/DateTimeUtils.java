@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.*;
 
@@ -34,5 +35,29 @@ public interface DateTimeUtils {
 
     static long getDateTimeNowTimeStamp(){
         return LocalDateTime.now().atZone(ZoneId.of(ZONE_ID)).toInstant().toEpochMilli();
+    }
+
+    static void sleepSeconds(int second){
+        try{
+            TimeUnit.SECONDS.sleep(second);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    static void sleepMinutes(int minute){
+        try{
+            TimeUnit.MINUTES.sleep(minute);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    static void sleepMilliSeconds(int milliSecond){
+        try{
+            TimeUnit.MILLISECONDS.sleep(milliSecond);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

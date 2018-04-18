@@ -12,6 +12,7 @@ import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.GMW_C30_VIN_CODE;
 import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepSeconds;
 
 public interface BatteryDomainService {
 
@@ -45,15 +46,18 @@ public interface BatteryDomainService {
         BatteryBalance batteryBalance = BatteryBalance.builder().build();
         batteryBalance.setBalanceEnable(calBalanceEnable(batteryNow));
         if(batteryNow.getBalanceStatus() == BATTERY_BALANCE_STATUS_ON){
+            System.out.println("BATTERY_BALANCE_STATUS_ON");
             batteryBalance.setBalanceLifeMileage(calLifeMileageAfterBalance(getLastBalanceStartPoint()
                     ,batteryNow));
             batteryBalance.setBalanceTime(calBalanceTime(batteryNow));
         }else if(batteryNow.getBalanceStatus() == BATTERY_BALANCE_STATUS_OFF){
+            System.out.println("BATTERY_BALANCE_STATUS_OFF");
             batteryBalance.setBalanceEnable(calBalanceEnable(batteryNow));
-            batteryBalance.setBalanceLifeMileage(calLifeMileageAfterBalance(getLastBalanceStartPoint()
+            batteryBalance.setBalanceLifeMileage(calLifeMileageAfterBalance(batteryNow
                     ,createBatteryZero()));
             batteryBalance.setBalanceTime(calBalanceTime(batteryNow));
         }else{
+            System.out.println("BATTERY_BALANCE_STATUS_OTHER");
             batteryBalance.setBalanceEnable(calBalanceEnable(batteryNow));
             batteryBalance.setBalanceLifeMileage(calLifeMileageAfterBalance(createBatteryZero()
                     ,createBatteryZero()));
@@ -71,7 +75,9 @@ public interface BatteryDomainService {
     }
 
     static int calChargeRequire(Battery battery){
-        if(battery.getSoc() < BATTERY_CHARGE_REQUIRE_THRESHOLD)
+        double soc = battery.getSoc();
+        //System.out.println("soc="+soc);
+        if(soc < BATTERY_CHARGE_REQUIRE_THRESHOLD)
             return BATTERY_CHARGE_REQUIRE;
         return BATTERY_CHARGE_NO_REQUIRE;
     }
@@ -81,12 +87,15 @@ public interface BatteryDomainService {
     }
 
     static double calLifeMileageAfterBalance(Battery startBattery, Battery nowBattery){
+        System.out.println("calLifeMileageAfterBalance:startBattery="+startBattery);
+        System.out.println("calLifeMileageAfterBalance:nowBattery="+nowBattery);
         return (calSOCDeltaValue(startBattery) - calSOCDeltaValue(nowBattery))/BATTERY_PARAMETER_HUNDRED
                 *BATTERY_NOMINAL_CAPACITY_AH*BATTERY_NOMINAL_VOLTAGE_V/BATTERY_PARAMETER_THOUSAND
                 *BATTERY_PARAMETER_HUNDRED/BATTERY_POWER_CONSUMPTION_KWH_PER_100KM;
     }
 
     static double calBalanceTime(Battery nowBattery){
+        System.out.println("calBalanceTime:nowBattery="+nowBattery);
         return calSOCDeltaValue(nowBattery)/BATTERY_PARAMETER_HUNDRED
                 *BATTERY_NOMINAL_CAPACITY_AH/BATTERY_AVERAGE_BALANCE_CURRENT_A;
     }
@@ -104,6 +113,8 @@ public interface BatteryDomainService {
         IVehicleRepository.sendBatteryBalance2Vehicle(batteryBalanceInstruction);
         Battery batteryNow = getBatterySnapshot(GMW_C30_VIN_CODE);
         IBatteryRepository.storeBalanceStartPoint(batteryNow);
+        //wait for 5 secs until BMS feedback
+        sleepSeconds(BATTERY_BALANCE_START_WAIT_SECOND);
         BatteryBalance batteryBalance = BatteryBalance.builder()
                 .balanceEnable(calBalanceEnable(batteryNow))
                 .balanceLifeMileage(BATTERY_BALANCE_DOUBLE_ZERO)
