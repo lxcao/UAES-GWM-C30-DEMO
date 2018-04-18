@@ -26,9 +26,9 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         try{
-            System.out.println("Start queryWeatherNow @ "+location);
+            //System.out.println("Start queryWeatherNow @ "+location);
             String weatherNowResult = httpGetRequest(url,params);
-            System.out.println("Get WeatherNow="+weatherNowResult);
+            //System.out.println("Get WeatherNow="+weatherNowResult);
             JSONObject weatherNowResultJSONObj = new JSONObject(weatherNowResult);
             JSONObject resultJSONObj = weatherNowResultJSONObj.getJSONArray(WEATHER_JSON_KEY_RESULT)
                     .getJSONObject(WEATHER_JSON_ARRAY_INDEX);
@@ -62,11 +62,11 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         params.put(HTTP_URL_SENIVERSE_SCOPE_KEY,HTTP_URL_SENIVERSE_SCOPE_VALUE);
-        System.out.println("Start queryAirNow @ "+location);
+        //System.out.println("Start queryAirNow @ "+location);
         double aqi = 0.0;
         try{
             String airNowResult = httpGetRequest(url,params);
-            System.out.println("Get AirNow="+airNowResult);
+            //System.out.println("Get AirNow="+airNowResult);
             JSONObject airNowResultJSONObj = new JSONObject(airNowResult);
             JSONObject resultJSONObj = airNowResultJSONObj.getJSONArray(AIR_JSON_KEY_RESULT)
                     .getJSONObject(AIR_JSON_ARRAY_INDEX);

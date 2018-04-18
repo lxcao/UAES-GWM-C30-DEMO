@@ -65,6 +65,13 @@ public interface RedisHandler {
         return result;
     }
 
+    static String setValues2HashFields(String key, Map<String, String> hashs){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        String result = jedisClient.hmset(key, hashs);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
     static long inputValue2SET(String setName, String member){
         Jedis jedisClient = RedisFactory.getOneJedisFromPool();
         long result = jedisClient.sadd(setName, member);

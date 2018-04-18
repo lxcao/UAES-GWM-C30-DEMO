@@ -4,14 +4,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryBalanceNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
-import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutRemindNotice;
+import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingCurrentCycleNotice;
+import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingRemindNotice;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_NAME;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS;
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS;
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
@@ -19,6 +20,9 @@ import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.g
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepMilliSeconds;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepMinutes;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepSeconds;
 import static com.uaes.esw.gwmc30demo.infrastructure.websocket.WebSocketFactory.setWebSocketProperties;
 
 public class GWMC30DemoFactory {
@@ -35,17 +39,21 @@ public class GWMC30DemoFactory {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             while(true){
-                try{
-                    TimeUnit.SECONDS.sleep(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                sendOutRemindNotice();
-                sendOutBatteryStatusNotice();
+                    sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                    //节能之当前驾驶信息
+                    sendOutEnergySavingCurrentCycleNotice();
+                    sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                    //节能提醒空调开窗
+                    sendOutEnergySavingRemindNotice();
+                    sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                    //电池状态和电量不足
+                    sendOutBatteryStatusNotice();
+                    sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
+                    //正在均衡的状态和如果均衡的效果
+                    sendOutBatteryBalanceNotice();
             }
         });
     }
-
 
     //每300毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
@@ -54,11 +62,7 @@ public class GWMC30DemoFactory {
             while(true){
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
                 getAndStoreLastEnergySavingCycle();
-                try{
-                    TimeUnit.MILLISECONDS.sleep(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });
     }
@@ -69,11 +73,7 @@ public class GWMC30DemoFactory {
         executor.execute(() -> {
             while(true){
                 updateWeather2VehicleDomainService(location);
-                try{
-                    TimeUnit.MINUTES.sleep(HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                sleepMinutes(HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES);
             }
         });
     }

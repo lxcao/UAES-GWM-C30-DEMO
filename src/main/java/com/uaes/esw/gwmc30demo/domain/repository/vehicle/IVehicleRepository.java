@@ -1,15 +1,19 @@
 package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.can.B2CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU73CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.Weather;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.batteryStatus.BatteryBalanceInstruction;
 import com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility;
 import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -24,11 +28,20 @@ public interface IVehicleRepository {
      static Vehicle getVehicleSnapshot(String vinCode){
         Map<String, String> vehicleHashSet = hGetAll(REDIS_VEHICLE_HASH_NAME);
         Battery c30Battery = Battery.builder()
-                .soc(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_SOC))).build();
+                .soc(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC)))
+                .balanceStatus(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_BALANCE_STATUS)))
+                .chargingStatus(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_STATUS)))
+                .chargingTime(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME)))
+                .current(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_CURRENT)))
+                .voltage(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_VOLTAGE)))
+                .socMax(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX)))
+                .socMin(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN)))
+                .temperature(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE)))
+                .hvPower(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_HVPOWER))).build();
         Vehicle c30Vehicle = Vehicle.builder()
                 .battery(c30Battery)
                 .vin(vinCode)
-                .maxMileage(Double.valueOf(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_MAXMILEAGE))).build();
+                .maxMileage(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_MAXMILEAGE))).build();
 
 /*         Battery c30Battery = Battery.builder().soc(getLastOneSOCInZset()).build();
          Vehicle c30Vehicle = Vehicle.builder().battery(c30Battery).vin(vinCode)
@@ -39,12 +52,50 @@ public interface IVehicleRepository {
 
     //把从车上收到的soc信息存放到Vehicle的hash中
      static void setSOC2VehicleSnapshot(String vehicleHashName, String soc){
-         setValue2HashField(vehicleHashName,REDIS_VEHICLE_HASH_KEY_SOC,soc);
+         setValue2HashField(vehicleHashName,REDIS_VEHICLE_HASH_KEY_BATTERY_SOC,soc);
+    }
+
+    //把从车上收到的电池信息存放到Vehicle的hash中
+    static void setBatteryInfo2VehicleSnapshot(String vehicleHashName, Map<String, String> batteryHash){
+        setValues2HashFields(vehicleHashName,batteryHash);
     }
 
     //轮询各个CAN的zset，取到最新的值，存放到Vehicle的hash中
     static void updateVehicleSnapShot(String vehicleHashName){
-        setSOC2VehicleSnapshot(vehicleHashName, String.valueOf(getLastOneSOCInZset()));
+        setBatteryInfo2VehicleSnapshot(vehicleHashName, getLastOneBatteryInfoFromZset());
+    }
+
+    //得到最新的battery信息
+    static Map<String, String> getLastOneBatteryInfoFromZset(){
+         Map<String, String> batteryHash = new HashMap<>();
+
+        String lastB1String = getLastOneStringFromZset(REDIS_BMS_B1_ZSET);
+        B1CanMessage b1CanMessage = transferFromJSON2Object(lastB1String,B1CanMessage.class);
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC,
+                String.valueOf(b1CanMessage.getPack_Soc_BMS() *PERCENTAGE));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CURRENT,
+                String.valueOf(b1CanMessage.getPack_Curr_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_VOLTAGE,
+                String.valueOf(b1CanMessage.getPack_Volt_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE,
+                String.valueOf(b1CanMessage.getPack_Temp_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_BALANCE_STATUS,
+                String.valueOf(b1CanMessage.getPack_BalcSts_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_STATUS,
+                String.valueOf(b1CanMessage.getPack_ChrgSts_BMS()));
+        String lastB2String = getLastOneStringFromZset(REDIS_BMS_B2_ZSET);
+        B2CanMessage b2CanMessage = transferFromJSON2Object(lastB2String,B2CanMessage.class);
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX,
+                String.valueOf(b2CanMessage.getPack_CellSocMax_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN,
+                String.valueOf(b2CanMessage.getPack_CellSocMin_BMS()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME,
+                String.valueOf(b2CanMessage.getPack_ChrgReTime_BMS()));
+        String last73String = getLastOneStringFromZset(REDIS_VCU_73_ZSET);
+        VCU73CanMessage vcu73CanMessage = transferFromJSON2Object(last73String, VCU73CanMessage.class);
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_HVPOWER,
+                String.valueOf(vcu73CanMessage.getHV_PowerOn()));
+        return batteryHash;
     }
 
     //得到最新的SOC
@@ -91,7 +142,13 @@ public interface IVehicleRepository {
         System.out.println("Send Weather2Vehicle="+weatherStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
-
     }
 
+    //发送电池均衡指令到Vehicle
+    static void sendBatteryBalance2Vehicle(BatteryBalanceInstruction batteryBalanceInstruction){
+        String batteryBIStr = JSONUtility.transferFromObject2JSON(batteryBalanceInstruction);
+        System.out.println("Send BatteryBI2Vehicle="+batteryBIStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_BATTERYBI_TOPIC,KAFKA_BATTERYBI_KEY,batteryBIStr);
+    }
 }

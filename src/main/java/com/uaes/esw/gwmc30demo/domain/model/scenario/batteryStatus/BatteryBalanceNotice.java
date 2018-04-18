@@ -3,7 +3,8 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class BatteryStatusNotice {
+public class BatteryBalanceNotice {
+    BatteryBalance batteryBalance;
     BatteryStatus batteryStatus;
     String dateTime;
 }

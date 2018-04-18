@@ -281,17 +281,9 @@ public interface IEnergySavingRepository {
         System.out.println("vcu71CanMessage="+vcu71CanMessage);
         VCU72CanMessage vcu72CanMessage = getLastVCU72MessageFromRedis();
         System.out.println("vcu72CanMessage="+vcu72CanMessage);
-        //TODO: need to get from redis
-/*        VCU75CanMessage vcu75CanMessage = getLastVCU75MessageFromRedis();
+        VCU75CanMessage vcu75CanMessage = getLastVCU75MessageFromRedis();
         System.out.println("vcu75CanMessage="+vcu75CanMessage);
         VCU76CanMessage vcu76CanMessage = getLastVCU76MessageFromRedis();
-        System.out.println("vcu76CanMessage="+vcu76CanMessage);*/
-        VCU75CanMessage vcu75CanMessage = VCU75CanMessage.builder()
-                .DCDC_Energy_Custom_Cyc(0.0).HVBatt_Energy_Custom_Cyc(0.0).Motor_Energy_Custom_Cyc(0.0)
-                .PTC_Energy_Custom_Cyc(0.0).build();
-        System.out.println("vcu75CanMessage="+vcu75CanMessage);
-        VCU76CanMessage vcu76CanMessage = VCU76CanMessage.builder()
-                .AC_Energy_Custom_Cyc(0.0).Mileage_Custom_Cyc(0.0).build();
         System.out.println("vcu76CanMessage="+vcu76CanMessage);
 
         EnergySavingCanMessage energySavingCanMessage = EnergySavingCanMessage.builder()

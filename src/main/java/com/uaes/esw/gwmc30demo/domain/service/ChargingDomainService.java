@@ -1,7 +1,8 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.charger.Charger;
-import com.uaes.esw.gwmc30demo.domain.model.entity.journey.Journey;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.chargingOnDemand.ChargingOnDemandReq;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.chargingOnDemand.ChargingOnDemandRes;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.drivingAnalytics.RouteCharging;
 import com.uaes.esw.gwmc30demo.domain.model.entity.journey.Route;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
@@ -12,22 +13,30 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.uaes.esw.gwmc30demo.constant.CalculateChargingTimeConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
 import static com.uaes.esw.gwmc30demo.domain.repository.charger.IChargerRepository.getChargerList;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getVehicleSnapshot;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface ChargingDomainService {
 
-    static String calChargeTimeByChargerType4Journey(Journey journey, String vinCode){
+    static String calChargeTimeByChargerType4Journey(ChargingOnDemandReq chargingOnDemandReq, String vinCode){
         Vehicle vehicle = getVehicleSnapshot(vinCode);
         System.out.println("soc="+vehicle.getBattery().getSoc());
 
-        List<Route> routes = journey.getRoutes();
+        List<Route> routes = chargingOnDemandReq.getJourney().getRoutes();
         List <RouteCharging> routeChargingsList = routes.stream()
                 .map(route -> calChargeTimeByChargerType(route, vehicle))
                 .collect(Collectors.toList());
-        String routeChargingListJSON = transferFromObject2JSON(routeChargingsList);
-        return routeChargingListJSON;
+        ChargingOnDemandRes chargingOnDemandRes =ChargingOnDemandRes.builder()
+                .driver(chargingOnDemandReq.getDriver())
+                .dateTime(chargingOnDemandReq.getDateTime())
+                .jouney(chargingOnDemandReq.getJourney())
+                .responseCode(RESPONSE_CODE_SUCCESS)
+                .routeChargings(routeChargingsList)
+                .build();
+        String chargingOnDemandResString = transferFromObject2JSON(chargingOnDemandRes);
+        return chargingOnDemandResString;
     }
 
     static RouteCharging calChargeTimeByChargerType(Route route, Vehicle vehicle){
