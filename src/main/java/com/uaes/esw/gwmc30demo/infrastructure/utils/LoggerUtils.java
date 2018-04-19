@@ -16,7 +16,7 @@ public class LoggerUtils {
     private static final Logger batteryStatus = Logger.getLogger(LOG4J_BATTERYSTATUS);
 
     public static void commonLogInfo(String log){
-        common.error(log);
+        common.info(log);
     }
 
     public static void loginLogInfo(String log){
