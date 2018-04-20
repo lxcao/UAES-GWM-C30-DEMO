@@ -14,6 +14,7 @@ import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.create
 import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.createBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.createESRemind;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.websocketLogInfo;
 
 @WebSocket
 public class WebSocketHandler {
@@ -24,8 +25,8 @@ public class WebSocketHandler {
                 +":"+user.getRemoteAddress().getPort()
                 +"@"+ LocalDateTime.now().toString();
         WebSocketFactory.userUserNameMap.put(user, username);
-        System.out.println(username + " is connected");
-        System.out.println("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
+        websocketLogInfo(username + " is connected");
+        websocketLogInfo("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
         //send out once connected
         sendStrMessage(transferFromObject2JSON(createESRemind()));
         sendStrMessage(transferFromObject2JSON(createBatteryStatusNotice()));
@@ -36,13 +37,13 @@ public class WebSocketHandler {
     public void onClose(Session user, int statusCode, String reason) {
         String username = WebSocketFactory.userUserNameMap.get(user);
         WebSocketFactory.userUserNameMap.remove(user);
-        System.out.println(username + " is closed");
-        System.out.println("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
+        websocketLogInfo(username + " is closed");
+        websocketLogInfo("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
     }
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        System.out.println("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
+        websocketLogInfo("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
     }
 
     //Send string message to all user
@@ -50,7 +51,7 @@ public class WebSocketHandler {
 
         WebSocketFactory.userUserNameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try{
-                System.out.println(LocalDateTime.now().toString()+" "+msg);
+                websocketLogInfo(LocalDateTime.now().toString()+" "+msg);
                 session.getRemote().sendString(msg);
 
             }catch (Exception e){

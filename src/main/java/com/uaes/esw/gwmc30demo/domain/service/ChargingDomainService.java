@@ -17,12 +17,13 @@ import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUC
 import static com.uaes.esw.gwmc30demo.domain.repository.charger.IChargerRepository.getChargerList;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getVehicleSnapshot;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.chargingOnDemandLogInfo;
 
 public interface ChargingDomainService {
 
     static String calChargeTimeByChargerType4Journey(ChargingOnDemandReq chargingOnDemandReq, String vinCode){
         Vehicle vehicle = getVehicleSnapshot(vinCode);
-        System.out.println("soc="+vehicle.getBattery().getSoc());
+        chargingOnDemandLogInfo("soc="+vehicle.getBattery().getSoc());
 
         List<Route> routes = chargingOnDemandReq.getJourney().getRoutes();
         List <RouteCharging> routeChargingsList = routes.stream()

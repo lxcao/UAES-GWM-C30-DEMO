@@ -5,10 +5,11 @@ import com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository;
 
 import java.time.LocalDateTime;
 
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
+
 public interface UpdateWeather2VehicleDomainService {
     static void updateWeather2VehicleDomainService(String location){
-        System.out.println("UpdateWeather@"+location+"@"+LocalDateTime.now());
+        commonLogInfo("UpdateWeather@"+location+"@"+LocalDateTime.now());
         IVehicleRepository.sendWeather2Vehicle(IWeatherRepository.queryWeather(location));
-        System.out.println();
     }
 }

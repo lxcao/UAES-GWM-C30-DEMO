@@ -17,6 +17,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.energySavingLogInfo;
 
 public interface IEnergySavingRepository {
 
@@ -256,35 +257,35 @@ public interface IEnergySavingRepository {
     }
 
     static void storeLastEnergySavingCycle(){
-        System.out.println("foundLastEnergySavingCycle");
+        energySavingLogInfo("foundLastEnergySavingCycle");
         VCU61CanMessage vcu61CanMessage = getLastVCU61MessageFromRedis();
-        System.out.println("vcu61CanMessage="+vcu61CanMessage);
+        energySavingLogInfo("vcu61CanMessage="+vcu61CanMessage);
         VCU62CanMessage vcu62CanMessage = getLastVCU62MessageFromRedis();
-        System.out.println("vcu62CanMessage="+vcu62CanMessage);
+        energySavingLogInfo("vcu62CanMessage="+vcu62CanMessage);
         VCU63CanMessage vcu63CanMessage = getLastVCU63MessageFromRedis();
-        System.out.println("vcu63CanMessage="+vcu63CanMessage);
+        energySavingLogInfo("vcu63CanMessage="+vcu63CanMessage);
         VCU64CanMessage vcu64CanMessage = getLastVCU64MessageFromRedis();
-        System.out.println("vcu64CanMessage="+vcu64CanMessage);
+        energySavingLogInfo("vcu64CanMessage="+vcu64CanMessage);
         VCU65CanMessage vcu65CanMessage = getLastVCU65MessageFromRedis();
-        System.out.println("vcu65CanMessage="+vcu65CanMessage);
+        energySavingLogInfo("vcu65CanMessage="+vcu65CanMessage);
         VCU66CanMessage vcu66CanMessage = getLastVCU66MessageFromRedis();
-        System.out.println("vcu66CanMessage="+vcu66CanMessage);
+        energySavingLogInfo("vcu66CanMessage="+vcu66CanMessage);
         VCU67CanMessage vcu67CanMessage = getLastVCU67MessageFromRedis();
-        System.out.println("vcu67CanMessage="+vcu67CanMessage);
+        energySavingLogInfo("vcu67CanMessage="+vcu67CanMessage);
         VCU68CanMessage vcu68CanMessage = getLastVCU68MessageFromRedis();
-        System.out.println("vcu68CanMessage="+vcu68CanMessage);
+        energySavingLogInfo("vcu68CanMessage="+vcu68CanMessage);
         VCU69CanMessage vcu69CanMessage = getLastVCU69MessageFromRedis();
-        System.out.println("vcu69CanMessage="+vcu69CanMessage);
+        energySavingLogInfo("vcu69CanMessage="+vcu69CanMessage);
         VCU70CanMessage vcu70CanMessage = getLastVCU70MessageFromRedis();
-        System.out.println("vcu70CanMessage="+vcu70CanMessage);
+        energySavingLogInfo("vcu70CanMessage="+vcu70CanMessage);
         VCU71CanMessage vcu71CanMessage = getLastVCU71MessageFromRedis();
-        System.out.println("vcu71CanMessage="+vcu71CanMessage);
+        energySavingLogInfo("vcu71CanMessage="+vcu71CanMessage);
         VCU72CanMessage vcu72CanMessage = getLastVCU72MessageFromRedis();
-        System.out.println("vcu72CanMessage="+vcu72CanMessage);
+        energySavingLogInfo("vcu72CanMessage="+vcu72CanMessage);
         VCU75CanMessage vcu75CanMessage = getLastVCU75MessageFromRedis();
-        System.out.println("vcu75CanMessage="+vcu75CanMessage);
+        energySavingLogInfo("vcu75CanMessage="+vcu75CanMessage);
         VCU76CanMessage vcu76CanMessage = getLastVCU76MessageFromRedis();
-        System.out.println("vcu76CanMessage="+vcu76CanMessage);
+        energySavingLogInfo("vcu76CanMessage="+vcu76CanMessage);
 
         EnergySavingCanMessage energySavingCanMessage = EnergySavingCanMessage.builder()
                 .vcu61CanMessage(vcu61CanMessage)
@@ -308,7 +309,7 @@ public interface IEnergySavingRepository {
                 energySavingCanMessage.getTimestamp(),
                 transferFromObject2JSON(energySavingCanMessage));
 
-        System.out.println("storeLastEnergySavingCycle="+energySavingCanMessage.toString());
+        energySavingLogInfo("storeLastEnergySavingCycle="+energySavingCanMessage.toString());
 
     }
 

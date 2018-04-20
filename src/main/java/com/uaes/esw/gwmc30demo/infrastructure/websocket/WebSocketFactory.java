@@ -5,8 +5,8 @@ import org.eclipse.jetty.websocket.api.Session;
 import java.util.concurrent.*;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_CONFIG_MONITOR_INTERVAL_SECONDS;
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.websocketLogInfo;
 import static spark.Spark.*;
 
 public class WebSocketFactory {
@@ -20,7 +20,8 @@ public class WebSocketFactory {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while(true){
-                System.out.println("There are "+userUserNameMap.keySet().stream().filter(Session::isOpen).count()+" Clients");
+                websocketLogInfo("There are "+userUserNameMap
+                        .keySet().stream().filter(Session::isOpen).count()+" Clients");
                 try {
                     TimeUnit.SECONDS.sleep(monitorInterval);
                 } catch (InterruptedException e) {

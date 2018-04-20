@@ -17,16 +17,6 @@ public interface DrivingModeDomainService {
         Driver driver = IDriver.getDriverInfo(queryDMReq.getDriver().getCellPhone());
         QueryDMRes queryDMRes = QueryDMRes.builder().dateTime(queryDMReq.getDateTime())
                 .driver(driver).responseCode(RESPONSE_CODE_SUCCESS).build();
-/*        String defaultDrivingMode = driver.getDefaultDM();
-        System.out.println("defaultDrivingMode="+defaultDrivingMode);
-        DrivingMode defaultDM = IVehicleRepository.getDrivingMode(defaultDrivingMode,driver);
-        String currentDrivingMode = driver.getCurrentDM();
-        System.out.println("currentDrivingMode="+currentDrivingMode);
-        DrivingMode currentDM = IVehicleRepository.getDrivingMode(currentDrivingMode,driver);
-        List<DrivingMode> DrivingModeList = new ArrayList<>();
-        DrivingModeList.add(defaultDM);
-        DrivingModeList.add(currentDM);
-        queryDMRes.setDrivingMode(DrivingModeList);*/
         queryDMRes.setDrivingMode(IDrivingModeRepository.getAllDrivingMode(driver));
         queryDMRes.setVehicle(IVehicleRepository.getVehicleSnapshot(driver.getVin()));
         return queryDMRes;

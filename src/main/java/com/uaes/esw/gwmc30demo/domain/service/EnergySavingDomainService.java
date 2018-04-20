@@ -25,6 +25,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.zRangeBy
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getTodayEndUnixTime;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.energySavingLogInfo;
 
 public interface EnergySavingDomainService {
     static QueryESRes queryESCurrentDomainService(QueryESReq esReq){
@@ -341,7 +342,7 @@ public interface EnergySavingDomainService {
     }
 
     static QueryESRes getCurrentES(QueryESReq esReq){
-        //System.out.println("esReq="+esReq);
+        energySavingLogInfo("esReq="+esReq);
         EnergySavingCanMessage energySavingCurrentCanMessage = EnergySavingCanMessage.builder().build();
         VCU61CanMessage vcu61CanMessage = getLastVCU61MessageFromRedis();
         energySavingCurrentCanMessage.setVcu61CanMessage(vcu61CanMessage);
@@ -378,32 +379,32 @@ public interface EnergySavingDomainService {
     static QueryESRes getTodayCycleES(QueryESReq esReq){
         Set<String> energySavingTodaySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 getTodayBeginUnixTime(),getTodayEndUnixTime());
-        System.out.println("getTodayCycleES from "+getTodayBeginUnixTime()
+        energySavingLogInfo("getTodayCycleES from "+getTodayBeginUnixTime()
                 +" to "+getTodayEndUnixTime());
-        System.out.println("number of energySavingTodaySet="+energySavingTodaySet.size());
+        energySavingLogInfo("number of energySavingTodaySet="+energySavingTodaySet.size());
         return getCycleESByPeriod(esReq, energySavingTodaySet);
     }
 
     static QueryESRes getWeeklyCycleES(QueryESReq esReq){
         Set<String> energySavingWeeklySet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 getBeforeOneWeekBeginUnixTime(),getTodayEndUnixTime());
-        System.out.println("getWeeklyCycleES from "+getBeforeOneWeekBeginUnixTime()
+        energySavingLogInfo("getWeeklyCycleES from "+getBeforeOneWeekBeginUnixTime()
                 +" to "+getTodayEndUnixTime());
-        System.out.println("number of energySavingWeeklySet="+energySavingWeeklySet.size());
+        energySavingLogInfo("number of energySavingWeeklySet="+energySavingWeeklySet.size());
         return getCycleESByPeriod(esReq, energySavingWeeklySet);
     }
 
     static QueryESRes getCustomerCycleES(QueryESReq esReq){
         Set<String> energySavingCustomerSet = zRangeByScore(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET,
                 transfer2UnixTime(esReq.getStartDateTime()),transfer2UnixTime(esReq.getEndDateTime()));
-        System.out.println("getCustomerCycleES from "+transfer2UnixTime(esReq.getStartDateTime())
+        energySavingLogInfo("getCustomerCycleES from "+transfer2UnixTime(esReq.getStartDateTime())
                 +" to "+transfer2UnixTime(esReq.getEndDateTime()));
-        System.out.println("number of energySavingCustomerSet="+energySavingCustomerSet.size());
+        energySavingLogInfo("number of energySavingCustomerSet="+energySavingCustomerSet.size());
         return getCycleESByPeriod(esReq, energySavingCustomerSet);
     }
 
     static QueryESRes getLastCycleES(QueryESReq esReq){
-        System.out.println("esReq="+esReq);
+        energySavingLogInfo("esReq="+esReq);
         EnergySavingCanMessage energySavingCanMessage = transferFromJSON2Object(
                 getLastOneStringFromZset(REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET)
                 ,EnergySavingCanMessage.class);
@@ -411,12 +412,12 @@ public interface EnergySavingDomainService {
     }
 
     static QueryESRes getCycleESByPeriod(QueryESReq esReq, Set<String> energySavingSet){
-        //System.out.println("esReq="+esReq);
+        energySavingLogInfo("esReq="+esReq);
         EnergySavingCanMessage energySavingCanMessageAll = initialEnergySavingCanMessage();
         energySavingSet.forEach(est -> {
             EnergySavingCanMessage energySavingCanMessage = transferFromJSON2Object(
                     est,EnergySavingCanMessage.class);
-            System.out.println("energySavingCanMessage="+energySavingCanMessage);
+            energySavingLogInfo("energySavingCanMessage="+energySavingCanMessage);
             energySavingCanMessageAll.setVcu61CanMessage(energySavingCanMessageAll
                     .getVcu61CanMessage().adding(energySavingCanMessage.getVcu61CanMessage()));
             energySavingCanMessageAll.setVcu62CanMessage(energySavingCanMessageAll
@@ -451,17 +452,17 @@ public interface EnergySavingDomainService {
     }
 
     static QueryESRes opsEnergySavingCanMessage(QueryESReq esReq, EnergySavingCanMessage energySavingCanMessage){
-        //System.out.println("OpsEnergySavingCanMessage="+energySavingCanMessage);
+        //energySavingLogInfo("OpsEnergySavingCanMessage="+energySavingCanMessage);
         VCU61CanMessage vcu61CanMessage = energySavingCanMessage.getVcu61CanMessage();
-        //System.out.println("vcu61CanMessage="+vcu61CanMessage);
+        //energySavingLogInfo("vcu61CanMessage="+vcu61CanMessage);
         VCU62CanMessage vcu62CanMessage = energySavingCanMessage.getVcu62CanMessage();
-        //System.out.println("vcu62CanMessage="+vcu62CanMessage);
+        //energySavingLogInfo("vcu62CanMessage="+vcu62CanMessage);
         ESSummary esSummary = ESSummary.builder()
                 .energyPer100KM(calEnergyKWHPer100KM(vcu61CanMessage,vcu62CanMessage))
                 .sumEnergy(calEnergyKWH(vcu61CanMessage))
                 .sumEnergyCost(calEnergyCost(vcu61CanMessage))
                 .build();
-        //System.out.println("esSummary="+esSummary.toString());
+        //energySavingLogInfo("esSummary="+esSummary.toString());
         ComponentsPercentSum componentsPercentSum = ComponentsPercentSum.builder()
                 .RESTEnergyPert(calCompRESTEnergyPert(vcu61CanMessage,vcu62CanMessage))
                 .ACEnergyPert(calCompACEnergyPert(vcu61CanMessage,vcu62CanMessage))
@@ -469,31 +470,31 @@ public interface EnergySavingDomainService {
                 .MTEnergyPert(calCompMTEnergyPert(vcu61CanMessage))
                 .BRKEnergyPert(calCompBRKEnergyPert(vcu61CanMessage,vcu62CanMessage))
                 .build();
-        //System.out.println("componentsPercentSum="+componentsPercentSum.toString());
+        //energySavingLogInfo("componentsPercentSum="+componentsPercentSum.toString());
         VCU63CanMessage vcu63CanMessage = energySavingCanMessage.getVcu63CanMessage();
-        //System.out.println("vcu63CanMessage="+vcu63CanMessage);
+        //energySavingLogInfo("vcu63CanMessage="+vcu63CanMessage);
         VCU64CanMessage vcu64CanMessage = energySavingCanMessage.getVcu64CanMessage();
-        //System.out.println("vcu64CanMessage="+vcu64CanMessage);
+        //energySavingLogInfo("vcu64CanMessage="+vcu64CanMessage);
         VCU65CanMessage vcu65CanMessage = energySavingCanMessage.getVcu65CanMessage();
-        //System.out.println("vcu65CanMessage="+vcu65CanMessage);
+        //energySavingLogInfo("vcu65CanMessage="+vcu65CanMessage);
         VCU66CanMessage vcu66CanMessage = energySavingCanMessage.getVcu66CanMessage();
-        //System.out.println("vcu66CanMessage="+vcu66CanMessage);
+        //energySavingLogInfo("vcu66CanMessage="+vcu66CanMessage);
         VCU67CanMessage vcu67CanMessage = energySavingCanMessage.getVcu67CanMessage();
-        //System.out.println("vcu67CanMessage="+vcu67CanMessage);
+        //energySavingLogInfo("vcu67CanMessage="+vcu67CanMessage);
         VCU68CanMessage vcu68CanMessage = energySavingCanMessage.getVcu68CanMessage();
-        //System.out.println("vcu68CanMessage="+vcu68CanMessage);
+        //energySavingLogInfo("vcu68CanMessage="+vcu68CanMessage);
         VCU69CanMessage vcu69CanMessage = energySavingCanMessage.getVcu69CanMessage();
-        //System.out.println("vcu69CanMessage="+vcu69CanMessage);
+        //energySavingLogInfo("vcu69CanMessage="+vcu69CanMessage);
         VCU70CanMessage vcu70CanMessage = energySavingCanMessage.getVcu70CanMessage();
-        //System.out.println("vcu70CanMessage="+vcu70CanMessage);
+        //energySavingLogInfo("vcu70CanMessage="+vcu70CanMessage);
         VCU71CanMessage vcu71CanMessage = energySavingCanMessage.getVcu71CanMessage();
-        //System.out.println("vcu71CanMessage="+vcu71CanMessage);
+        //energySavingLogInfo("vcu71CanMessage="+vcu71CanMessage);
         VCU72CanMessage vcu72CanMessage = energySavingCanMessage.getVcu72CanMessage();
-        //System.out.println("vcu72CanMessage="+vcu72CanMessage);
+        //energySavingLogInfo("vcu72CanMessage="+vcu72CanMessage);
         VCU75CanMessage vcu75CanMessage = energySavingCanMessage.getVcu75CanMessage();
-        //System.out.println("vcu75CanMessage="+vcu75CanMessage);
+        //SenergySavingLogInfo("vcu75CanMessage="+vcu75CanMessage);
         VCU76CanMessage vcu76CanMessage = energySavingCanMessage.getVcu76CanMessage();
-        //System.out.println("vcu76CanMessage="+vcu76CanMessage);
+        //energySavingLogInfo("vcu76CanMessage="+vcu76CanMessage);
         Per100KMByDM per100KMByDM = Per100KMByDM.builder()
                 .CustomerDM(calCSTEnergyKWHPer100KM(vcu75CanMessage,vcu76CanMessage))
                 .EconomyDM(calECOEnergyKWHPer100KM(vcu65CanMessage,vcu66CanMessage))
@@ -502,7 +503,7 @@ public interface EnergySavingDomainService {
                 .EPowerDM(calEPMEnergyKWHPer100KM(vcu71CanMessage,vcu72CanMessage))
                 .EEconomyDM(calEEMEnergyKWHPer100KM(vcu63CanMessage,vcu64CanMessage))
                 .build();
-        //System.out.println("per100KMByDM="+per100KMByDM.toString());
+        //energySavingLogInfo("per100KMByDM="+per100KMByDM.toString());
         Map<String,ComponentsPercent> cpByDM = new HashMap<>();
         ComponentsPercent componentsPercentEEM = ComponentsPercent.builder()
                 .RESTEnergyPert(calEEMRESTEnergyPert(vcu63CanMessage,vcu64CanMessage))
@@ -510,7 +511,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calEEMDCDCEnergyPert(vcu63CanMessage))
                 .MTEnergyPert(calEEMMTEnergyPert(vcu63CanMessage))
                 .build();
-        //System.out.println("componentsPercentEEM="+componentsPercentEEM.toString());
+        //energySavingLogInfo("componentsPercentEEM="+componentsPercentEEM.toString());
         cpByDM.put(DRIVING_MODE_ABB_EEM,componentsPercentEEM);
         ComponentsPercent componentsPercentECO = ComponentsPercent.builder()
                 .RESTEnergyPert(calECORESTEnergyPert(vcu65CanMessage,vcu66CanMessage))
@@ -518,7 +519,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calECODCDCEnergyPert(vcu65CanMessage))
                 .MTEnergyPert(calECOMTEnergyPert(vcu65CanMessage))
                 .build();
-        //System.out.println("componentsPercentECO="+componentsPercentECO);
+        //energySavingLogInfo("componentsPercentECO="+componentsPercentECO);
         cpByDM.put(DRIVING_MODE_ABB_ECO,componentsPercentECO);
         ComponentsPercent componentsPercentNOR = ComponentsPercent.builder()
                 .RESTEnergyPert(calNORRESTEnergyPert(vcu67CanMessage,vcu68CanMessage))
@@ -526,7 +527,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calNORDCDCEnergyPert(vcu67CanMessage))
                 .MTEnergyPert(calNORMTEnergyPert(vcu67CanMessage))
                 .build();
-        //System.out.println("componentsPercentNOR="+componentsPercentNOR);
+        //energySavingLogInfo("componentsPercentNOR="+componentsPercentNOR);
         cpByDM.put(DRIVING_MODE_ABB_NOR,componentsPercentNOR);
         ComponentsPercent componentsPercentEPM = ComponentsPercent.builder()
                 .RESTEnergyPert(calEPMRESTEnergyPert(vcu71CanMessage,vcu72CanMessage))
@@ -534,7 +535,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calEPMDCDCEnergyPert(vcu71CanMessage))
                 .MTEnergyPert(calEPMMTEnergyPert(vcu71CanMessage))
                 .build();
-        //System.out.println("componentsPercentEPM="+componentsPercentEPM);
+        //energySavingLogInfo("componentsPercentEPM="+componentsPercentEPM);
         cpByDM.put(DRIVING_MODE_ABB_EPM,componentsPercentEPM);
         ComponentsPercent componentsPercentPOW = ComponentsPercent.builder()
                 .RESTEnergyPert(calPOWRESTEnergyPert(vcu69CanMessage,vcu70CanMessage))
@@ -542,7 +543,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calPOWDCDCEnergyPert(vcu69CanMessage))
                 .MTEnergyPert(calPOWMTEnergyPert(vcu69CanMessage))
                 .build();
-        //System.out.println("componentsPercentPOW="+componentsPercentPOW);
+        //energySavingLogInfo("componentsPercentPOW="+componentsPercentPOW);
         cpByDM.put(DRIVING_MODE_ABB_POW,componentsPercentPOW);
         ComponentsPercent componentsPercentCST = ComponentsPercent.builder()
                 .RESTEnergyPert(calCSTRESTEnergyPert(vcu75CanMessage,vcu76CanMessage))
@@ -550,7 +551,7 @@ public interface EnergySavingDomainService {
                 .DCDCEngergyPert(calCSTDCDCEnergyPert(vcu75CanMessage))
                 .MTEnergyPert(calCSTMTEnergyPert(vcu75CanMessage))
                 .build();
-        //System.out.println("componentsPercentCST="+componentsPercentCST);
+        //energySavingLogInfo("componentsPercentCST="+componentsPercentCST);
         cpByDM.put(DRIVING_MODE_ABB_CST,componentsPercentCST);
         QueryESRes queryESRes = QueryESRes.builder()
                 .driver(esReq.getDriver())
@@ -561,7 +562,7 @@ public interface EnergySavingDomainService {
                 .CPByDM(cpByDM)
                 .responseCode(RESPONSE_CODE_SUCCESS)
                 .build();
-        //System.out.println("queryESRes="+queryESRes);
+        //energySavingLogInfo("queryESRes="+queryESRes);
         return queryESRes;
     }
 

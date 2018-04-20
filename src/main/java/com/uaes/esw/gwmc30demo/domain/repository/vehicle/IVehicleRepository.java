@@ -22,6 +22,9 @@ import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.drivingModelLogInfo;
 
 public interface IVehicleRepository {
     //得到车辆的当前快照
@@ -113,7 +116,7 @@ public interface IVehicleRepository {
     static void sendCurrentDM2Vehicle(Driver driver){
         DrivingMode currentDM = IDrivingModeRepository.getDrivingMode(driver.getCurrentDM(),driver);
         String currentDMStr = JSONUtility.transferFromObject2JSON(currentDM);
-        System.out.println("Send CurrentDM2Vehicle="+currentDMStr);
+        drivingModelLogInfo("Send CurrentDM2Vehicle="+currentDMStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
     }
@@ -122,7 +125,7 @@ public interface IVehicleRepository {
     static void sendDefaultDM2Vehicle(Driver driver){
         DrivingMode defaultDM = IDrivingModeRepository.getDrivingMode(driver.getDefaultDM(),driver);
         String defaultDMStr = JSONUtility.transferFromObject2JSON(defaultDM);
-        System.out.println("Send DefaultDM2Vehicle="+defaultDMStr);
+        drivingModelLogInfo("Send DefaultDM2Vehicle="+defaultDMStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
     }
@@ -131,7 +134,7 @@ public interface IVehicleRepository {
     static void sendNormalDM2Vehicle(Driver driver){
          DrivingMode normalDM = IDrivingModeRepository.getVehicleNORDrivingMode();
          String normalDMStr = JSONUtility.transferFromObject2JSON(normalDM);
-        System.out.println("Send NormalDM2Vehicle="+normalDMStr);
+        drivingModelLogInfo("Send NormalDM2Vehicle="+normalDMStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
     }
@@ -139,7 +142,7 @@ public interface IVehicleRepository {
     //发送Weather到Vehicle
     static void sendWeather2Vehicle(Weather weather){
          String weatherStr = JSONUtility.transferFromObject2JSON(weather);
-        System.out.println("Send Weather2Vehicle="+weatherStr);
+        commonLogInfo("Send Weather2Vehicle="+weatherStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
     }
@@ -147,7 +150,7 @@ public interface IVehicleRepository {
     //发送电池均衡指令到Vehicle
     static void sendBatteryBalance2Vehicle(BatteryBalanceInstruction batteryBalanceInstruction){
         String batteryBIStr = JSONUtility.transferFromObject2JSON(batteryBalanceInstruction);
-        System.out.println("Send BatteryBI2Vehicle="+batteryBIStr);
+        batteryBalanceLogInfo("Send BatteryBI2Vehicle="+batteryBIStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_BATTERYBI_TOPIC,KAFKA_BATTERYBI_KEY,batteryBIStr);
     }

@@ -15,6 +15,7 @@ import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_DRIVER_
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_DRIVER_CST_DM_HASH_KEY_SM;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.hGetAll;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.setValue2HashField;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.drivingModelLogInfo;
 
 public interface IDrivingModeRepository {
 
@@ -142,15 +143,15 @@ public interface IDrivingModeRepository {
 
     static void setCurrentDM(Driver driver){
         String hashName = REDIS_DRIVER_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_HASH_NAME_SUFFIX;
-        System.out.println("hashName="+hashName);
-        System.out.println("currentDM="+driver.getCurrentDM());
+        drivingModelLogInfo("hashName="+hashName);
+        drivingModelLogInfo("currentDM="+driver.getCurrentDM());
         setValue2HashField(hashName, REDIS_DRIVER_HASH_KEY_CURRENTDM, driver.getCurrentDM());
     }
 
     static void setDefaultDM(Driver driver){
         String hashName = REDIS_DRIVER_HASH_NAME_PREFIX+driver.getCellPhone()+REDIS_DRIVER_HASH_NAME_SUFFIX;
-        System.out.println("hashName="+hashName);
-        System.out.println("setDefaultDM="+driver.getDefaultDM());
+        drivingModelLogInfo("hashName="+hashName);
+        drivingModelLogInfo("setDefaultDM="+driver.getDefaultDM());
         setValue2HashField(hashName, REDIS_DRIVER_HASH_KEY_DEFAULTDM, driver.getDefaultDM());
     }
 
@@ -163,8 +164,8 @@ public interface IDrivingModeRepository {
     static void setCustomerDM(Driver driver, DrivingMode dm){
         String cstDrivingModeHashName = REDIS_DRIVER_CST_DM_HASH_NAME_PREFIX
                 +driver.getCellPhone()+REDIS_DRIVER_CST_DM_HASH_NAME_SUFFIX;
-        System.out.println("hashName="+cstDrivingModeHashName);
-        System.out.println("setCustomerDM="+dm.getDrivingModeConfigure().toString());
+        drivingModelLogInfo("hashName="+cstDrivingModeHashName);
+        drivingModelLogInfo("setCustomerDM="+dm.getDrivingModeConfigure().toString());
         setValue2HashField(cstDrivingModeHashName, REDIS_DRIVER_CST_DM_HASH_KEY_SP,
                 String.valueOf(dm.getDrivingModeConfigure().getMaxSpeed()));
         setValue2HashField(cstDrivingModeHashName, REDIS_DRIVER_CST_DM_HASH_KEY_ER,

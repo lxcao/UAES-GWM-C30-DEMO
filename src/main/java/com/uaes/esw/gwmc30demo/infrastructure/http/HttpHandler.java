@@ -2,8 +2,6 @@ package com.uaes.esw.gwmc30demo.infrastructure.http;
 
 import spark.Spark;
 
-import java.time.LocalDateTime;
-
 import static com.uaes.esw.gwmc30demo.application.service.ChargingOnDemand.chargingOnDemandByJourneyAssembler;
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogIn.driverLogin;
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLogout;
@@ -20,138 +18,161 @@ import static com.uaes.esw.gwmc30demo.application.service.SetDefaultDrivingStyle
 import static com.uaes.esw.gwmc30demo.application.service.StartBatteryBalance.startBatteryBalance;
 import static com.uaes.esw.gwmc30demo.application.service.StopBatteryBalance.stopBatteryBalance;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.InfraLog4JConstants.LOG4J_INPUT;
+import static com.uaes.esw.gwmc30demo.constant.InfraLog4JConstants.LOG4J_OUTPUT;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.*;
 
 public class HttpHandler {
 
-    private static void debugPrintInput(String url, String input){
-        System.out.println(url+"@"+ LocalDateTime.now());
-        System.out.println("Input="+input);
-    }
-
-    private static void debugPrintOutput(String output){
-        System.out.println("Output="+output);
-        System.out.println();
-    }
-
     public static void setRouter(){
         Spark.post(HTTP_URL_CHARGE_ON_DEMAND,(req, res) -> {
+            chargingOnDemandLogInfo(HTTP_URL_CHARGE_ON_DEMAND);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_CHARGE_ON_DEMAND, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            chargingOnDemandLogInfo(LOG4J_INPUT+req.body());
             String resString = chargingOnDemandByJourneyAssembler(req.body());
-            debugPrintOutput(resString);
+            chargingOnDemandLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_REGISTER,(req, res) -> {
+            loginLogInfo(HTTP_URL_REGISTER);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_REGISTER, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            loginLogInfo(LOG4J_INPUT+req.body());
             String resString = driverRegister(req.body());
-            debugPrintOutput(resString);
+            loginLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_LOGIN,(req, res) -> {
+            loginLogInfo(HTTP_URL_LOGIN);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_LOGIN, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            loginLogInfo(LOG4J_INPUT+req.body());
             String resString = driverLogin(req.body());
-            debugPrintOutput(resString);
+            loginLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_LOGOUT,(req, res) -> {
+            loginLogInfo(HTTP_URL_LOGOUT);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_LOGOUT, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            loginLogInfo(LOG4J_INPUT+req.body());
             String resString = driverLogout(req.body());
-            debugPrintOutput(resString);
+            loginLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_DRIVINGMODE,(req, res) -> {
+            drivingModelLogInfo(HTTP_URL_QUERY_DRIVINGMODE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_DRIVINGMODE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            drivingModelLogInfo(LOG4J_INPUT+req.body());
             String resString = queryDrivingStyle(req.body());
-            debugPrintOutput(resString);
+            drivingModelLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_SET_DEFAULT_DRIVINGMODE,(req, res) -> {
+            drivingModelLogInfo(HTTP_URL_SET_DEFAULT_DRIVINGMODE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_SET_DEFAULT_DRIVINGMODE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            drivingModelLogInfo(LOG4J_INPUT+req.body());
             String resString = setDefaultDrivingStyle(req.body());
-            debugPrintOutput(resString);
+            drivingModelLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_SET_CURRENT_DRIVINGMODE,(req, res) -> {
+            drivingModelLogInfo(HTTP_URL_SET_CURRENT_DRIVINGMODE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_SET_CURRENT_DRIVINGMODE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            drivingModelLogInfo(LOG4J_INPUT+req.body());
             String resString = setCurrentDrivingStyle(req.body());
-            debugPrintOutput(resString);
+            drivingModelLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_SET_CUSTOMER_DRIVINGMODE,(req, res) -> {
+            drivingModelLogInfo(HTTP_URL_SET_CUSTOMER_DRIVINGMODE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_SET_CUSTOMER_DRIVINGMODE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            drivingModelLogInfo(LOG4J_INPUT+req.body());
             String resString = setCustomerDrivingStyle(req.body());
-            debugPrintOutput(resString);
+            drivingModelLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_ES_BY_CURRENT,(req, res) -> {
+            energySavingLogInfo(HTTP_URL_QUERY_ES_BY_CURRENT);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_CURRENT, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            energySavingLogInfo(LOG4J_INPUT+req.body());
             String resString = queryESByCurrent(req.body());
-            debugPrintOutput(resString);
+            energySavingLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_ES_BY_LAST_CYCLE,(req, res) -> {
+            energySavingLogInfo(HTTP_URL_QUERY_ES_BY_LAST_CYCLE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_LAST_CYCLE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            energySavingLogInfo(LOG4J_INPUT+req.body());
             String resString = queryESByLastCycle(req.body());
-            debugPrintOutput(resString);
+            energySavingLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_ES_BY_TODAY,(req, res) -> {
+            energySavingLogInfo(HTTP_URL_QUERY_ES_BY_TODAY);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_TODAY, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            energySavingLogInfo(LOG4J_INPUT+req.body());
             String resString = queryESByToday(req.body());
-            debugPrintOutput(resString);
+            energySavingLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_ES_BY_THIS_WEEK,(req, res) -> {
+            energySavingLogInfo(HTTP_URL_QUERY_ES_BY_THIS_WEEK);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_THIS_WEEK, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            energySavingLogInfo(LOG4J_INPUT+req.body());
             String resString = queryESByThisWeek(req.body());
-            debugPrintOutput(resString);
+            energySavingLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_QUERY_ES_BY_CUSTOMER,(req, res) -> {
+            energySavingLogInfo(HTTP_URL_QUERY_ES_BY_CUSTOMER);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_QUERY_ES_BY_CUSTOMER, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            energySavingLogInfo(LOG4J_INPUT+req.body());
             String resString = queryESByCustomer(req.body());
-            debugPrintOutput(resString);
+            energySavingLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_START_BATTERY_BALANCE,(req, res) -> {
+            batteryBalanceLogInfo(HTTP_URL_START_BATTERY_BALANCE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_START_BATTERY_BALANCE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            batteryBalanceLogInfo(LOG4J_INPUT+req.body());
             String resString = startBatteryBalance(req.body());
-            debugPrintOutput(resString);
+            batteryBalanceLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
         Spark.post(HTTP_URL_STOP_BATTERY_BALANCE,(req, res) -> {
+            batteryBalanceLogInfo(HTTP_URL_STOP_BATTERY_BALANCE);
             res.type(HTTP_CONFIG_CONTENT_TYPE);
-            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME, HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
-            debugPrintInput(HTTP_URL_STOP_BATTERY_BALANCE, req.body());
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            batteryBalanceLogInfo(LOG4J_INPUT+req.body());
             String resString = stopBatteryBalance(req.body());
-            debugPrintOutput(resString);
+            batteryBalanceLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
     }
