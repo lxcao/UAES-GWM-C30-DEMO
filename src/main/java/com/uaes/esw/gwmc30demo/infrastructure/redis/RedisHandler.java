@@ -100,4 +100,11 @@ public interface RedisHandler {
         return result;
     }
 
+    static Set<String> getAllMemberFromSET(String setName){
+        Jedis jedisClient = RedisFactory.getOneJedisFromPool();
+        Set<String> result = jedisClient.smembers(setName);
+        RedisFactory.releaseOneJedis2Pool(jedisClient);
+        return result;
+    }
+
 }

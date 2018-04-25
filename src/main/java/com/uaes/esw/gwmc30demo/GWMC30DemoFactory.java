@@ -2,7 +2,6 @@ package com.uaes.esw.gwmc30demo;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryBalanceNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
@@ -16,7 +15,8 @@ import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
-import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycle;
+import static com.uaes.esw.gwmc30demo.domain.service.DrivingModeDomainService.resetDefaultDM2CurrentDMAsPowerOff4AllDriver;
+import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycleAsPowerOff;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
@@ -60,8 +60,12 @@ public class GWMC30DemoFactory {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             while(true){
+                //Vehicle SnapShot
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
-                getAndStoreLastEnergySavingCycle();
+                //当断电后，记录一次驾驶循环
+                getAndStoreLastEnergySavingCycleAsPowerOff();
+                //当断电后，将所有司机的currentDM 重置为defaultDM
+                resetDefaultDM2CurrentDMAsPowerOff4AllDriver();
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });

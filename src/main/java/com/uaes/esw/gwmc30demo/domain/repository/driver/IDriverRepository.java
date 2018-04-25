@@ -3,7 +3,9 @@ package com.uaes.esw.gwmc30demo.domain.repository.driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.uaes.esw.gwmc30demo.constant.DriverConstants.DRIVER_DUMMY_CELL_PHONE;
 import static com.uaes.esw.gwmc30demo.constant.DriverConstants.DRIVER_DUMMY_PASSWORD;
@@ -11,6 +13,7 @@ import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.GMW_C30_VIN_CODE;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getAllMemberFromSET;
 
 public interface IDriverRepository {
 
@@ -72,6 +75,13 @@ public interface IDriverRepository {
                 .vin(GMW_C30_VIN_CODE)
                 .build();
         return dummyDriver;
+    }
+
+    static Set<Driver> getAllRegistedDriver(String vinCode){
+        Set<String> registedDriverCellPhone = getAllMemberFromSET(REDIS_DRIVER_REGISTER_SET);
+        Set<Driver> driverSet = new HashSet<>();
+        registedDriverCellPhone.forEach(id -> driverSet.add(getDriverInfo(id)));
+        return driverSet;
     }
 
 }

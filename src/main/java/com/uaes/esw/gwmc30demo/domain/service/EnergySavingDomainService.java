@@ -7,7 +7,6 @@ import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
@@ -17,8 +16,13 @@ import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE
 import static com.uaes.esw.gwmc30demo.constant.EnergySavingConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.EnergySavingConstants.ELECTRICITY_SAVING_ONE;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.driver.IDriverRepository.createDummyDriver;
 import static com.uaes.esw.gwmc30demo.domain.repository.energySaving.IEnergySavingRepository.*;
+import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusNow;
+import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusPrevious;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.isHVPowerOnNow;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.isHVPowerStatusChangeFromOn2Off;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.zRangeByScore;
@@ -55,18 +59,8 @@ public interface EnergySavingDomainService {
                 .esRemind(esRemind).dateTime(DateTimeUtils.getDateTimeString()).build();
     }
 
-    static boolean isHVPowerOnNow(){
-        int hvPowerOnValue = getHVPowerOnStatusNow();
-        return hvPowerOnValue != 0;
-    }
 
-    static boolean isHVPowerStatusChangeFromOn2Off(){
-        int hvPowerOnNowValue = getHVPowerOnStatusNow();
-        int hvPowerOnPreviousValue = getHVPowerOnStatusPrevious();
-        return hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0;
-    }
-
-    static void getAndStoreLastEnergySavingCycle(){
+    static void getAndStoreLastEnergySavingCycleAsPowerOff(){
         if(isHVPowerStatusChangeFromOn2Off())
             storeLastEnergySavingCycle();
     }

@@ -15,11 +15,12 @@ import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getLastVCU73MessageFromRedis;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getPreviousVCU73MessageFromRedis;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
@@ -153,5 +154,15 @@ public interface IVehicleRepository {
         batteryBalanceLogInfo("Send BatteryBI2Vehicle="+batteryBIStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_BATTERYBI_TOPIC,KAFKA_BATTERYBI_KEY,batteryBIStr);
+    }
+
+    static int getHVPowerOnStatusNow(){
+        VCU73CanMessage vcu73CanMessage = getLastVCU73MessageFromRedis();
+        return vcu73CanMessage.getHV_PowerOn();
+    }
+
+    static int getHVPowerOnStatusPrevious(){
+        VCU73CanMessage vcu73CanMessage = getPreviousVCU73MessageFromRedis();
+        return vcu73CanMessage.getHV_PowerOn();
     }
 }

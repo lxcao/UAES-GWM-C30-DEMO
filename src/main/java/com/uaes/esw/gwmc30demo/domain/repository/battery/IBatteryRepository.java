@@ -17,20 +17,6 @@ import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastO
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
 
 public interface IBatteryRepository {
-    static B1CanMessage getB1CanMessageFromRedis(){
-        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B1_ZSET),
-                B1CanMessage.class);
-    }
-
-    static B2CanMessage getB2CanMessageFromRedis(){
-        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B2_ZSET),
-                B2CanMessage.class);
-    }
-
-    static B3CanMessage getB3CanMessageFromRedis(){
-        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B3_ZSET),
-                B3CanMessage.class);
-    }
 
     static Battery getBatterySnapshot(String vinCode){
         return IVehicleRepository.getVehicleSnapshot(vinCode).getBattery();
