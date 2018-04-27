@@ -6,4 +6,6 @@ public class VehicleConstants {
     public final static String BAIC_C51 = "SENOVA_X55";
     public final static double GWM_C30_MAX_MILEAGE = 260.00;
     public final static String GMW_C30_VIN_CODE = "LGWEESK55HE001050";
+    public final static String HV_POWNER_STATUS_ON ="on";
+    public final static String HV_POWNER_STATUS_OFF ="off";
 }

@@ -10,6 +10,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLog
 public interface UpdateWeather2VehicleDomainService {
     static void updateWeather2VehicleDomainService(String location){
         commonLogInfo("UpdateWeather@"+location+"@"+LocalDateTime.now());
-        IVehicleRepository.sendWeather2Vehicle(IWeatherRepository.queryWeather(location));
+        //IVehicleRepository.sendWeather2Vehicle(IWeatherRepository.queryWeather(location));
+        IVehicleRepository.sendWeatherAndDMConfig2Vehicle(IWeatherRepository.queryWeather(location));
     }
 }

@@ -43,7 +43,7 @@ public class InfraRedisConstants {
     public final static String REDIS_VCU_75_ZSET = "can:75:zset";
     public final static String REDIS_VCU_76_ZSET = "can:76:zset";
 
-    public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 300;
+    public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
 
     public final static String REDIS_DRIVER_HASH_NAME_PREFIX = "gwm:c30:driver:";
     public final static String REDIS_DRIVER_HASH_NAME_SUFFIX = ":hash";
@@ -75,4 +75,6 @@ public class InfraRedisConstants {
 
     public final static String REDIS_BATTERY_BALANCE_START_POINT_ZSET = "gwm:c30:bb:start:zset";
     public final static String REDIS_BATTERY_BALANCE_STOP_POINT_ZSET = "gwm:c30:bb:stop:zset";
+
+    public final static String REDIS_CURRENT_DRIVING_MODE_ZSET = "gwm:c30:current:dm:zset";
 }

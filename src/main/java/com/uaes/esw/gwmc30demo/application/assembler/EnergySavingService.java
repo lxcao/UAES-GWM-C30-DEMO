@@ -6,6 +6,7 @@ import com.uaes.esw.gwmc30demo.domain.service.LogInDomainService;
 import com.uaes.esw.gwmc30demo.infrastructure.websocket.WebSocketHandler;
 
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.*;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.isHVPowerOnNow;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 

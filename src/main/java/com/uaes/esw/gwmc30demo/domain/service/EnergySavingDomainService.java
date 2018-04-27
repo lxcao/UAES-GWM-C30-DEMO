@@ -61,7 +61,6 @@ public interface EnergySavingDomainService {
 
 
     static void getAndStoreLastEnergySavingCycleAsPowerOff(){
-        if(isHVPowerStatusChangeFromOn2Off())
             storeLastEnergySavingCycle();
     }
 

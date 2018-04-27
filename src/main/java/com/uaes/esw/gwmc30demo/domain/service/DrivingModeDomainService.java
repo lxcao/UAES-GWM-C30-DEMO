@@ -15,7 +15,6 @@ import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUC
 import static com.uaes.esw.gwmc30demo.constant.DrivingModeConstants.DRIVING_MODE_CST;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.GMW_C30_VIN_CODE;
 import static com.uaes.esw.gwmc30demo.domain.repository.driver.IDriverRepository.getAllRegistedDriver;
-import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.isHVPowerStatusChangeFromOn2Off;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.drivingModelLogInfo;
 
 public interface DrivingModeDomainService {
@@ -63,7 +62,6 @@ public interface DrivingModeDomainService {
     }
 
     static void resetDefaultDM2CurrentDMAsPowerOff4AllDriver(){
-        if(isHVPowerStatusChangeFromOn2Off()){
             Set<Driver> registedDriverSet = getAllRegistedDriver(GMW_C30_VIN_CODE);
             drivingModelLogInfo("resetDefaultDM2CurrentDMAsPowerOff4AllDriver:" +
                     "There are "+registedDriverSet.size()+" registedDrivers");
@@ -72,8 +70,5 @@ public interface DrivingModeDomainService {
                 IDrivingModeRepository.setCurrentDM(driver);
             });
             drivingModelLogInfo("resetDefaultDM2CurrentDMAsPowerOff4AllDriver:DONE");
-
-        }
-
     }
 }

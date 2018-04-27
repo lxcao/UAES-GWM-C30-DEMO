@@ -2,6 +2,7 @@ package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B2CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU60CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU73CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
@@ -22,7 +23,9 @@ import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getLastVCU73MessageFromRedis;
 import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getPreviousVCU73MessageFromRedis;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.drivingModelLogInfo;
@@ -120,6 +123,8 @@ public interface IVehicleRepository {
         drivingModelLogInfo("Send CurrentDM2Vehicle="+currentDMStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
+        //save to redis
+        inputValue2ZSET(REDIS_CURRENT_DRIVING_MODE_ZSET, getDateTimeNowTimeStamp(), currentDMStr);
     }
 
     //发送Default DrivingMode到Vehicle
@@ -146,6 +151,27 @@ public interface IVehicleRepository {
         commonLogInfo("Send Weather2Vehicle="+weatherStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
+    }
+
+    //根据V60的帧格式，发送Weather和DrivingModeConfigure
+    static void sendWeatherAndDMConfig2Vehicle(Weather weather){
+         String currentDMStr = getLastOneStringFromZset(REDIS_CURRENT_DRIVING_MODE_ZSET);
+         DrivingMode currentDM = transferFromJSON2Object(currentDMStr, DrivingMode.class);
+        VCU60CanMessage vcu60CanMessage = VCU60CanMessage.builder()
+                .Regen_Level(currentDM.getDrivingModeConfigure().getEnergyRecovery())
+                .Filter_Level(currentDM.getDrivingModeConfigure().getSmoothness())
+                .Vmax_Level(currentDM.getDrivingModeConfigure().getMaxSpeed())
+                .Acceleration_Level(currentDM.getDrivingModeConfigure().getPowerCorresponding())
+                .AccessoryPower_Level(currentDM.getDrivingModeConfigure().getAccessoryPerformance())
+                .Whether_Status(weather.getWeatherNow().getWeatherStatus())
+                .Environment_Temperature(weather.getWeatherNow().getTemperature())
+                .Air_Quality_Value(weather.getAirNow().getAqi())
+                .unixtimestamp(getDateTimeNowTimeStamp())
+                .build();
+        String vcu60CanMessageStr = transferFromObject2JSON(vcu60CanMessage);
+        commonLogInfo("sendWeatherAndDMConfig2Vehicle="+vcu60CanMessageStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,vcu60CanMessageStr);
     }
 
     //发送电池均衡指令到Vehicle

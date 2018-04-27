@@ -16,6 +16,7 @@ public class LoggerUtils {
     private static final Logger batteryBalance = Logger.getLogger(LOG4J_BATTERYBALANCE);
     private static final Logger batteryStatus = Logger.getLogger(LOG4J_BATTERYSTATUS);
     private static final Logger websocket = Logger.getLogger(LOG4J_WEBSOCKET);
+    private static final Logger vehicle = Logger.getLogger(LOG4J_VEHICLE);
 
     public static void commonLogInfo(String log){
         common.info(log+LOG4J_RETURN);
@@ -47,6 +48,10 @@ public class LoggerUtils {
 
     public static void websocketLogInfo(String log){
         websocket.info(log+LOG4J_RETURN);
+    }
+
+    public static void vehicleLogInfo(String log){
+        vehicle.info(log+LOG4J_RETURN);
     }
 
 }

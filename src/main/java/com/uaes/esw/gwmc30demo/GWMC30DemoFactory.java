@@ -18,6 +18,7 @@ import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleReposito
 import static com.uaes.esw.gwmc30demo.domain.service.DrivingModeDomainService.resetDefaultDM2CurrentDMAsPowerOff4AllDriver;
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycleAsPowerOff;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.dealStaffWhenPowerOff;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepMilliSeconds;
@@ -62,10 +63,8 @@ public class GWMC30DemoFactory {
             while(true){
                 //Vehicle SnapShot
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
-                //当断电后，记录一次驾驶循环
-                getAndStoreLastEnergySavingCycleAsPowerOff();
-                //当断电后，将所有司机的currentDM 重置为defaultDM
-                resetDefaultDM2CurrentDMAsPowerOff4AllDriver();
+                //断电后触发驾驶循环和重置驾驶模式
+                dealStaffWhenPowerOff();
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });
