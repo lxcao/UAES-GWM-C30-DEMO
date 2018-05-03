@@ -11,6 +11,7 @@ import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PO
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_NAME;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS;
+import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS;
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS;
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
@@ -47,11 +48,17 @@ public class GWMC30DemoFactory {
                     //节能提醒空调开窗
                     sendOutEnergySavingRemindNotice();
                     sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
-                    //电池状态和电量不足
-                    sendOutBatteryStatusNotice();
-                    sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                     //正在均衡的状态和如果均衡的效果
                     sendOutBatteryBalanceNotice();
+            }
+        });
+        //1秒发送一次电池状态
+        ExecutorService executor1 = Executors.newSingleThreadExecutor();
+        executor1.execute(() -> {
+            while(true){
+                sleepSeconds(WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS);
+                //电池状态和电量不足
+                sendOutBatteryStatusNotice();
             }
         });
     }

@@ -5,6 +5,7 @@ import com.uaes.esw.gwmc30demo.domain.model.entity.can.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastTenStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getPreviousOneStringFromZset;
 
 public interface ICanRepository {

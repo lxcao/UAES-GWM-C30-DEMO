@@ -70,6 +70,7 @@ public class InfraRedisConstants {
 
     public final static int REDIS_ZSET_INDEX_LAST_ONE = -1;
     public final static int REDIS_ZSET_INDEX_PREVIOUS_ONE = -2;
+    public final static int REDIS_ZSET_INDEX_LAST_TEN = -10;
 
     public final static String REDIS_ENERGY_SAVING_DRIVING_CYCLE_ZSET = "gwm:c30:es:dc:zset";
 

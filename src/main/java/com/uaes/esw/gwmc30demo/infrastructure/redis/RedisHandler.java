@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_ZSET_INDEX_LAST_ONE;
+import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_ZSET_INDEX_LAST_TEN;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_ZSET_INDEX_PREVIOUS_ONE;
 
 
@@ -52,6 +53,10 @@ public interface RedisHandler {
 
     static String getLastOneStringFromZset(String zsetName){
         return getOneStringFromZsetByIndex(zsetName, REDIS_ZSET_INDEX_LAST_ONE);
+    }
+
+    static String getLastTenStringFromZset(String zsetName){
+        return getOneStringFromZsetByIndex(zsetName, REDIS_ZSET_INDEX_LAST_TEN);
     }
 
     static String getPreviousOneStringFromZset(String zsetName){
