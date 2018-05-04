@@ -24,7 +24,7 @@ public class VehicleDomainService {
     static boolean isHVPowerStatusChangeFromOn2Off(){
         int hvPowerOnNowValue = getHVPowerOnStatusNow();
         int hvPowerOnPreviousValue = getHVPowerOnStatusPrevious();
-        vehicleLogInfo(hvPowerOnPreviousValue+" "+hvPowerOnNowValue+" "+hvPowerStatus);
+        //vehicleLogInfo(hvPowerOnPreviousValue+" "+hvPowerOnNowValue+" "+hvPowerStatus);
         if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 1){
             if(hvPowerStatus.equals(HV_POWNER_STATUS_OFF))
                 hvPowerStatus = HV_POWNER_STATUS_ON;
@@ -67,6 +67,7 @@ public class VehicleDomainService {
 
     public static VehicleStatusNotice createVehicleStatusNotice(){
         Vehicle vehicle = getVehicleSnapshot(GMW_C30_VIN_CODE);
+        //vehicleLogInfo("vehicleSnapShot="+vehicle);
         VehicleStatus vehicleStatus = VehicleStatus.builder()
                 .DCDC_OperMod(vehicle.getBattery().getDcdcOperMod())
                 .HV_PowerOn(vehicle.getBattery().getHvPower())
@@ -76,9 +77,11 @@ public class VehicleDomainService {
                 .TM_OperMod(vehicle.getBattery().getTmOperMod())
                 .AC_OperMod(getACOperationMode(vehicle))
                 .build();
+        //vehicleLogInfo("vehicleStatus="+vehicleStatus);
         VehicleStatusNotice vehicleStatusNotice = VehicleStatusNotice.builder()
                 .vehicleStatus(vehicleStatus)
                 .dateTime(DateTimeUtils.getDateTimeString()).build();
+        //vehicleLogInfo("vehicleStatusNotice="+vehicleStatusNotice);
         return vehicleStatusNotice;
     }
 }
