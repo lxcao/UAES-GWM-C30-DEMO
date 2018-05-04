@@ -8,4 +8,8 @@ public class VehicleConstants {
     public final static String GMW_C30_VIN_CODE = "LGWEESK55HE001050";
     public final static String HV_POWNER_STATUS_ON ="on";
     public final static String HV_POWNER_STATUS_OFF ="off";
+    public final static double AC_POWER_CONSUMPTION_THRESHOLD = 0.001;
+    public final static int AC_STATUS_NO = 0;
+    public final static int AC_STATUS_PTC = 1;
+    public final static int AC_STATUS_CMP = 2;
 }

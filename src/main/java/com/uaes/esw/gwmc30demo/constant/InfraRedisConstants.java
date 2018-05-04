@@ -23,6 +23,11 @@ public class InfraRedisConstants {
     public final static String REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME = "batteryChargingTime";
     public final static String REDIS_VEHICLE_HASH_KEY_MAXMILEAGE = "mmg";
     public final static String REDIS_VEHICLE_HASH_KEY_HVPOWER = "hvPower";
+    public final static String REDIS_VEHICLE_HASH_KEY_REMAIN_DISTANCE = "remainDistance";
+    public final static String REDIS_VEHICLE_HASH_KEY_TM_OPERATION_MODE = "tmOperMod";
+    public final static String REDIS_VEHICLE_HASH_KEY_DCDC_OPERATION_MODE = "dcdcOperMod";
+    public final static String REDIS_VEHICLE_HASH_KEY_PTC_POWER_CONSUME = "ptcPCnsmptn";
+    public final static String REDIS_VEHICLE_HASH_KEY_CMP_POWER_CONSUME = "cmpPCnsmptn";
 
     public final static String REDIS_BMS_B1_ZSET = "can:B1:zset";
     public final static String REDIS_BMS_B2_ZSET = "can:B2:zset";
@@ -42,6 +47,10 @@ public class InfraRedisConstants {
     public final static String REDIS_VCU_73_ZSET = "can:73:zset";
     public final static String REDIS_VCU_75_ZSET = "can:75:zset";
     public final static String REDIS_VCU_76_ZSET = "can:76:zset";
+    public final static String REDIS_VCU_294_ZSET = "can:294:zset";
+    public final static String REDIS_VCU_FB_ZSET = "can:FB:zset";
+    public final static String REDIS_VCU_FA_ZSET = "can:FA:zset";
+    public final static String REDIS_VCU_29D_ZSET = "can:29D:zset";
 
     public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
 

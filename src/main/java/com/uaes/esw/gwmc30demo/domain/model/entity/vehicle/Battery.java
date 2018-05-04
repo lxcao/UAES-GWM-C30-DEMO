@@ -15,4 +15,9 @@ public class Battery {
     double socMin;
     double chargingTime; //充电剩余时间
     int hvPower; //高压上电标志
+    double remainDistance; // 剩余续航里程
+    int tmOperMod; //电机工作状态
+    int dcdcOperMod; //DCDC变压器工作状态
+    double ptcPCnsmptn; // 空调制热
+    double cmpPCnsmptn; // 空调制冷
 }

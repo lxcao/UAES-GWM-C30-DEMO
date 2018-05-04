@@ -7,6 +7,7 @@ import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendO
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingCurrentCycleNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingRemindNotice;
+import static com.uaes.esw.gwmc30demo.application.assembler.VehicleService.sendOutFrontPageNotice;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_NAME;
@@ -52,13 +53,16 @@ public class GWMC30DemoFactory {
                     sendOutBatteryBalanceNotice();
             }
         });
-        //1秒发送一次电池状态
+        //2秒发送一次电池状态和首页状态
         ExecutorService executor1 = Executors.newSingleThreadExecutor();
         executor1.execute(() -> {
             while(true){
+                //首页
+                sendOutFrontPageNotice();
                 sleepSeconds(WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS);
-                //电池状态和电量不足
+                //电池状态
                 sendOutBatteryStatusNotice();
+                sleepSeconds(WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS);
             }
         });
     }

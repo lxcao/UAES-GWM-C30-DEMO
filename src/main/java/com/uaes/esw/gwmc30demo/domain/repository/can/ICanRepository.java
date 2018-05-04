@@ -90,18 +90,38 @@ public interface ICanRepository {
                 VCU76CanMessage.class);
     }
 
-    static B1CanMessage getB1CanMessageFromRedis(){
+    static B1CanMessage getLastBMSB1CanMessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B1_ZSET),
                 B1CanMessage.class);
     }
 
-    static B2CanMessage getB2CanMessageFromRedis(){
+    static B2CanMessage getLastBMSB2CanMessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B2_ZSET),
                 B2CanMessage.class);
     }
 
-    static B3CanMessage getB3CanMessageFromRedis(){
+    static B3CanMessage getLastBMSB3CanMessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_B3_ZSET),
                 B3CanMessage.class);
+    }
+
+    static VCU29DCanMessage getLastVCU29DCanMessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_29D_ZSET),
+                VCU29DCanMessage.class);
+    }
+
+    static VCU294CanMessage getLastVCU294CanMessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_294_ZSET),
+                VCU294CanMessage.class);
+    }
+
+    static VCUFBCanMessage getLastVCUFBCanMessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_FB_ZSET),
+                VCUFBCanMessage.class);
+    }
+
+    static VCUFACanMessage getLastVCUFACanMessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_FA_ZSET),
+                VCUFACanMessage.class);
     }
 }

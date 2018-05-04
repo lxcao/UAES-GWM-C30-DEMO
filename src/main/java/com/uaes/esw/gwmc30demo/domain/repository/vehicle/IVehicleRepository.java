@@ -1,9 +1,6 @@
 package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
-import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
-import com.uaes.esw.gwmc30demo.domain.model.entity.can.B2CanMessage;
-import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU60CanMessage;
-import com.uaes.esw.gwmc30demo.domain.model.entity.can.VCU73CanMessage;
+import com.uaes.esw.gwmc30demo.domain.model.entity.can.*;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
@@ -20,11 +17,11 @@ import java.util.Map;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
-import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getLastVCU73MessageFromRedis;
-import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getPreviousVCU73MessageFromRedis;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
@@ -44,7 +41,12 @@ public interface IVehicleRepository {
                 .socMax(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX)))
                 .socMin(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN)))
                 .temperature(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_BATTERY_TEMPERATURE)))
-                .hvPower(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_HVPOWER))).build();
+                .hvPower(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_HVPOWER)))
+                .remainDistance(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_REMAIN_DISTANCE)))
+                .tmOperMod(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_TM_OPERATION_MODE)))
+                .dcdcOperMod(Integer.parseInt(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_DCDC_OPERATION_MODE)))
+                .ptcPCnsmptn(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_PTC_POWER_CONSUME)))
+                .cmpPCnsmptn(Double.parseDouble(vehicleHashSet.get(REDIS_VEHICLE_HASH_KEY_CMP_POWER_CONSUME))).build();
         Vehicle c30Vehicle = Vehicle.builder()
                 .battery(c30Battery)
                 .vin(vinCode)
@@ -76,8 +78,7 @@ public interface IVehicleRepository {
     static Map<String, String> getLastOneBatteryInfoFromZset(){
          Map<String, String> batteryHash = new HashMap<>();
 
-        String lastB1String = getLastOneStringFromZset(REDIS_BMS_B1_ZSET);
-        B1CanMessage b1CanMessage = transferFromJSON2Object(lastB1String,B1CanMessage.class);
+        B1CanMessage b1CanMessage = getLastBMSB1CanMessageFromRedis();
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC,
                 String.valueOf(b1CanMessage.getPack_Soc_BMS() *PERCENTAGE));
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CURRENT,
@@ -90,18 +91,26 @@ public interface IVehicleRepository {
                 String.valueOf(b1CanMessage.getPack_BalcSts_BMS()));
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_STATUS,
                 String.valueOf(b1CanMessage.getPack_ChrgSts_BMS()));
-        String lastB2String = getLastOneStringFromZset(REDIS_BMS_B2_ZSET);
-        B2CanMessage b2CanMessage = transferFromJSON2Object(lastB2String,B2CanMessage.class);
+        B2CanMessage b2CanMessage = getLastBMSB2CanMessageFromRedis();
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MAX,
                 String.valueOf(b2CanMessage.getPack_CellSocMax_BMS()));
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_SOC_MIN,
                 String.valueOf(b2CanMessage.getPack_CellSocMin_BMS()));
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_BATTERY_CHARGING_TIME,
                 String.valueOf(b2CanMessage.getPack_ChrgReTime_BMS()));
-        String last73String = getLastOneStringFromZset(REDIS_VCU_73_ZSET);
-        VCU73CanMessage vcu73CanMessage = transferFromJSON2Object(last73String, VCU73CanMessage.class);
         batteryHash.put(REDIS_VEHICLE_HASH_KEY_HVPOWER,
-                String.valueOf(vcu73CanMessage.getHV_PowerOn()));
+                String.valueOf(getLastVCU73MessageFromRedis().getHV_PowerOn()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_REMAIN_DISTANCE,
+                String.valueOf(getLastVCU294CanMessageFromRedis().getVCU_RemainDistance()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_TM_OPERATION_MODE,
+                String.valueOf(getLastVCUFBCanMessageFromRedis().getTM_OperMod()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_DCDC_OPERATION_MODE,
+                String.valueOf(getLastVCUFACanMessageFromRedis().getDCDC_OperMod()));
+        VCU29DCanMessage vcu29DCanMessage = getLastVCU29DCanMessageFromRedis();
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_PTC_POWER_CONSUME,
+                String.valueOf(vcu29DCanMessage.getPTC_PowerCnsmptn()));
+        batteryHash.put(REDIS_VEHICLE_HASH_KEY_CMP_POWER_CONSUME,
+                String.valueOf(vcu29DCanMessage.getCMP_PowerCnsmptn()));
         return batteryHash;
     }
 
