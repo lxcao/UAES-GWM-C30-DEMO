@@ -12,16 +12,16 @@ import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.RESPONSE_CODE_SUCCESS;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.GMW_C30_VIN_CODE;
 import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.*;
-import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getB1CanMessageFromRedis;
-import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getB2CanMessageFromRedis;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getLastBMSB1CanMessageFromRedis;
+import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.getLastBMSB2CanMessageFromRedis;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepSeconds;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
 
 public interface BatteryDomainService {
 
     static BatteryStatus creteBatteryStatus(){
-        B1CanMessage b1CanMessage = getB1CanMessageFromRedis();
-        B2CanMessage b2CanMessage = getB2CanMessageFromRedis();
+        B1CanMessage b1CanMessage = getLastBMSB1CanMessageFromRedis();
+        B2CanMessage b2CanMessage = getLastBMSB2CanMessageFromRedis();
         BatteryStatus batteryStatus = BatteryStatus.builder()
                 .Pack_Curr_BMS(b1CanMessage.getPack_Curr_BMS())
                 .Pack_Volt_BMS(b1CanMessage.getPack_Volt_BMS())
