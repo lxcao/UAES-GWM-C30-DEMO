@@ -5,6 +5,7 @@ import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatus
 import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatusNotice;
 import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
+import static com.uaes.esw.gwmc30demo.constant.BatteryConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.energySaving.IEnergySavingRepository.storeLastEnergySavingCycle;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusNow;
@@ -65,6 +66,15 @@ public class VehicleDomainService {
         return AC_STATUS_NO;
     }
 
+    static int transformTMOperMod2Display(int tmOperModActually){
+        if(tmOperModActually == BATTERY_TRACTION_MOTOR_OPERATION_MODE_NORMAL)
+            return BATTERY_TRACTION_MOTOR_OPERATION_MODE_DISPLAY_ON;
+        else if(tmOperModActually == BATTERY_TRACTION_MOTOR_OPERATION_MODE_STANDBY)
+            return BATTERY_TRACTION_MOTOR_OPERATION_MODE_DISPLAY_STANDBY;
+        return BATTERY_TRACTION_MOTOR_OPERATION_MODE_DISPLAY_OFF;
+
+    }
+
     public static VehicleStatusNotice createVehicleStatusNotice(){
         Vehicle vehicle = getVehicleSnapshot(GMW_C30_VIN_CODE);
         //vehicleLogInfo("vehicleSnapShot="+vehicle);
@@ -74,7 +84,7 @@ public class VehicleDomainService {
                 .Pack_ChrgReTime_BMS(vehicle.getBattery().getChargingTime())
                 .Pack_ChrgSts_BMS(vehicle.getBattery().getChargingStatus())
                 .VCU_RemainDistance(vehicle.getBattery().getRemainDistance())
-                .TM_OperMod(vehicle.getBattery().getTmOperMod())
+                .TM_OperMod(transformTMOperMod2Display(vehicle.getBattery().getTmOperMod()))
                 .AC_OperMod(getACOperationMode(vehicle))
                 .build();
         //vehicleLogInfo("vehicleStatus="+vehicleStatus);
