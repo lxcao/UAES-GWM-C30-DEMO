@@ -7,7 +7,6 @@ import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
 import static com.uaes.esw.gwmc30demo.constant.BatteryConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.*;
-import static com.uaes.esw.gwmc30demo.domain.repository.energySaving.IEnergySavingRepository.storeLastEnergySavingCycle;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusNow;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusPrevious;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getVehicleSnapshot;
@@ -40,8 +39,11 @@ public class VehicleDomainService {
             }
             return false;
         }else if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0){
-            hvPowerStatus = HV_POWNER_STATUS_OFF;
-            return true;
+            if(hvPowerStatus.equals(HV_POWNER_STATUS_ON)){
+                hvPowerStatus = HV_POWNER_STATUS_OFF;
+                return true;
+            }
+            return false;
         }
         return false;
     }

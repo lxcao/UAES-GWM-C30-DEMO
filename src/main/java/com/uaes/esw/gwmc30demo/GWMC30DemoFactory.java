@@ -17,8 +17,6 @@ import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET
 import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
-import static com.uaes.esw.gwmc30demo.domain.service.DrivingModeDomainService.resetDefaultDM2CurrentDMAsPowerOff4AllDriver;
-import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycleAsPowerOff;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
 import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.dealStaffWhenPowerOff;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
@@ -67,13 +65,19 @@ public class GWMC30DemoFactory {
         });
     }
 
-    //每300毫秒轮询并更新Vehicle Hash
+    //每500毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             while(true){
                 //Vehicle SnapShot
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
+                sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
+            }
+        });
+        ExecutorService executor1 = Executors.newSingleThreadExecutor();
+        executor1.execute(() -> {
+            while(true){
                 //断电后触发驾驶循环和重置驾驶模式
                 dealStaffWhenPowerOff();
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);

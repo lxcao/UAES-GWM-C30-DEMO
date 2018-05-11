@@ -18,6 +18,7 @@ import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.*;
+import static com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository.transferDrivingModeType2DrivingModeSwitch;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
@@ -172,6 +173,7 @@ public interface IVehicleRepository {
                 .Vmax_Level(currentDM.getDrivingModeConfigure().getMaxSpeed())
                 .Acceleration_Level(currentDM.getDrivingModeConfigure().getPowerCorresponding())
                 .AccessoryPower_Level(currentDM.getDrivingModeConfigure().getAccessoryPerformance())
+                .ModeSwitch_Request(transferDrivingModeType2DrivingModeSwitch(currentDM.getDrivingModeType()))
                 .Whether_Status(weather.getWeatherNow().getWeatherStatus())
                 .Environment_Temperature(weather.getWeatherNow().getTemperature())
                 .Air_Quality_Value(weather.getAirNow().getAqi())

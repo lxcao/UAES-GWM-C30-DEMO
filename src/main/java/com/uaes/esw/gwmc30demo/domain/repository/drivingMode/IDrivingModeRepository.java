@@ -196,5 +196,20 @@ public interface IDrivingModeRepository {
         return dm;
     }
 
+    //转换drivingModeType 到 drivingModeSwitch
+    static int transferDrivingModeType2DrivingModeSwitch(String drivingModeType){
+        if(drivingModeType.equals(DRIVING_MODE_EEM))
+            return DRIVING_MODE_SWITCH_EEM;
+        else if(drivingModeType.equals(DRIVING_MODE_ECO))
+            return DRIVING_MODE_SWITCH_ECO;
+        else if(drivingModeType.equals(DRIVING_MODE_NOR))
+            return DRIVING_MODE_SWITCH_NOR;
+        else if(drivingModeType.equals(DRIVING_MODE_EPM))
+            return DRIVING_MODE_SWITCH_EPM;
+        else if(drivingModeType.equals(DRIVING_MODE_POW))
+            return DRIVING_MODE_SWITCH_POW;
+        return DRIVING_MODE_SWITCH_CST;
+    }
+
 
 }

@@ -29,6 +29,7 @@ public interface LogInDomainService {
                     logInRes.setDriver(driver);
                     //send default driving mode to vehicle
                     IVehicleRepository.sendDefaultDM2Vehicle(driver);
+                    IVehicleRepository.sendCurrentDM2Vehicle(driver);
                 }
                 else{
                     logInRes.setResponseCode(RESPONSE_CODE_FAILURE);
