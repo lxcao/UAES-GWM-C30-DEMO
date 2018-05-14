@@ -53,7 +53,8 @@ public class WebSocketHandler {
         websocketLogInfo(msg);
         WebSocketFactory.userUserNameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try{
-                session.getRemote().sendString(msg);
+                //session.getRemote().sendString(msg);
+                session.getRemote().sendStringByFuture(msg);
                 websocketLogInfo("Send to : "+session.getRemoteAddress().getHostName());
             }catch (Exception e){
                 e.printStackTrace();
