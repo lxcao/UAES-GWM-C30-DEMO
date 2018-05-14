@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.createBatteryBalanceNotice;
 import static com.uaes.esw.gwmc30demo.domain.service.BatteryDomainService.createBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.createESRemind;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.createVehicleStatusNotice;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.websocketLogInfo;
 
@@ -28,6 +29,7 @@ public class WebSocketHandler {
         websocketLogInfo(username + " is connected");
         websocketLogInfo("There are " + WebSocketFactory.userUserNameMap.size() + " users now");
         //send out once connected
+        sendStrMessage(transferFromObject2JSON(createVehicleStatusNotice()));
         sendStrMessage(transferFromObject2JSON(createESRemind()));
         sendStrMessage(transferFromObject2JSON(createBatteryStatusNotice()));
         sendStrMessage(transferFromObject2JSON(createBatteryBalanceNotice()));
@@ -43,17 +45,16 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        websocketLogInfo("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
+        //websocketLogInfo("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
     }
 
     //Send string message to all user
     public static void sendStrMessage(String msg){
-
+        websocketLogInfo(msg);
         WebSocketFactory.userUserNameMap.keySet().stream().filter(Session::isOpen).forEach(session -> {
             try{
-                websocketLogInfo(LocalDateTime.now().toString()+" "+msg);
                 session.getRemote().sendString(msg);
-
+                websocketLogInfo("Send to : "+session.getRemoteAddress().getHostName());
             }catch (Exception e){
                 e.printStackTrace();
             }
