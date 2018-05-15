@@ -5,6 +5,7 @@ import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatus
 import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatusNotice;
 import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
+import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_CHARGE_REQUIRE_TIME_SECS;
 import static com.uaes.esw.gwmc30demo.constant.BatteryConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusNow;
@@ -83,7 +84,7 @@ public class VehicleDomainService {
         VehicleStatus vehicleStatus = VehicleStatus.builder()
                 .DCDC_OperMod(vehicle.getBattery().getDcdcOperMod())
                 .HV_PowerOn(vehicle.getBattery().getHvPower())
-                .Pack_ChrgReTime_BMS(vehicle.getBattery().getChargingTime())
+                .Pack_ChrgReTime_BMS(vehicle.getBattery().getChargingTime()/BATTERY_CHARGE_REQUIRE_TIME_SECS)
                 .Pack_ChrgSts_BMS(vehicle.getBattery().getChargingStatus())
                 .VCU_RemainDistance(vehicle.getBattery().getRemainDistance())
                 .TM_OperMod(transformTMOperMod2Display(vehicle.getBattery().getTmOperMod()))

@@ -20,5 +20,6 @@ public class BatteryBalanceConstants {
     public final static double BATTERY_CHARGE_REQUIRE_THRESHOLD = 0.20;
     public final static int BATTERY_CHARGE_REQUIRE = 1;
     public final static int BATTERY_CHARGE_NO_REQUIRE = 0;
-    public final static int BATTERY_BALANCE_START_WAIT_SECOND = 5;
+    public final static int BATTERY_BALANCE_START_WAIT_SECOND = 10;
+    public final static double BATTERY_CHARGE_REQUIRE_TIME_SECS = 3600.0;
 }
