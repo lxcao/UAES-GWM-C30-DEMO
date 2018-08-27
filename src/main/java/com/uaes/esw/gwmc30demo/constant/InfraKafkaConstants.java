@@ -34,7 +34,7 @@ public class InfraKafkaConstants {
     public final static String KAFKA_CONFIG_DEFAULT_DM_KEY = "defaultDM";
     public final static String KAFKA_CONFIG_NORMAL_DM_KEY = "normalDM";
     public final static String KAFKA_CONFIG_CLIENT_ID = "clientID-c30-001";
-    public final static String KAFKA_DIRVING_MODE_TOPIC = "gwm-c30-dm";
+    public final static String KAFKA_DRIVING_MODE_TOPIC = "gwm-c30-dm";
     public final static String KAFKA_WEATHER_TOPIC = "gwm-c30-weather";
     public final static String KAFKA_WEATHER_KEY = "weather";
     public final static String KAFKA_BATTERYBI_TOPIC = "gwm-c30-batterybi";

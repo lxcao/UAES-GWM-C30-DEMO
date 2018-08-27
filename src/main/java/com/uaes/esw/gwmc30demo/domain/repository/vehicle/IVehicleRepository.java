@@ -132,7 +132,7 @@ public interface IVehicleRepository {
         String currentDMStr = JSONUtility.transferFromObject2JSON(currentDM);
         drivingModelLogInfo("Send CurrentDM2Vehicle="+currentDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
         //save to redis
         inputValue2ZSET(REDIS_CURRENT_DRIVING_MODE_ZSET, getDateTimeNowTimeStamp(), currentDMStr);
     }
@@ -143,7 +143,7 @@ public interface IVehicleRepository {
         String defaultDMStr = JSONUtility.transferFromObject2JSON(defaultDM);
         drivingModelLogInfo("Send DefaultDM2Vehicle="+defaultDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
     }
 
     //发送Normal DrivingMode到Vehicle
@@ -152,7 +152,7 @@ public interface IVehicleRepository {
          String normalDMStr = JSONUtility.transferFromObject2JSON(normalDM);
         drivingModelLogInfo("Send NormalDM2Vehicle="+normalDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
     }
 
     //发送Weather到Vehicle
