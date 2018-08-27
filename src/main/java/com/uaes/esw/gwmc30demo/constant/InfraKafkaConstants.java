@@ -2,7 +2,8 @@ package com.uaes.esw.gwmc30demo.constant;
 
 public class InfraKafkaConstants {
     public final static String KAFKA_CONFIG_BOOTSTRAP_SERVERS_CONFIG =
-            "emr-worker-1.cluster-47779:9092,emr-worker-2.cluster-47779:9092";
+            //"emr-worker-1.cluster-47779:9092,emr-worker-2.cluster-47779:9092";
+            "106.14.137.89:9093,47.100.207.222:9093,47.100.201.156:9093";
     public final static String KAFKA_CONFIG_GROUP_ID_CONFIG = "gwm-c30-001";
     public final static String KAFKA_CONFIG_ENABLE_AUTO_COMMIT_CONFIG = "true";
     public final static String KAFKA_CONFIG_AUTO_COMMIT_INTERVAL_MS_CONFIG = "1000";
