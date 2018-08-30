@@ -122,4 +122,14 @@ public interface ICanRepository {
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_FA_ZSET),
                 VCUFACanMessage.class);
     }
+
+    static VCU77CanMessage getLastVCU77MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_77_ZSET),
+                VCU77CanMessage.class);
+    }
+
+    static VCU78CanMessage getLastVCU78MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_78_ZSET),
+                VCU78CanMessage.class);
+    }
 }

@@ -7,7 +7,7 @@ apply plugin: 'maven'
 sourceCompatibility = 1.8
 
 repositories {
-    maven { url "http://139.224.8.68:8081/repository/maven-proxy"}
+    //maven { url "http://139.224.8.68:8081/repository/maven-proxy"}
     mavenCentral()
 }
 
@@ -37,12 +37,12 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: "http://139.224.8.68:8081/repository/uaes-esw-bigdata-hosted/") {
-            authentication(userName: "admin", password: "admin123")
-            pom.groupId = "com.uaes.esw"
-            pom.artifactId = "gwm-c30-demo"
-        }
-    }
-}
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        repository(url: "http://139.224.8.68:8081/repository/uaes-esw-bigdata-hosted/") {
+//            authentication(userName: "admin", password: "admin123")
+//           pom.groupId = "com.uaes.esw"
+//            pom.artifactId = "gwm-c30-demo"
+//        }
+//    }
+//}

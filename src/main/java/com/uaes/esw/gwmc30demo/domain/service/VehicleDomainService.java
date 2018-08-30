@@ -92,7 +92,6 @@ public class VehicleDomainService {
         else if(tmOperModActually == BATTERY_TRACTION_MOTOR_OPERATION_MODE_STANDBY)
             return BATTERY_TRACTION_MOTOR_OPERATION_MODE_DISPLAY_STANDBY;
         return BATTERY_TRACTION_MOTOR_OPERATION_MODE_DISPLAY_OFF;
-
     }
 
     public static VehicleStatusNotice createVehicleStatusNotice(){

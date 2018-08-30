@@ -15,6 +15,7 @@ import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByTod
 import static com.uaes.esw.gwmc30demo.application.service.SetCurrentDrivingStyle.setCurrentDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetCustomerDrivingStyle.setCustomerDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.SetDefaultDrivingStyle.setDefaultDrivingStyle;
+import static com.uaes.esw.gwmc30demo.application.service.SetSpeedAuxiliary.setSpeedAuxiliary;
 import static com.uaes.esw.gwmc30demo.application.service.StartBatteryBalance.startBatteryBalance;
 import static com.uaes.esw.gwmc30demo.application.service.StopBatteryBalance.stopBatteryBalance;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
@@ -173,6 +174,16 @@ public class HttpHandler {
             batteryBalanceLogInfo(LOG4J_INPUT+req.body());
             String resString = stopBatteryBalance(req.body());
             batteryBalanceLogInfo(LOG4J_OUTPUT+resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_SET_SPEED_AUXILIARY,(req, res) -> {
+            speedAuxLogInfo(HTTP_URL_SET_SPEED_AUXILIARY);
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            speedAuxLogInfo(LOG4J_INPUT+req.body());
+            String resString = setSpeedAuxiliary(req.body());
+            speedAuxLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
     }
