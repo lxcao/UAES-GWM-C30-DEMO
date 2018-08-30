@@ -1,7 +1,6 @@
 package com.uaes.esw.gwmc30demo.infrastructure.utils;
 
-
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraLog4JConstants.*;
 
