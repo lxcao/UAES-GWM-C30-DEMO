@@ -1,7 +1,5 @@
 package com.uaes.esw.gwmc30demo.infrastructure.utils;
 
-
-
 import org.apache.log4j.Logger;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraLog4JConstants.*;
@@ -17,6 +15,7 @@ public class LoggerUtils {
     private static final Logger batteryStatus = Logger.getLogger(LOG4J_BATTERYSTATUS);
     private static final Logger websocket = Logger.getLogger(LOG4J_WEBSOCKET);
     private static final Logger vehicle = Logger.getLogger(LOG4J_VEHICLE);
+    private static final Logger speedAux = Logger.getLogger(LOG4J_SPDAUX);
 
     public static void commonLogInfo(String log){
         common.info(log+LOG4J_RETURN);
@@ -52,6 +51,10 @@ public class LoggerUtils {
 
     public static void vehicleLogInfo(String log){
         vehicle.info(log+LOG4J_RETURN);
+    }
+
+    public static void speedAuxLogInfo(String log){
+        speedAux.info(log+LOG4J_RETURN);
     }
 
 }

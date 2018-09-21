@@ -20,6 +20,8 @@ public class InfraHttpConstants {
     public final static String HTTP_URL_QUERY_ES_BY_CUSTOMER = "/v1/gwm/c30/queryESByCustomer";
     public final static String HTTP_URL_START_BATTERY_BALANCE = "/v1/gwm/c30/startBatteryBalance";
     public final static String HTTP_URL_STOP_BATTERY_BALANCE = "/v1/gwm/c30/stopBatteryBalance";
+    public final static String HTTP_URL_SET_SPEED_AUXILIARY = "/v2/gwm/c30/setSpeedAuxiliary";
+    public final static String HTTP_URL_GET_SPEED_AUXILIARY = "/v2/gwm/c30/getSpeedAuxiliary";
 
     public final static String HTTP_URL_SENIVERSE_WEATHER_NOW_URL = "https://api.seniverse.com/v3/weather/now.json";
     public final static String HTTP_URL_SENIVERSE_AIR_NOW_URL = "https://api.seniverse.com/v3/air/now.json";

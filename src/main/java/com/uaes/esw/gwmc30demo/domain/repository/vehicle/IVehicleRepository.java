@@ -2,6 +2,7 @@ package com.uaes.esw.gwmc30demo.domain.repository.vehicle;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.*;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
+import com.uaes.esw.gwmc30demo.domain.model.entity.speedAux.SpeedAux;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
@@ -24,9 +25,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
-import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.batteryBalanceLogInfo;
-import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
-import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.drivingModelLogInfo;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.*;
 
 public interface IVehicleRepository {
     //得到车辆的当前快照
@@ -132,7 +131,7 @@ public interface IVehicleRepository {
         String currentDMStr = JSONUtility.transferFromObject2JSON(currentDM);
         drivingModelLogInfo("Send CurrentDM2Vehicle="+currentDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_CURRENT_DM_KEY,currentDMStr);
         //save to redis
         inputValue2ZSET(REDIS_CURRENT_DRIVING_MODE_ZSET, getDateTimeNowTimeStamp(), currentDMStr);
     }
@@ -143,7 +142,7 @@ public interface IVehicleRepository {
         String defaultDMStr = JSONUtility.transferFromObject2JSON(defaultDM);
         drivingModelLogInfo("Send DefaultDM2Vehicle="+defaultDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_DEFAULT_DM_KEY,defaultDMStr);
     }
 
     //发送Normal DrivingMode到Vehicle
@@ -152,7 +151,7 @@ public interface IVehicleRepository {
          String normalDMStr = JSONUtility.transferFromObject2JSON(normalDM);
         drivingModelLogInfo("Send NormalDM2Vehicle="+normalDMStr);
         //send to kafka
-        KafkaProducerFactory.sendMessage(KAFKA_DIRVING_MODE_TOPIC,KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
+        KafkaProducerFactory.sendMessage(KAFKA_DRIVING_MODE_TOPIC,KAFKA_CONFIG_NORMAL_DM_KEY,normalDMStr);
     }
 
     //发送Weather到Vehicle
@@ -161,6 +160,14 @@ public interface IVehicleRepository {
         commonLogInfo("Send Weather2Vehicle="+weatherStr);
         //send to kafka
         KafkaProducerFactory.sendMessage(KAFKA_WEATHER_TOPIC,KAFKA_WEATHER_KEY,weatherStr);
+    }
+
+    //发送SpeedAux到Vehicle
+    static void sendSpeedAux2Vehicle(SpeedAux speedAux){
+        String speedAuxStr = JSONUtility.transferFromObject2JSON(speedAux);
+        speedAuxLogInfo("Send SpeedAux2Vehicle="+speedAuxStr);
+        //send to kafka
+        KafkaProducerFactory.sendMessage(KAFKA_SPD_AUX_TOPIC,KAFKA_SPD_AUX_KEY,speedAuxStr);
     }
 
     //根据V60的帧格式，发送Weather和DrivingModeConfigure

@@ -51,6 +51,8 @@ public class InfraRedisConstants {
     public final static String REDIS_VCU_FB_ZSET = "can:FB:zset";
     public final static String REDIS_VCU_FA_ZSET = "can:FA:zset";
     public final static String REDIS_VCU_29D_ZSET = "can:29D:zset";
+    public final static String REDIS_VCU_77_ZSET = "can:77:zset";
+    public final static String REDIS_VCU_78_ZSET = "can:78:zset";
 
     public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
 

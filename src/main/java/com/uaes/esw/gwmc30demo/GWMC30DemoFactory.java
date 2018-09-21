@@ -7,14 +7,13 @@ import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendO
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingCurrentCycleNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingRemindNotice;
+import static com.uaes.esw.gwmc30demo.application.assembler.SpeedAuxiliaryService.sendOutSpeedAuxStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.VehicleService.sendOutFrontPageNotice;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_NAME;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS;
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS;
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS;
-import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.WEBSOCKET_URL_ENERGY_SAVING_REMIND;
+import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
@@ -37,8 +36,9 @@ public class GWMC30DemoFactory {
 
     //开始WebSocket服务
     public static void startPushMessageService(){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
+        //每10秒发送一次节能状态
+        ExecutorService executorES = Executors.newSingleThreadExecutor();
+        executorES.execute(() -> {
             while(true){
                     sleepSeconds(WEBSOCKET_ENERGY_SAVING_REMIND_INTERVAL_SECONDS);
                     //节能之当前驾驶信息
@@ -51,9 +51,9 @@ public class GWMC30DemoFactory {
                     sendOutBatteryBalanceNotice();
             }
         });
-        //2秒发送一次电池状态和首页状态
-        ExecutorService executor1 = Executors.newSingleThreadExecutor();
-        executor1.execute(() -> {
+        //每2秒发送一次电池状态和首页状态
+        ExecutorService executorST = Executors.newSingleThreadExecutor();
+        executorST.execute(() -> {
             while(true){
                 //首页
                 sendOutFrontPageNotice();
@@ -63,20 +63,30 @@ public class GWMC30DemoFactory {
                 sleepSeconds(WEBSOCKET_BATTERY_STATUS_INTERVAL_SECONDS);
             }
         });
+        //每5秒发送一次车速辅助状态
+        ExecutorService executorSA = Executors.newSingleThreadExecutor();
+        executorSA.execute(() -> {
+            while(true){
+                //车速辅助
+                sendOutSpeedAuxStatusNotice();
+                sleepSeconds(WEBSOCKET_SPEED_AUX_STATUS_INTERVAL_SECONDS);
+            }
+        });
     }
 
     //每500毫秒轮询并更新Vehicle Hash
     static void updateVehicleSnapShotManager(){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
+        ExecutorService executorVS = Executors.newSingleThreadExecutor();
+        executorVS.execute(() -> {
             while(true){
                 //Vehicle SnapShot
                 updateVehicleSnapShot(REDIS_VEHICLE_HASH_NAME);
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });
-        ExecutorService executor1 = Executors.newSingleThreadExecutor();
-        executor1.execute(() -> {
+        //每500毫秒查询是否断电
+        ExecutorService executorPO = Executors.newSingleThreadExecutor();
+        executorPO.execute(() -> {
             while(true){
                 //断电后触发驾驶循环和重置驾驶模式
                 dealStaffWhenPowerOff();
@@ -87,8 +97,8 @@ public class GWMC30DemoFactory {
 
     //每隔5分钟查询天气，缺省是上海 shanghai
     static void queryWeatherManager(String location){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
+        ExecutorService executorWM = Executors.newSingleThreadExecutor();
+        executorWM.execute(() -> {
             while(true){
                 updateWeather2VehicleDomainService(location);
                 sleepMinutes(HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES);
