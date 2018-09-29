@@ -24,4 +24,6 @@ public class CommonConstants {
 
     public final static String MESSAGE_DIGEST_ALGORITHM_MD5 = "MD5";
 
+    public final static String STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT = "%.6f";
+
 }

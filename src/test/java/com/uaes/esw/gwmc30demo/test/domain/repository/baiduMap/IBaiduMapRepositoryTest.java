@@ -17,6 +17,7 @@
 
 package com.uaes.esw.gwmc30demo.test.domain.repository.baiduMap;
 
+import com.uaes.esw.gwmc30demo.domain.model.entity.geography.aGPS;
 import org.junit.Test;
 
 import static com.uaes.esw.gwmc30demo.domain.repository.baiduMap.IBaiduMapRepository.*;
@@ -24,7 +25,7 @@ import static com.uaes.esw.gwmc30demo.domain.repository.baiduMap.IBaiduMapReposi
 public class IBaiduMapRepositoryTest {
     @Test
     public void testQueryCurrentLocationLatLng() {
-        queryLngLatByCurrentLocation("上海市联合汽车电子有限公司");
+        queryLngLatByCurrentLocation("浦东机场");
     }
 
     @Test
@@ -33,8 +34,10 @@ public class IBaiduMapRepositoryTest {
     }
 
     @Test
-    public void testCalTargetLocation() {
-        calTargetLocation(queryLngLatByCurrentLocation("上海市联合汽车电子有限公司"));
+    public void testPlanRouteByBD09InShanghai() {
+        aGPS originalBD09 = aGPS.builder().lat(31.272910764925054).lng(121.63407078631177).build();
+        aGPS destinationBD09 = aGPS.builder().lat(31.155341598992525).lng(121.81049994857406).build();
+        planRouteByBD09InShanghai(originalBD09,destinationBD09);
     }
 
 }

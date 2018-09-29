@@ -20,8 +20,8 @@ package com.uaes.esw.gwmc30demo.domain.repository.baiduMap;
 import com.uaes.esw.gwmc30demo.domain.model.entity.geography.GeoLocation;
 import com.uaes.esw.gwmc30demo.domain.model.entity.geography.WGS84;
 import com.uaes.esw.gwmc30demo.domain.model.entity.geography.aGPS;
-import com.uaes.esw.gwmc30demo.domain.model.scenario.SOEMileageRadiusPlan.CurrentLocation;
-import com.uaes.esw.gwmc30demo.domain.model.scenario.SOEMileageRadiusPlan.TargetLocation;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.SOEMileageRadiusPlan.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -32,6 +32,8 @@ import java.util.Map;
 
 import static com.uaes.esw.gwmc30demo.constant.BaiduMapConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.CHARACTOERSET_UTF8;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.COMMA;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT;
 import static com.uaes.esw.gwmc30demo.constant.SOEMileageRadiusPlanConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.gpsSpg.IGPSspgRepository.convertBD09toWGS84;
 import static com.uaes.esw.gwmc30demo.domain.repository.gpsSpg.IGPSspgRepository.convertWGS84toBD09;
@@ -189,6 +191,65 @@ public interface IBaiduMapRepository {
                     .wgs84GPS(wgs84).build();
             System.out.println(geoLocation);
             return geoLocation;
+        }
+        else
+            return null;
+    }
+
+    //路线规划
+    static PlanRoute planRouteByBD09InShanghai(aGPS originBD09, aGPS destinationBD09){
+        String url = BAIDU_MAP_API_URL + BAIDU_MAP_API_DIRECTION_V1;
+        Map<String,Object> params =  new LinkedHashMap<>();
+        params.put(BAIDU_MAP_API_ORIGIN_KEY,
+                String.format(STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT,originBD09.getLat()) +
+                        COMMA + String.format(STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT,originBD09.getLng()));
+        params.put(BAIDU_MAP_API_DESTINATION_KEY,
+                String.format(STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT,destinationBD09.getLat()) +
+                        COMMA + String.format(STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT,destinationBD09.getLng()));
+        params.put(BAIDU_MAP_API_ORIGIN_REGION_KEY,BAIDU_MAP_API_REGION_VALUE);
+        params.put(BAIDU_MAP_API_DESTINATION_REGION_KEY,BAIDU_MAP_API_REGION_VALUE);
+        params.put(BAIDU_MAP_API_OUTPUT_KEY,BAIDU_MAP_API_OUTPUT_VALUE);
+        params.put(BAIDU_MAP_API_AK_KEY,BAIDU_MAP_API_AK_VALUE);
+
+        String planRouteResult = httpGetRequest(url,params);
+        System.out.println(planRouteResult);
+
+        JSONObject planRouteResultObj = new JSONObject(planRouteResult);
+
+        List<Direction> directions = new ArrayList<>();
+        if(BAIDU_MAP_API_RESULT_STATUS_SUCCESS_VALUE == planRouteResultObj
+                .getInt(BAIDU_MAP_API_RESULT_STATUS_KEY)){
+            JSONArray routesArray = planRouteResultObj.getJSONObject(BAIDU_MAP_API_RESULT_RESULT_KEY)
+                    .getJSONArray(BAIDU_MAP_API_ROUTES_KEY);
+            int routesNumber = routesArray.length();
+            System.out.println("There are " + routesNumber + " routes in this result");
+            for(int j = 0; j< routesNumber; j++){
+                JSONObject routeObj = routesArray.getJSONObject(j);
+                Route summaryRoute = Route.builder().distance(routeObj.getInt(BAIDU_MAP_API_DISTANCE_KEY))
+                        .duration(routeObj.getInt(BAIDU_MAP_API_DURATION_KEY))
+                        .build();
+                System.out.println("summaryRoute:"+summaryRoute);
+                List<Route> stepsList = new ArrayList<>();
+                List<Integer> stepsAccumDurationList = new ArrayList<>();
+                int stepsAccumDuration = 0;
+                JSONArray stepsArray = routeObj.getJSONArray(BAIDU_MAP_API_STEPS_KEY);
+                int stepsNumber = stepsArray.length();
+                System.out.println("There are " + stepsNumber + " steps in this result");
+                for(int i = 0; i < stepsNumber; i++){
+                    int stepDuration = stepsArray.getJSONObject(i).getInt(BAIDU_MAP_API_DURATION_KEY);
+                    int stepDistance = stepsArray.getJSONObject(i).getInt(BAIDU_MAP_API_DISTANCE_KEY);
+                    Route route = Route.builder().distance(stepDistance).duration(stepDuration).build();
+                    stepsList.add(i,route);
+                    stepsAccumDuration = stepsAccumDuration + stepDuration;
+                    stepsAccumDurationList.add(i,stepsAccumDuration);
+                }
+                Direction direction = Direction.builder().durationAccum(stepsAccumDurationList)
+                        .steps(stepsList).summary(summaryRoute).build();
+                System.out.println(direction);
+                directions.add(j,direction);
+            }
+            PlanRoute planRoute = PlanRoute.builder().directions(directions).build();
+            return planRoute;
         }
         else
             return null;

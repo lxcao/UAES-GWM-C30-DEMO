@@ -29,17 +29,28 @@ public class BaiduMapConstants {
     public final static String BAIDU_MAP_API_AK_VALUE = "Ym8T82qP2miTETQrn43rNnOF08CM7g49";
     public final static String BAIDU_MAP_API_SK_VALUE = "HZFT2GQMmNfrwz3eU031Rh7baYWAEY2e";
     public final static String BAIDU_MAP_API_URL = "https://api.map.baidu.com";
+    public final static String BAIDU_MAP_API_RESULT_STATUS_KEY = "status";
+    public final static int BAIDU_MAP_API_RESULT_STATUS_SUCCESS_VALUE = 0;
+    public final static String BAIDU_MAP_API_RESULT_RESULT_KEY = "result";
 
     public final static String BAIDU_MAP_API_GEOCODER = "/geocoder/v2/";
     public final static String BAIDU_MAP_API_ADDRESS_KEY = "address";
     public final static String BAIDU_MAP_API_LOCATION_KEY = "location";
-    public final static String BAIDU_MAP_API_RESULT_STATUS_KEY = "status";
-    public final static int BAIDU_MAP_API_RESULT_STATUS_SUCCESS_VALUE = 0;
-    public final static String BAIDU_MAP_API_RESULT_RESULT_KEY = "result";
     public final static String BAIDU_MAP_API_RESULT_LOCATION_KEY = "location";
     public final static String BAIDU_MAP_API_RESULT_FORMATTED_ADDRESS_KEY = "formatted_address";
     public final static String BAIDU_MAP_API_RESULT_FORMATTED_ADDRESS_UNKNOWN_VALUE= "UNKNOWN";
     public final static String BAIDU_MAP_API_RESULT_LNG_KEY = "lng";
     public final static String BAIDU_MAP_API_RESULT_LAT_KEY = "lat";
 
+    public final static String BAIDU_MAP_API_DIRECTION_V1 = "/direction/v1/";
+    public final static String BAIDU_MAP_API_ORIGIN_KEY = "origin";
+    public final static String BAIDU_MAP_API_DESTINATION_KEY = "destination";
+    public final static String BAIDU_MAP_API_REGION_KEY = "region";
+    public final static String BAIDU_MAP_API_ORIGIN_REGION_KEY = "origin_region";
+    public final static String BAIDU_MAP_API_DESTINATION_REGION_KEY = "destination_region";
+    public final static String BAIDU_MAP_API_REGION_VALUE = "上海";
+    public final static String BAIDU_MAP_API_ROUTES_KEY = "routes";
+    public final static String BAIDU_MAP_API_DISTANCE_KEY = "distance";
+    public final static String BAIDU_MAP_API_DURATION_KEY = "duration";
+    public final static String BAIDU_MAP_API_STEPS_KEY = "steps";
 }
