@@ -36,6 +36,8 @@ public class BaiduMapConstants {
     public final static String BAIDU_MAP_API_GEOCODER = "/geocoder/v2/";
     public final static String BAIDU_MAP_API_ADDRESS_KEY = "address";
     public final static String BAIDU_MAP_API_LOCATION_KEY = "location";
+    public final static String BAIDU_MAP_API_CITY_KEY = "city";
+    public final static String BAIDU_MAP_API_CITY_VALUE = "上海市";
     public final static String BAIDU_MAP_API_RESULT_LOCATION_KEY = "location";
     public final static String BAIDU_MAP_API_RESULT_FORMATTED_ADDRESS_KEY = "formatted_address";
     public final static String BAIDU_MAP_API_RESULT_FORMATTED_ADDRESS_UNKNOWN_VALUE= "UNKNOWN";

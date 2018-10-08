@@ -15,12 +15,20 @@
  * limitations under the License.
  */
 
-package com.uaes.esw.gwmc30demo.constant;
+package com.uaes.esw.gwmc30demo.infrastructure.utils;
 
-public class SOEMileageRadiusPlanConstants {
-    public final static double MAX_BATTERY_LIFE_MILEAGE = 300.00; //续航极限里程 公里
-    public final static double TIME_STEP = 100.00; //时间步长
-    public final static double TARGET_LOCATION_NUMBER_DOUBLE = 16.0; //16个目标GPS点集
-    public final static int TARGET_LOCATION_NUMBER_INT = 16; //16个目标GPS点集
-    public final static double TARGET_LOCATION_REFINE_PARAMETER = 10.0; //修正点集的参数
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.DEGREE_180;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PI;
+
+public interface MathUtils {
+
+    //弧度转角度
+    static double Rad2Deg(double radian){
+        return radian * DEGREE_180 / PI;
+    }
+
+    //角度转弧度
+    static double Deg2Rad(double degree){
+        return degree * PI / DEGREE_180;
+    }
 }

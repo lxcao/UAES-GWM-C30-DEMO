@@ -17,6 +17,7 @@
 
 package com.uaes.esw.gwmc30demo.test.domain.repository.baiduMap;
 
+import com.uaes.esw.gwmc30demo.domain.model.entity.geography.GeoLocation;
 import com.uaes.esw.gwmc30demo.domain.model.entity.geography.aGPS;
 import org.junit.Test;
 
@@ -25,18 +26,29 @@ import static com.uaes.esw.gwmc30demo.domain.repository.baiduMap.IBaiduMapReposi
 public class IBaiduMapRepositoryTest {
     @Test
     public void testQueryCurrentLocationLatLng() {
-        queryLngLatByCurrentLocation("浦东机场");
+        queryLngLatByCurrentLocation("浦东机场","上海市");
+        queryLngLatByCurrentLocation("联合汽车电子有限公司","上海市");
     }
 
     @Test
     public void testQueryAddressByLngLat() {
-        queryAddressByBD09LngLat(121.63407078631177,31.272910764925056);
+        GeoLocation location = queryLatLngByLocation("联合汽车电子有限公司","上海市");
+        queryAddressByBD09LngLat(location.getBd09GPS().getLng(),location.getBd09GPS().getLat());
+    }
+
+    @Test
+    public void testCalTargetLocationV2(){
+        calTargetLocationV2(queryLngLatByCurrentLocation("联合汽车电子有限公司","上海市"));
     }
 
     @Test
     public void testPlanRouteByBD09InShanghai() {
-        aGPS originalBD09 = aGPS.builder().lat(31.272910764925054).lng(121.63407078631177).build();
-        aGPS destinationBD09 = aGPS.builder().lat(31.155341598992525).lng(121.81049994857406).build();
+        GeoLocation original = queryLatLngByLocation("联合汽车电子有限公司","上海市");
+        GeoLocation destination = queryLatLngByLocation("联合汽车电子有限公司","上海市");
+        aGPS originalBD09 = aGPS.builder().lat(original.getBd09GPS().getLat())
+                .lng(original.getBd09GPS().getLng()).build();
+        aGPS destinationBD09 = aGPS.builder().lat(destination.getBd09GPS().getLat())
+                .lng(destination.getBd09GPS().getLng()).build();
         planRouteByBD09InShanghai(originalBD09,destinationBD09);
     }
 

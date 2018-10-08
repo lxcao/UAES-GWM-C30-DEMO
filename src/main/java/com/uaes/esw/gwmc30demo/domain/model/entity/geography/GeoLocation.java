@@ -21,6 +21,7 @@ import lombok.Data;
 
 @Data @Builder
 public class GeoLocation {
+    String location;
     String address;
     aGPS wgs84GPS;
     aGPS bd09GPS;

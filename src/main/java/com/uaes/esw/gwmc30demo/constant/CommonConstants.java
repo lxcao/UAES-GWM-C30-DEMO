@@ -26,4 +26,11 @@ public class CommonConstants {
 
     public final static String STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT = "%.6f";
 
+    public final static double PI = Math.PI;
+    public final static double DEGREE_180 = 180.0;
+    public final static double DEGREE_360 = 360.0;
+
+    //地球半径 公里
+    public final static double EARTH_REDIUS = 6367.0;
+
 }

@@ -31,15 +31,15 @@ import java.util.List;
 import java.util.Map;
 
 import static com.uaes.esw.gwmc30demo.constant.BaiduMapConstants.*;
-import static com.uaes.esw.gwmc30demo.constant.CommonConstants.CHARACTOERSET_UTF8;
-import static com.uaes.esw.gwmc30demo.constant.CommonConstants.COMMA;
-import static com.uaes.esw.gwmc30demo.constant.CommonConstants.STRING_FORMAT_REMAIN_SIX_AFTER_DECIMAL_POINT;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.SOEMileageRadiusPlanConstants.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.gpsSpg.IGPSspgRepository.convertBD09toWGS84;
 import static com.uaes.esw.gwmc30demo.domain.repository.gpsSpg.IGPSspgRepository.convertWGS84toBD09;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientHandler.httpGetRequest;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeString;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.MD5utils.stackoverFlowMD5;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.MathUtils.Deg2Rad;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.MathUtils.Rad2Deg;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.StringUtils.toQueryString;
 
 public interface IBaiduMapRepository {
@@ -67,31 +67,70 @@ public interface IBaiduMapRepository {
         }
     }
 
+    //根据不同的方位计算球面距离得到的方位
+    static aGPS calTargetWgs84(aGPS sourceWgs84, double bearing, double arcLength){
+        double lat1 = Deg2Rad(sourceWgs84.getLat());
+        double lng1 = Deg2Rad(sourceWgs84.getLng());
+        double centralAngle = arcLength / EARTH_REDIUS;
+        double lat2 = Math.asin(Math.sin(lat1)*Math.cos(centralAngle) +
+                Math.cos(lat1)*Math.sin(centralAngle)*Math.cos(Deg2Rad(bearing)));
+        double lng2 = lng1 +
+                Math.atan2(Math.sin(Deg2Rad(bearing))*Math.sin(centralAngle)*Math.cos(lat1),
+                        Math.cos(centralAngle)-Math.sin(lat1)*Math.sin(lat2));
+        aGPS wgs84 = WGS84.builder().lng(Rad2Deg(lng2)).lat(Rad2Deg(lat2)).build();
+        return wgs84;
+    }
+
     //计算目标Lng
     static double calTargetWgs84Lng(double sourceWgs84Lng, double index){
-        return sourceWgs84Lng + MAX_BATTERY_LIFE_MILEAGE*Math.cos(index*Math.PI/TARGET_LOCATION_NUMBER);
+        return sourceWgs84Lng + MAX_BATTERY_LIFE_MILEAGE*Math.cos(index*Math.PI/TARGET_LOCATION_NUMBER_DOUBLE);
     }
 
     //计算目标Lat
     static double calTargetWgs84Lat(double sourceWgs84Lat,double index){
-        return sourceWgs84Lat + MAX_BATTERY_LIFE_MILEAGE*Math.sin(index*Math.PI/TARGET_LOCATION_NUMBER);
+        return sourceWgs84Lat + MAX_BATTERY_LIFE_MILEAGE*Math.sin(index*Math.PI/TARGET_LOCATION_NUMBER_DOUBLE);
     }
 
     //修正目标Lng
     static double refineTargetWgs84Lng(double currentWgs84Lng, double index){
-        return currentWgs84Lng - TARGET_LOCATION_REFINE_PARAMETER*Math.cos(index*Math.PI/TARGET_LOCATION_NUMBER);
+        return currentWgs84Lng - TARGET_LOCATION_REFINE_PARAMETER*Math.cos(index*Math.PI/TARGET_LOCATION_NUMBER_DOUBLE);
     }
     //修正目标Lat
     static double refineTargetWgs84Lat(double currentWgs84Lat, double index){
-        return currentWgs84Lat - TARGET_LOCATION_REFINE_PARAMETER*Math.sin(index*Math.PI/TARGET_LOCATION_NUMBER);
+        return currentWgs84Lat - TARGET_LOCATION_REFINE_PARAMETER*Math.sin(index*Math.PI/TARGET_LOCATION_NUMBER_DOUBLE);
     }
 
     //查询当前位置的经纬度
-    static CurrentLocation queryLngLatByCurrentLocation(String cLocation){
+    static CurrentLocation queryLngLatByCurrentLocation(String cLocation, String cCity){
         return CurrentLocation.builder()
                 .dateTime(getDateTimeString())
-                .currentGeoLocation(queryLatLngByLocation(cLocation))
+                .currentGeoLocation(queryLatLngByLocation(cLocation,cCity))
                 .build();
+    }
+
+    //计算目标GPS点集v2
+    static TargetLocation calTargetLocationV2(CurrentLocation currentLocation){
+        TargetLocation targetLocation = TargetLocation.builder()
+                .dateTime(currentLocation.getDateTime()).build();
+        List<GeoLocation> targetGeoLocation = new ArrayList<GeoLocation>();
+        aGPS currentWgs84 = currentLocation.getCurrentGeoLocation().getWgs84GPS();
+
+        for(int i=1;i < TARGET_LOCATION_NUMBER_INT; i++){
+            System.out.println("开始计算"+i);
+            System.out.println("currentWgs84Lng:"+currentWgs84.getLng());
+            System.out.println("currentWgs84Lat:"+currentWgs84.getLat());
+            aGPS targetWgs84 = calTargetWgs84(currentWgs84,
+                    (double)i/TARGET_LOCATION_NUMBER_DOUBLE*DEGREE_360,
+                    MAX_BATTERY_LIFE_MILEAGE);
+            System.out.println("targetWgs84lng:"+targetWgs84.getLng());
+            System.out.println("targetWgs84lat:"+targetWgs84.getLat());
+            aGPS bd09 = convertWGS84toBD09(targetWgs84);
+            targetGeoLocation.add(i,calMeaningfulAddressByBD09LngLat(bd09.getLng(),
+                    bd09.getLat(), (double) i));
+        }
+        targetLocation.setTargetGeoLocation(targetGeoLocation);
+        System.out.println(targetGeoLocation);
+        return targetLocation;
     }
 
     //计算目标GPS点集
@@ -124,6 +163,7 @@ public interface IBaiduMapRepository {
     //递归查询有地理含义的经纬度的逆地理编码
     static GeoLocation calMeaningfulAddressByBD09LngLat(double bd09Lng, double bd09Lat, double index){
         GeoLocation geoLocation = queryAddressByBD09LngLat(bd09Lng, bd09Lat);
+        //TODO: reprogram
         if(geoLocation.getAddress().equals(BAIDU_MAP_API_RESULT_FORMATTED_ADDRESS_UNKNOWN_VALUE)){
             aGPS bd09 = convertWGS84toBD09(convertBD09toWGS84(aGPS.builder()
                     .lng(bd09Lng).lat(bd09Lat).build()));
@@ -155,7 +195,7 @@ public interface IBaiduMapRepository {
                 addressStr = formattedAddress;
             aGPS bd09 = aGPS.builder().lat(lat).lng(lng).build();
             aGPS wgs84 = convertBD09toWGS84(bd09);
-            GeoLocation geoLocation = GeoLocation.builder()
+            GeoLocation geoLocation = GeoLocation.builder().location(addressStr)
                     .address(addressStr).bd09GPS(bd09).wgs84GPS(wgs84).build();
             System.out.println(geoLocation);
             return geoLocation;
@@ -165,10 +205,11 @@ public interface IBaiduMapRepository {
     }
 
     //查询位置的百度的经纬度，并转换为大地作弊系，实际用的是白名单，所以不需要SN，但有SN也无妨
-    static GeoLocation queryLatLngByLocation(String location){
+    static GeoLocation queryLatLngByLocation(String location, String city){
         String url = BAIDU_MAP_API_URL + BAIDU_MAP_API_GEOCODER;
         Map<String,Object> params =  new LinkedHashMap<>();
         params.put(BAIDU_MAP_API_ADDRESS_KEY,location);
+        params.put(BAIDU_MAP_API_CITY_KEY,city);
         params.put(BAIDU_MAP_API_OUTPUT_KEY,BAIDU_MAP_API_OUTPUT_VALUE);
         params.put(BAIDU_MAP_API_AK_KEY,BAIDU_MAP_API_AK_VALUE);
         //计算SN,不是必须
@@ -187,7 +228,7 @@ public interface IBaiduMapRepository {
                     .getJSONObject(BAIDU_MAP_API_RESULT_LOCATION_KEY).getDouble(BAIDU_MAP_API_RESULT_LNG_KEY);
             aGPS bd09 = aGPS.builder().lat(lat).lng(lng).build();
             aGPS wgs84 = convertBD09toWGS84(bd09);
-            GeoLocation geoLocation = GeoLocation.builder().address(location).bd09GPS(bd09)
+            GeoLocation geoLocation = GeoLocation.builder().location(location).address(location).bd09GPS(bd09)
                     .wgs84GPS(wgs84).build();
             System.out.println(geoLocation);
             return geoLocation;
