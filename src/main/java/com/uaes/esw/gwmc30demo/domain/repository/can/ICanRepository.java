@@ -132,4 +132,184 @@ public interface ICanRepository {
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_78_ZSET),
                 VCU78CanMessage.class);
     }
+
+    static BMS410CanMessage getLastBMS410MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_410_ZSET),
+                BMS410CanMessage.class);
+    }
+
+    static BMS411CanMessage getLastBMS411MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_411_ZSET),
+                BMS411CanMessage.class);
+    }
+
+    static BMS412CanMessage getLastBMS412MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_412_ZSET),
+                BMS412CanMessage.class);
+    }
+
+    static BMS413CanMessage getLastBMS413MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_413_ZSET),
+                BMS413CanMessage.class);
+    }
+
+    static BMS414CanMessage getLastBMS414MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_414_ZSET),
+                BMS414CanMessage.class);
+    }
+
+    static BMS415CanMessage getLastBMS415MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_415_ZSET),
+                BMS415CanMessage.class);
+    }
+
+    static BMS416CanMessage getLastBMS416MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_416_ZSET),
+                BMS416CanMessage.class);
+    }
+
+    static BMS417CanMessage getLastBMS417MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_417_ZSET),
+                BMS417CanMessage.class);
+    }
+
+    static BMS418CanMessage getLastBMS418MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_418_ZSET),
+                BMS418CanMessage.class);
+    }
+
+    static BMS420CanMessage getLastBMS420MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_420_ZSET),
+                BMS420CanMessage.class);
+    }
+
+    static BMS421CanMessage getLastBMS421MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_421_ZSET),
+                BMS421CanMessage.class);
+    }
+
+    static BMS422CanMessage getLastBMS422MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_422_ZSET),
+                BMS422CanMessage.class);
+    }
+
+    static BMS423CanMessage getLastBMS423MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_423_ZSET),
+                BMS423CanMessage.class);
+    }
+
+    static BMS424CanMessage getLastBMS424MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_424_ZSET),
+                BMS424CanMessage.class);
+    }
+
+    static BMS425CanMessage getLastBMS425MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_425_ZSET),
+                BMS425CanMessage.class);
+    }
+
+    static BMS426CanMessage getLastBMS426MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_426_ZSET),
+                BMS426CanMessage.class);
+    }
+
+    static BMS427CanMessage getLastBMS427MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_427_ZSET),
+                BMS427CanMessage.class);
+    }
+
+    static BMS428CanMessage getLastBMS428MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_428_ZSET),
+                BMS428CanMessage.class);
+    }
+
+    static BMS430CanMessage getLastBMS430MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_430_ZSET),
+                BMS430CanMessage.class);
+    }
+
+    static BMS431CanMessage getLastBMS431MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_431_ZSET),
+                BMS431CanMessage.class);
+    }
+
+    static BMS432CanMessage getLastBMS432MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_432_ZSET),
+                BMS432CanMessage.class);
+    }
+
+    static BMS433CanMessage getLastBMS433MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_433_ZSET),
+                BMS433CanMessage.class);
+    }
+
+    static BMS434CanMessage getLastBMS434MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_434_ZSET),
+                BMS434CanMessage.class);
+    }
+
+    static BMS435CanMessage getLastBMS435MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_435_ZSET),
+                BMS435CanMessage.class);
+    }
+
+    static BMS436CanMessage getLastBMS436MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_436_ZSET),
+                BMS436CanMessage.class);
+    }
+
+    static BMS437CanMessage getLastBMS437MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_437_ZSET),
+                BMS437CanMessage.class);
+    }
+
+    static BMS440CanMessage getLastBMS440MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_440_ZSET),
+                BMS440CanMessage.class);
+    }
+
+    static BMS442CanMessage getLastBMS442MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_442_ZSET),
+                BMS442CanMessage.class);
+    }
+
+    static BMS443CanMessage getLastBMS443MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_443_ZSET),
+                BMS443CanMessage.class);
+    }
+
+    static BMS444CanMessage getLastBMS444MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_444_ZSET),
+                BMS444CanMessage.class);
+    }
+
+    static BMS445CanMessage getLastBMS445MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_445_ZSET),
+                BMS445CanMessage.class);
+    }
+
+    static BMS446CanMessage getLastBMS446MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_446_ZSET),
+                BMS446CanMessage.class);
+    }
+
+    static BMS447CanMessage getLastBMS447MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_447_ZSET),
+                BMS447CanMessage.class);
+    }
+
+    static BMS449CanMessage getLastBMS449MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_449_ZSET),
+                BMS449CanMessage.class);
+    }
+
+    static BMS452CanMessage getLastBMS452MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_452_ZSET),
+                BMS452CanMessage.class);
+    }
+
+    static BMS454CanMessage getLastBMS454MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_BMS_454_ZSET),
+                BMS454CanMessage.class);
+    }
 }

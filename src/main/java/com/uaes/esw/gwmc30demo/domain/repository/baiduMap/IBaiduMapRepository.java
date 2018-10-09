@@ -112,10 +112,10 @@ public interface IBaiduMapRepository {
     static TargetLocation calTargetLocationV2(CurrentLocation currentLocation){
         TargetLocation targetLocation = TargetLocation.builder()
                 .dateTime(currentLocation.getDateTime()).build();
-        List<GeoLocation> targetGeoLocation = new ArrayList<GeoLocation>();
+        List<GeoLocation> targetGeoLocationList = new ArrayList<GeoLocation>();
         aGPS currentWgs84 = currentLocation.getCurrentGeoLocation().getWgs84GPS();
 
-        for(int i=1;i < TARGET_LOCATION_NUMBER_INT; i++){
+        for(int i=1;i <= TARGET_LOCATION_NUMBER_INT; i++){
             System.out.println("开始计算"+i);
             System.out.println("currentWgs84Lng:"+currentWgs84.getLng());
             System.out.println("currentWgs84Lat:"+currentWgs84.getLat());
@@ -124,12 +124,16 @@ public interface IBaiduMapRepository {
                     MAX_BATTERY_LIFE_MILEAGE);
             System.out.println("targetWgs84lng:"+targetWgs84.getLng());
             System.out.println("targetWgs84lat:"+targetWgs84.getLat());
-            aGPS bd09 = convertWGS84toBD09(targetWgs84);
-            targetGeoLocation.add(i,calMeaningfulAddressByBD09LngLat(bd09.getLng(),
-                    bd09.getLat(), (double) i));
+            aGPS targetBd09 = convertWGS84toBD09(targetWgs84);
+            //TODO: need add meaningful
+            GeoLocation targetGeoLocation = GeoLocation.builder()
+                    .bd09GPS(targetBd09).wgs84GPS(targetWgs84).build();
+            targetGeoLocationList.add(i-1,targetGeoLocation);
+/*            targetGeoLocation.add(i-1,calMeaningfulAddressByBD09LngLat(targetBd09.getLng(),
+                    targetBd09.getLat(), (double) i));*/
         }
-        targetLocation.setTargetGeoLocation(targetGeoLocation);
-        System.out.println(targetGeoLocation);
+        System.out.println(targetGeoLocationList);
+        targetLocation.setTargetGeoLocation(targetGeoLocationList);
         return targetLocation;
     }
 

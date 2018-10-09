@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryBalanceNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutBatteryStatusNotice;
+import static com.uaes.esw.gwmc30demo.application.assembler.BatteryService.sendOutCSCVCellNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingCurrentCycleNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingRemindNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.SpeedAuxiliaryService.sendOutSpeedAuxStatusNotice;
@@ -70,6 +71,15 @@ public class GWMC30DemoFactory {
                 //车速辅助
                 sendOutSpeedAuxStatusNotice();
                 sleepSeconds(WEBSOCKET_SPEED_AUX_STATUS_INTERVAL_SECONDS);
+            }
+        });
+        //每1秒发送一次单体电池电压
+        ExecutorService executorVCell = Executors.newSingleThreadExecutor();
+        executorVCell.execute(() -> {
+            while(true){
+                //电池电压
+                sendOutCSCVCellNotice();
+                sleepSeconds(WEBSOCKET_CSC_VCELL_INTERVAL_SECONDS);
             }
         });
     }
