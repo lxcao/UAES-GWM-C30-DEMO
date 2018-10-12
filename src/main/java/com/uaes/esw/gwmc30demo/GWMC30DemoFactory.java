@@ -73,7 +73,7 @@ public class GWMC30DemoFactory {
                 sleepSeconds(WEBSOCKET_SPEED_AUX_STATUS_INTERVAL_SECONDS);
             }
         });
-        //每1秒发送一次单体电池电压
+        //每3秒发送一次单体电池电压
         ExecutorService executorVCell = Executors.newSingleThreadExecutor();
         executorVCell.execute(() -> {
             while(true){
