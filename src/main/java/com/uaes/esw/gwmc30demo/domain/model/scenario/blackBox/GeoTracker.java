@@ -15,28 +15,13 @@
  * limitations under the License.
  */
 
-package com.uaes.esw.gwmc30demo.test.domain.repository.weather;
+package com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox;
+import com.uaes.esw.gwmc30demo.domain.model.entity.geography.aGPS;
+import lombok.Builder;
+import lombok.Data;
 
-import org.junit.Test;
-
-import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryAirNow;
-import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryWeather;
-import static org.junit.Assert.*;
-
-public class IWeatherRepositoryTest {
-
-    @Test
-    public void tesQueryWeatherNow() {
-        queryWeather("shanghai");
-    }
-
-    @Test
-    public void testQueryAirNow() {
-        queryAirNow("shanghai");
-    }
-
-    @Test
-    public void testQueryWeather() {
-        queryWeather("shanghai");
-    }
+@Data @Builder
+public class GeoTracker {
+    long timeStamp;
+    aGPS bd09GPS;
 }

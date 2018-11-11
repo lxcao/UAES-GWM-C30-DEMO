@@ -2,6 +2,7 @@ package com.uaes.esw.gwmc30demo.infrastructure.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 public interface JSONUtility {
 
@@ -15,4 +16,5 @@ public interface JSONUtility {
     public static String transferFromObject2JSON(Object obj){
         return gson.toJson(obj);
     }
+
 }

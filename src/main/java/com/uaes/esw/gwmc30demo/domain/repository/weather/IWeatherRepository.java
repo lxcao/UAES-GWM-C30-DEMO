@@ -11,8 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
+import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_WEATHER_ZSET;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientHandler.httpGetRequest;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
+import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.inputValue2ZSET;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeString;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
 
 public interface IWeatherRepository {
 
@@ -26,12 +33,15 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         try{
-            //System.out.println("Start queryWeatherNow @ "+location);
+            System.out.println("Start queryWeatherNow @ "+location);
             String weatherNowResult = httpGetRequest(url,params);
-            //System.out.println("Get WeatherNow="+weatherNowResult);
+            System.out.println("Get WeatherNow="+weatherNowResult);
             JSONObject weatherNowResultJSONObj = new JSONObject(weatherNowResult);
             JSONObject resultJSONObj = weatherNowResultJSONObj.getJSONArray(WEATHER_JSON_KEY_RESULT)
                     .getJSONObject(WEATHER_JSON_ARRAY_INDEX);
+            String weatherText = resultJSONObj.getJSONObject(WEATHER_JSON_KEY_NOW)
+                    .getString(WEATHER_JSON_KEY_TEXT);
+            weatherNow.setWeatherText(weatherText);
             String weatherCode = resultJSONObj.getJSONObject(WEATHER_JSON_KEY_NOW)
                     .getString(WEATHER_JSON_KEY_CODE);
             int weatherStatus = 0;
@@ -66,7 +76,7 @@ public interface IWeatherRepository {
         double aqi = 0.0;
         try{
             String airNowResult = httpGetRequest(url,params);
-            //System.out.println("Get AirNow="+airNowResult);
+            System.out.println("Get AirNow="+airNowResult);
             JSONObject airNowResultJSONObj = new JSONObject(airNowResult);
             JSONObject resultJSONObj = airNowResultJSONObj.getJSONArray(AIR_JSON_KEY_RESULT)
                     .getJSONObject(AIR_JSON_ARRAY_INDEX);
@@ -86,9 +96,20 @@ public interface IWeatherRepository {
         AirNow airNow = queryAirNow(location);
         Weather weather = Weather.builder()
                 .location(location)
+                .dateTime(getDateTimeString())
                 .weatherNow(weatherNow)
                 .airNow(airNow)
                 .build();
         return weather;
+    }
+
+    static Weather getLastWeatherMessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_WEATHER_ZSET),
+                Weather.class);
+    }
+
+    static long setWeatherMessage2Redis(Weather weather){
+        return inputValue2ZSET(REDIS_WEATHER_ZSET,transfer2UnixTime(weather.getDateTime()),
+                transferFromObject2JSON(weather));
     }
 }

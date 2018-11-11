@@ -15,28 +15,9 @@
  * limitations under the License.
  */
 
-package com.uaes.esw.gwmc30demo.test.domain.repository.weather;
+package com.uaes.esw.gwmc30demo.constant;
 
-import org.junit.Test;
-
-import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryAirNow;
-import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryWeather;
-import static org.junit.Assert.*;
-
-public class IWeatherRepositoryTest {
-
-    @Test
-    public void tesQueryWeatherNow() {
-        queryWeather("shanghai");
-    }
-
-    @Test
-    public void testQueryAirNow() {
-        queryAirNow("shanghai");
-    }
-
-    @Test
-    public void testQueryWeather() {
-        queryWeather("shanghai");
-    }
+public class DeviceConstants {
+    public final static String DEVICE_KEY_RESPONSE = "responseCode";
+    public final static String DEVICE_KEY_BD09GPS = "bd09GPS";
 }

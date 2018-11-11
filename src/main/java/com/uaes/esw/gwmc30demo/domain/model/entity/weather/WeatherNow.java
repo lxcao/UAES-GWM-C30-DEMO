@@ -5,5 +5,6 @@ import lombok.Data;
 @Data @Builder
 public class WeatherNow {
     int weatherStatus;
+    String weatherText;
     double temperature;
 }

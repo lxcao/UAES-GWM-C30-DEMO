@@ -53,6 +53,7 @@ public class InfraRedisConstants {
     public final static String REDIS_VCU_29D_ZSET = "can:29D:zset";
     public final static String REDIS_VCU_77_ZSET = "can:77:zset";
     public final static String REDIS_VCU_78_ZSET = "can:78:zset";
+    public final static String REDIS_VCU_79_ZSET = "can:79:zset";
     public final static String REDIS_BMS_410_ZSET = "can:410:zset";
     public final static String REDIS_BMS_411_ZSET = "can:411:zset";
     public final static String REDIS_BMS_412_ZSET = "can:412:zset";
@@ -89,6 +90,9 @@ public class InfraRedisConstants {
     public final static String REDIS_BMS_449_ZSET = "can:449:zset";
     public final static String REDIS_BMS_452_ZSET = "can:452:zset";
     public final static String REDIS_BMS_454_ZSET = "can:454:zset";
+
+    public final static String REDIS_WEATHER_ZSET = "weather:zset";
+    public final static String REDIS_GPS_TRACKER_ZSET = "gps:tracker:zset";
 
     public final static int REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS = 500;
 

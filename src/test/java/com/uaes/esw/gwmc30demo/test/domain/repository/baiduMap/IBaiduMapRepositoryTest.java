@@ -44,7 +44,7 @@ public class IBaiduMapRepositoryTest {
     @Test
     public void testPlanRouteByBD09InShanghai() {
         GeoLocation original = queryLatLngByLocation("联合汽车电子有限公司","上海市");
-        GeoLocation destination = queryLatLngByLocation("联合汽车电子有限公司","上海市");
+        GeoLocation destination = queryLatLngByLocation("浦东机场","上海市");
         aGPS originalBD09 = aGPS.builder().lat(original.getBd09GPS().getLat())
                 .lng(original.getBd09GPS().getLng()).build();
         aGPS destinationBD09 = aGPS.builder().lat(destination.getBd09GPS().getLat())
