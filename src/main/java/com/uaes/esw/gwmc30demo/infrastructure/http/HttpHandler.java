@@ -6,6 +6,7 @@ import static com.uaes.esw.gwmc30demo.application.service.ChargingOnDemand.charg
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogIn.driverLogin;
 import static com.uaes.esw.gwmc30demo.application.service.DriverLogOut.driverLogout;
 import static com.uaes.esw.gwmc30demo.application.service.DriverRegister.driverRegister;
+import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingCycleByDate.queryDrivingCycleByDate;
 import static com.uaes.esw.gwmc30demo.application.service.QueryDrivingStyle.queryDrivingStyle;
 import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByCurrent.queryESByCurrent;
 import static com.uaes.esw.gwmc30demo.application.service.QueryEnergySavingByCustomer.queryESByCustomer;
@@ -184,6 +185,16 @@ public class HttpHandler {
             speedAuxLogInfo(LOG4J_INPUT+req.body());
             String resString = setSpeedAuxiliary(req.body());
             speedAuxLogInfo(LOG4J_OUTPUT+resString);
+            return resString;
+        });
+        Spark.post(HTTP_URL_QUERY_DRIVING_CYCLE_BY_DATE,(req, res) -> {
+            blackBoxLogInfo(HTTP_URL_QUERY_DRIVING_CYCLE_BY_DATE);
+            res.type(HTTP_CONFIG_CONTENT_TYPE);
+            res.header(HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_NAME,
+                    HTTP_CONFIG_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+            blackBoxLogInfo(LOG4J_INPUT+req.body());
+            String resString = queryDrivingCycleByDate(req.body());
+            blackBoxLogInfo(LOG4J_OUTPUT+resString);
             return resString;
         });
     }

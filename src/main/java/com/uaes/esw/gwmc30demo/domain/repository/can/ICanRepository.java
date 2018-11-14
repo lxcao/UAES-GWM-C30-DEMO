@@ -78,6 +78,8 @@ public interface ICanRepository {
                 VCU73CanMessage.class);
     }
 
+
+
     static VCU75CanMessage getLastVCU75MessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_75_ZSET),
                 VCU75CanMessage.class);

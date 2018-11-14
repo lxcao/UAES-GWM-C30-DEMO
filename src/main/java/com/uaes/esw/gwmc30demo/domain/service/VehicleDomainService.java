@@ -18,18 +18,22 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.DrivingCycle;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatus;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.vehicleStatus.VehicleStatusNotice;
+import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_CHARGE_REQUIRE_TIME_SECS;
 import static com.uaes.esw.gwmc30demo.constant.BatteryConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.VehicleConstants.*;
-import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusNow;
-import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getHVPowerOnStatusPrevious;
-import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.getVehicleSnapshot;
+import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.*;
 import static com.uaes.esw.gwmc30demo.domain.service.DrivingModeDomainService.resetDefaultDM2CurrentDMAsPowerOff4AllDriver;
 import static com.uaes.esw.gwmc30demo.domain.service.EnergySavingDomainService.getAndStoreLastEnergySavingCycleAsPowerOff;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.vehicleLogInfo;
 
 public class VehicleDomainService {
@@ -39,37 +43,82 @@ public class VehicleDomainService {
     }
 
     static String hvPowerStatus = HV_POWNER_STATUS_OFF;
-    static boolean isHVPowerStatusChangeFromOn2Off(){
-        int hvPowerOnNowValue = getHVPowerOnStatusNow();
+
+    static List<Integer> getTwoHVPowerOnStatus(){
         int hvPowerOnPreviousValue = getHVPowerOnStatusPrevious();
-        //vehicleLogInfo(hvPowerOnPreviousValue+" "+hvPowerOnNowValue+" "+hvPowerStatus);
+        int hvPowerOnNowValue = getHVPowerOnStatusNow();
+        List<Integer> twoStatus = new ArrayList<>();
+        twoStatus.add(0,hvPowerOnPreviousValue);
+        twoStatus.add(1,hvPowerOnNowValue);
+        return twoStatus;
+    }
+
+    static boolean isHVPowerStatusChangeFromOff2On(List<Integer> twoStatus){
+        int hvPowerOnNowValue = twoStatus.get(1);
+        int hvPowerOnPreviousValue = twoStatus.get(0);
+        if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 1){
+            if(hvPowerStatus.equals(HV_POWNER_STATUS_OFF)){
+                hvPowerStatus = HV_POWNER_STATUS_ON;
+                return true;
+            }
+        }else if(hvPowerOnPreviousValue == 0 && hvPowerOnNowValue == 1){
+            hvPowerStatus = HV_POWNER_STATUS_ON;
+            return true;
+        }else if(hvPowerOnPreviousValue == 0 && hvPowerOnNowValue == 0){
+            if(hvPowerStatus.equals(HV_POWNER_STATUS_ON)){
+                hvPowerStatus = HV_POWNER_STATUS_OFF;
+            }
+        }else if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0){
+            if(hvPowerStatus.equals(HV_POWNER_STATUS_ON)){
+                hvPowerStatus = HV_POWNER_STATUS_OFF;
+            }
+        }
+        return false;
+    }
+
+    static boolean isHVPowerStatusChangeFromOn2Off(List<Integer> twoStatus){
+        int hvPowerOnNowValue = twoStatus.get(1);
+        int hvPowerOnPreviousValue = twoStatus.get(0);
         if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 1){
             if(hvPowerStatus.equals(HV_POWNER_STATUS_OFF))
                 hvPowerStatus = HV_POWNER_STATUS_ON;
-            return false;
         }else if(hvPowerOnPreviousValue == 0 && hvPowerOnNowValue == 1){
             hvPowerStatus = HV_POWNER_STATUS_ON;
-            return false;
         }else if(hvPowerOnPreviousValue == 0 && hvPowerOnNowValue == 0){
             if(hvPowerStatus.equals(HV_POWNER_STATUS_ON)){
                 hvPowerStatus = HV_POWNER_STATUS_OFF;
                 return true;
             }
-            return false;
         }else if(hvPowerOnPreviousValue == 1 && hvPowerOnNowValue == 0){
             if(hvPowerStatus.equals(HV_POWNER_STATUS_ON)){
                 hvPowerStatus = HV_POWNER_STATUS_OFF;
                 return true;
             }
-            return false;
         }
         return false;
     }
 
-    public static void dealStaffWhenPowerOff(){
-        if(isHVPowerStatusChangeFromOn2Off()){
+    public static void dealStaffWhenPowerChanged(){
+        List<Integer> twoPowerStatus = getTwoHVPowerOnStatus();
+        //Power On
+        if(isHVPowerStatusChangeFromOff2On(twoPowerStatus)){
+            vehicleLogInfo("found isHVPowerStatusChangeFromOff2On");
+            //通电后，记录通电的时间
+            IVehicleRepository.storePowerOnTimestamp(getDateTimeNowTimeStamp());
+        }
+        //Power Off
+        if(isHVPowerStatusChangeFromOn2Off(twoPowerStatus)){
             vehicleLogInfo("found isHVPowerStatusChangeFromOn2Off");
-            //当断电后，记录一次驾驶循环
+            //断电后，记录断电时间
+            long powerOffTimestamp = getDateTimeNowTimeStamp();
+            IVehicleRepository.storePowerOffTimestamp(powerOffTimestamp);
+            // 且和最近一次的上电时间一起构成上次驾驶循环的时间
+            DrivingCycle drivingCycle = DrivingCycle.builder()
+                    .powerOffTimestamp(powerOffTimestamp)
+                    .powerOnTimestamp(getLastPowerOnTimestamp())
+                    .build();
+            IVehicleRepository.setDrivingCycle(drivingCycle);
+            //当断电后，记录该断电时刻的本次驾驶循环能量管理数据
             getAndStoreLastEnergySavingCycleAsPowerOff();
             //当断电后，将所有司机的currentDM 重置为defaultDM
             resetDefaultDM2CurrentDMAsPowerOff4AllDriver();

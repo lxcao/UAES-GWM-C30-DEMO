@@ -130,4 +130,8 @@ public class InfraRedisConstants {
     public final static String REDIS_BATTERY_BALANCE_STOP_POINT_ZSET = "gwm:c30:bb:stop:zset";
 
     public final static String REDIS_CURRENT_DRIVING_MODE_ZSET = "gwm:c30:current:dm:zset";
+
+    public final static String REDIS_POWER_ON_TIMESTAMP_ZSET = "gwm:c30:power:on:timestamp:zset";
+    public final static String REDIS_POWER_OFF_TIMESTAMP_ZSET = "gwm:c30:power:off:timestamp:zset";
+    public final static String REDIS_DRIVING_CYCLE_TIMESTAMP_ZSET = "gwm:c30:driving:cycle:timestamp:zset";
 }

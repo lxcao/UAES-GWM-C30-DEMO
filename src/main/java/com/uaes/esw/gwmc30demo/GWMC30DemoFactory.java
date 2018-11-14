@@ -18,7 +18,7 @@ import static com.uaes.esw.gwmc30demo.constant.InfraWebSocketConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.WeatherConstants.WEATHER_LOCATION;
 import static com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository.updateVehicleSnapShot;
 import static com.uaes.esw.gwmc30demo.domain.service.UpdateWeather2VehicleDomainService.updateWeather2VehicleDomainService;
-import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.dealStaffWhenPowerOff;
+import static com.uaes.esw.gwmc30demo.domain.service.VehicleDomainService.dealStaffWhenPowerChanged;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpFactory.setHttpServerProperties;
 import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpHandler.setRouter;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.sleepMilliSeconds;
@@ -94,12 +94,14 @@ public class GWMC30DemoFactory {
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });
-        //每500毫秒查询是否断电
+        //每500毫秒查询是否高压电发生变化
         ExecutorService executorPO = Executors.newSingleThreadExecutor();
         executorPO.execute(() -> {
             while(true){
-                //断电后触发驾驶循环和重置驾驶模式
-                dealStaffWhenPowerOff();
+                //高压电发生变化后要做的事情
+                // 如：断电后记录下电时间、驾驶循环、触发驾驶循环和重置驾驶模式
+                // 如：上电后记录上电时间
+                dealStaffWhenPowerChanged();
                 sleepMilliSeconds(REDIS_VEHICLE_HASH_UPDATE_INTERVAL_MS);
             }
         });
