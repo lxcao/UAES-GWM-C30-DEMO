@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package com.uaes.esw.gwmc30demo.domain.model.entity.can;
+package com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox;
 import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class VCU77CanMessage{
-    long unixtimestamp;
-    int Spd_Overrun_Flag; //车速超限标志
-    int Spd_Lmt_Enable_Flag; //车速限制使能标志
-    int Crr_Spd; //当前车速
+public class FltGrdSum {
+    boolean HasFlt;
+    int Level1Number;
+    int Level2Number;
+    int Level3Number;
 }

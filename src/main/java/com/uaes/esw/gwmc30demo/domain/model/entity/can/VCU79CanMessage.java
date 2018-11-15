@@ -20,7 +20,9 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class VCU79CanMessage {
+public class VCU79CanMessage{
+    String id;
+    long unixtimestamp;
     int Accident_Flg; // 事故发生标志
     int Acc_Pdl_Flt_Grd; //加速踏板故障等级
     int Brk_Pdl_Flt_Grd; //制动踏板故障等级
@@ -32,4 +34,5 @@ public class VCU79CanMessage {
     int Acc_Pdl_Flt_Desc; //加速踏板故障内容
     double Vltg_1st; //第一路信号电压
     double Vltg_2nd; //第二路信号电压
+    double LowVltg; //低压电池电压
 }

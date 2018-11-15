@@ -2,9 +2,13 @@ package com.uaes.esw.gwmc30demo.domain.repository.can;
 
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
 
 public interface ICanRepository {
 
@@ -133,6 +137,20 @@ public interface ICanRepository {
     static VCU78CanMessage getLastVCU78MessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_78_ZSET),
                 VCU78CanMessage.class);
+    }
+
+    static VCU79CanMessage getLastVCU79MessageFromRedis(){
+        return transferFromJSON2Object(getLastOneStringFromZset(REDIS_VCU_79_ZSET),
+                VCU79CanMessage.class);
+    }
+
+    static Set<VCU79CanMessage> getVCU79MessageFromRedisByPeriod(long startDateTime, long endDateTime){
+        Set<String> VCU79CanMessageStringSet = zRangeByScore(REDIS_VCU_79_ZSET, startDateTime, endDateTime);
+        Set<VCU79CanMessage> VCU79CanMesssageSet = new HashSet<>();
+        VCU79CanMessageStringSet.forEach(s -> {
+            VCU79CanMesssageSet.add(transferFromJSON2Object(s,VCU79CanMessage.class));
+        });
+        return VCU79CanMesssageSet;
     }
 
     static BMS410CanMessage getLastBMS410MessageFromRedis(){

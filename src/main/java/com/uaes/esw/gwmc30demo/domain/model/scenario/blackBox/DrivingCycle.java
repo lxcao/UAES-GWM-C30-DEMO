@@ -27,4 +27,5 @@ public class DrivingCycle {
     long powerOnTimestamp;
     long powerOffTimestamp;
     Set<GeoTracker> gps;
+    FltGrdSum fltGrdSum;
 }
