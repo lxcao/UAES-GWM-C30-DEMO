@@ -17,7 +17,6 @@
 
 package com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox;
 import com.uaes.esw.gwmc30demo.domain.model.entity.driver.Driver;
-import com.uaes.esw.gwmc30demo.domain.model.entity.journey.Journey;
 
 import lombok.Builder;
 import lombok.Data;
