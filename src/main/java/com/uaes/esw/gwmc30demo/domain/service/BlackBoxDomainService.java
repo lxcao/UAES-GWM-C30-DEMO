@@ -59,17 +59,8 @@ public class BlackBoxDomainService {
         return drivingCycleSet;
     }
 
-    static  int fltGrdLvl1Num = 0, fltGrdLvl2Num = 0, fltGrdLvl3Num = 0;
-    static void calFltGrdSum(Stream<Integer> intStream){
-        intStream.forEach(v -> {
-            if(v == 1) fltGrdLvl1Num ++;
-            else if (v == 2) fltGrdLvl2Num ++;
-            else if(v == 3) fltGrdLvl3Num ++;
-        });
-    }
-
     //是否有故障发生
-    static boolean isFaultHappened(Set<VCU79CanMessage> vcu79CanMessagesSet){
+    static public boolean isFaultHappened(Set<VCU79CanMessage> vcu79CanMessagesSet){
         if(vcu79CanMessagesSet.parallelStream()
                 .filter(v -> v.getAccident_Flg() == 1).findAny().isPresent())
             return true;
@@ -77,14 +68,14 @@ public class BlackBoxDomainService {
     }
 
     //加速踏板故障发生
-    static boolean isAccPdlFltHappened(Set<VCU79CanMessage> vcu79CanMessagesSet){
+    static public boolean isAccPdlFltHappened(Set<VCU79CanMessage> vcu79CanMessagesSet){
         if(vcu79CanMessagesSet.parallelStream()
                 .filter(s -> s.getAcc_Pdl_Flt_Grd() != 0).findAny().isPresent())
             return true;
         return false;
     }
     //加速踏板故障发生的等级
-    static Stream<Integer> getAccPdlFltGrd(Set<VCU79CanMessage> vcu79CanMessagesSet){
+    static public Stream<Integer> getAccPdlFltGrd(Set<VCU79CanMessage> vcu79CanMessagesSet){
         return vcu79CanMessagesSet.parallelStream()
                 .filter(s -> s.getAcc_Pdl_Flt_Grd() != 0)
                 .mapToInt(v -> v.getAcc_Pdl_Flt_Grd()).distinct().boxed();
@@ -216,53 +207,72 @@ public class BlackBoxDomainService {
                 .collect(groupingBy(VCU79CanMessage::getBty_Flt_Grd, Collectors.toList()));
     }
 
-    static FltGrdSum calSumFaultGradeSummaryByDrivingCycle(long dcStartTime, long dcEndTime){
-        Set<VCU79CanMessage> vcu79CanMessagesSet = ICanRepository.
-                getVCU79MessageFromRedisByPeriod(dcStartTime, dcEndTime);
+    static public FltGrdSum calSumFaultGradeSummary(Set<VCU79CanMessage> vcu79CanMessagesSet){
         // 初始化
         FltGrdSum fltGrdSum = FltGrdSum.builder()
                 .HasFlt(false).Level1Number(0).Level2Number(0).Level3Number(0).build();
         Stream<Integer> accPdlFltGrdArray = null, brkPdlFltGrdArray = null, gearFltGrdArray = null, spdFltGrdArray = null;
         Stream<Integer> drvMtrFltGrdArray = null, dCDCFltGrdArray = null, btyFltGrdArray = null;
+        fltGrdLvl1Num = 0; fltGrdLvl2Num = 0; fltGrdLvl3Num = 0;
         //判断是否有故障
         if(isFaultHappened(vcu79CanMessagesSet)){
             fltGrdSum.setHasFlt(true);
             //加速踏板故障等级
-            if(isAccPdlFltHappened(vcu79CanMessagesSet))
+            if(isAccPdlFltHappened(vcu79CanMessagesSet)){
                 accPdlFltGrdArray = getAccPdlFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(accPdlFltGrdArray);
+            }
             //制动踏板故障等级
-            if(isBrkPdlFltHappened(vcu79CanMessagesSet))
+            if(isBrkPdlFltHappened(vcu79CanMessagesSet)){
                 brkPdlFltGrdArray = getBrkPdlFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(brkPdlFltGrdArray);
+            }
             //档位故障等级
-            if(isGearFltHappened(vcu79CanMessagesSet))
+            if(isGearFltHappened(vcu79CanMessagesSet)){
                 gearFltGrdArray = getGearPdlFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(gearFltGrdArray);
+            }
             //车速故障等级
-            if(isSpdFltHappened(vcu79CanMessagesSet))
+            if(isSpdFltHappened(vcu79CanMessagesSet)){
                 spdFltGrdArray = getSpdFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(spdFltGrdArray);
+            }
             //驱动电机故障等级
-            if(isDrvMtrFltHappened(vcu79CanMessagesSet))
+            if(isDrvMtrFltHappened(vcu79CanMessagesSet)){
                 drvMtrFltGrdArray = getDrvMtrFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(drvMtrFltGrdArray);
+            }
             //DCDC故障等级
-            if(isDCDCFltHappened(vcu79CanMessagesSet))
+            if(isDCDCFltHappened(vcu79CanMessagesSet)){
                 dCDCFltGrdArray = getDCDCFltGrd(vcu79CanMessagesSet);
+                calFltGrdSum(dCDCFltGrdArray);
+            }
             //电池故障等级
-            if(isBtyFltHappened(vcu79CanMessagesSet))
+            if(isBtyFltHappened(vcu79CanMessagesSet)){
                 btyFltGrdArray = getBtyFltGrd(vcu79CanMessagesSet);
-           //汇总故障等级1，2，3
-           fltGrdLvl1Num = 0; fltGrdLvl2Num = 0; fltGrdLvl3Num = 0;
-            calFltGrdSum(accPdlFltGrdArray);
-            calFltGrdSum(brkPdlFltGrdArray);
-            calFltGrdSum(gearFltGrdArray);
-            calFltGrdSum(spdFltGrdArray);
-            calFltGrdSum(drvMtrFltGrdArray);
-            calFltGrdSum(dCDCFltGrdArray);
-            calFltGrdSum(btyFltGrdArray);
+                calFltGrdSum(btyFltGrdArray);
+            }
             //设置
             fltGrdSum.setLevel1Number(fltGrdLvl1Num);
             fltGrdSum.setLevel2Number(fltGrdLvl2Num);
             fltGrdSum.setLevel3Number(fltGrdLvl3Num);
         }
         return fltGrdSum;
+    }
+
+    static  int fltGrdLvl1Num = 0, fltGrdLvl2Num = 0, fltGrdLvl3Num = 0;
+    static void calFltGrdSum(Stream<Integer> intStream){
+        intStream.forEach(v -> {
+            if(v == 1) fltGrdLvl1Num ++;
+            else if (v == 2) fltGrdLvl2Num ++;
+            else if(v == 3) fltGrdLvl3Num ++;
+        });
+    }
+
+    static FltGrdSum calSumFaultGradeSummaryByDrivingCycle(long dcStartTime, long dcEndTime){
+        Set<VCU79CanMessage> vcu79CanMessagesSet = ICanRepository.
+                getVCU79MessageFromRedisByPeriod(dcStartTime, dcEndTime);
+        return calSumFaultGradeSummary(vcu79CanMessagesSet);
     }
 
     static int queryDCFrqByOneDate(Set<DrivingCycle> drivingCycleSet){

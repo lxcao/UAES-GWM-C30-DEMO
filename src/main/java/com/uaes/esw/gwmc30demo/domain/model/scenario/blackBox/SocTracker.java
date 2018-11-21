@@ -16,20 +16,11 @@
  */
 
 package com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox;
-
-import java.util.Set;
-
 import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class DrivingCycle {
-    long powerOnTimestamp;
-    long powerOffTimestamp;
-    Set<GeoTracker> gps;
-    Set<SpdTracker> spd;
-    Set<SocTracker> soc;
-    Set<VltTracker> vlt;
-    FltGrdSum fltGrdSum;
-    String weatherText;
+public class SocTracker {
+    long timeStamp;
+    double soc;
 }

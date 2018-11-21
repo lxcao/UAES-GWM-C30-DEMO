@@ -7,8 +7,8 @@ import com.uaes.esw.gwmc30demo.domain.model.entity.weather.WeatherNow;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_WEATHER_ZSET;
@@ -18,8 +18,10 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.inputValue2ZSET;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.zRangeByScore;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeString;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
+import static java.util.stream.Collectors.groupingBy;
 
 public interface IWeatherRepository {
 
@@ -106,6 +108,34 @@ public interface IWeatherRepository {
     static Weather getLastWeatherMessageFromRedis(){
         return transferFromJSON2Object(getLastOneStringFromZset(REDIS_WEATHER_ZSET),
                 Weather.class);
+    }
+
+    static Map<String, List<WeatherNow>> getWeatherNowTextAndList(Set<Weather> weatherSet){
+        return weatherSet.parallelStream()
+                .map(w -> w.getWeatherNow()).collect(Collectors.toList())
+                .parallelStream()
+                .collect(groupingBy(WeatherNow::getWeatherText, Collectors.toList()));
+    }
+
+    static Map<String, Integer> calWeatherNowTextAndNumber(Map<String, List<WeatherNow>> weatherNowMap) {
+        return weatherNowMap.entrySet().parallelStream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().size()));
+    }
+
+    static String getMostWeatherNowText(Map<String, Integer> weatherTextMap) {
+       return  weatherTextMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .findFirst().get().getKey();
+    }
+
+    static String getWeatherRecordByPeriod(long startUnixDateTime, long endUnixDateTime){
+        Set<String> weatherRedisResult = zRangeByScore(REDIS_WEATHER_ZSET,
+                startUnixDateTime, endUnixDateTime);
+        Set<Weather> weatherSet = new HashSet<>();
+        for (String s : weatherRedisResult) {
+            weatherSet.add(transferFromJSON2Object(s, Weather.class));
+        }
+        return getMostWeatherNowText(calWeatherNowTextAndNumber(getWeatherNowTextAndList(weatherSet)));
     }
 
     static long setWeatherMessage2Redis(Weather weather){

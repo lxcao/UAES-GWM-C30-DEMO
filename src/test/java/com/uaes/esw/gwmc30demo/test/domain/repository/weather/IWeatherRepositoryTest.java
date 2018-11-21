@@ -21,13 +21,14 @@ import org.junit.Test;
 
 import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryAirNow;
 import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryWeather;
+import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.queryWeatherNow;
 import static org.junit.Assert.*;
 
 public class IWeatherRepositoryTest {
 
     @Test
     public void tesQueryWeatherNow() {
-        queryWeather("shanghai");
+        queryWeatherNow("shanghai");
     }
 
     @Test
