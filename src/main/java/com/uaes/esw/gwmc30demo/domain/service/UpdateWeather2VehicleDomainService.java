@@ -1,5 +1,6 @@
 package com.uaes.esw.gwmc30demo.domain.service;
 
+import com.uaes.esw.gwmc30demo.domain.model.entity.weather.Weather;
 import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 import com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository;
 
@@ -10,7 +11,8 @@ import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLog
 public interface UpdateWeather2VehicleDomainService {
     static void updateWeather2VehicleDomainService(String location){
         commonLogInfo("UpdateWeather@"+location+"@"+LocalDateTime.now());
-        //IVehicleRepository.sendWeather2Vehicle(IWeatherRepository.queryWeather(location));
-        IVehicleRepository.sendWeatherAndDMConfig2Vehicle(IWeatherRepository.queryWeather(location));
+        Weather weather = IWeatherRepository.queryWeather(location);
+        IWeatherRepository.setWeatherMessage2Redis(weather);
+        IVehicleRepository.sendWeatherAndDMConfig2Vehicle(weather);
     }
 }

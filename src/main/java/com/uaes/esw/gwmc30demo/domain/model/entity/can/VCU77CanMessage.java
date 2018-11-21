@@ -20,7 +20,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class VCU77CanMessage {
+public class VCU77CanMessage{
     long unixtimestamp;
     int Spd_Overrun_Flag; //车速超限标志
     int Spd_Lmt_Enable_Flag; //车速限制使能标志

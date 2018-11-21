@@ -1,6 +1,6 @@
 package com.uaes.esw.gwmc30demo.infrastructure.websocket;
 
-
+import com.uaes.esw.gwmc30demo.domain.repository.device.IDeviceRepository;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -45,7 +45,8 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        //websocketLogInfo("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
+        websocketLogInfo("Received " + WebSocketFactory.userUserNameMap.get(user) + "with message: " + message);
+        IDeviceRepository.dispatchOnMessage(message);
     }
 
     //Send string message to all user

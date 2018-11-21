@@ -16,6 +16,7 @@ public class LoggerUtils {
     private static final Logger websocket = Logger.getLogger(LOG4J_WEBSOCKET);
     private static final Logger vehicle = Logger.getLogger(LOG4J_VEHICLE);
     private static final Logger speedAux = Logger.getLogger(LOG4J_SPDAUX);
+    private static final Logger blackBox = Logger.getLogger(LOG4J_BLACKBOX);
 
     public static void commonLogInfo(String log){
         common.info(log+LOG4J_RETURN);
@@ -55,6 +56,10 @@ public class LoggerUtils {
 
     public static void speedAuxLogInfo(String log){
         speedAux.info(log+LOG4J_RETURN);
+    }
+
+    public static void blackBoxLogInfo(String log){
+        blackBox.info(log+LOG4J_RETURN);
     }
 
 }

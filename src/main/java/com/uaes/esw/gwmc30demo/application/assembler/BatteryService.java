@@ -12,6 +12,11 @@ import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFr
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 
 public interface BatteryService {
+
+    static void sendOutCSCVCellNotice(){
+        WebSocketHandler.sendStrMessage(transferFromObject2JSON(createCSCVCellNotice()));
+    }
+
     static void sendOutBatteryStatusNotice(){
         WebSocketHandler.sendStrMessage(transferFromObject2JSON(createBatteryStatusNotice()));
     }

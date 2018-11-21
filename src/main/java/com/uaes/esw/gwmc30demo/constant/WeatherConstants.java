@@ -8,6 +8,7 @@ public class WeatherConstants {
     public final static String WEATHER_JSON_KEY_LOCATION = "location";
     public final static String WEATHER_JSON_KEY_NAME = "name";
     public final static String WEATHER_JSON_KEY_NOW = "now";
+    public final static String WEATHER_JSON_KEY_TEXT = "text";
     public final static String WEATHER_JSON_KEY_CODE = "code";
     public final static String WEATHER_JSON_KEY_TEMPERATURE = "temperature";
 

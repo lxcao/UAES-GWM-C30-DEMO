@@ -1,6 +1,7 @@
 package com.uaes.esw.gwmc30demo.infrastructure.http;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -8,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -15,12 +17,43 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.uaes.esw.gwmc30demo.infrastructure.http.HttpClientFactory.EMPTY_STR;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.EMPTY;
 
 public class HttpClientHandler {
+
+    /**
+     * get 获取 rest 资源
+     *
+     * @param url
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static String do_get(String url)  {
+        String body = "{}";
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        try {
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity entity = response.getEntity();
+            body = EntityUtils.toString(entity);
+        }catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            httpclient.getConnectionManager().shutdown();
+        }
+        return body;
+    }
+
+    public static String httpGetRequest(String url){
+        System.out.println("url="+url);
+        HttpGet httpGet = new HttpGet(url);
+        return getResult(httpGet);
+    }
+
     public static String httpGetRequest(String url, Map<String, Object> params){
         try{
-            //System.out.println("url="+url);
+            System.out.println("url="+url);
             URIBuilder ub = new URIBuilder();
             ub.setPath(url);
 
@@ -28,6 +61,7 @@ public class HttpClientHandler {
             ub.setParameters(pairs);
 
             HttpGet httpGet = new HttpGet(ub.build());
+            System.out.println(httpGet.toString());
             return getResult(httpGet);
         }catch (Exception e){
             e.printStackTrace();
@@ -73,7 +107,7 @@ public class HttpClientHandler {
 
         }
 
-        return EMPTY_STR;
+        return EMPTY;
     }
 
 }

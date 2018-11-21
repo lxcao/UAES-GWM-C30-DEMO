@@ -4,9 +4,13 @@ import com.uaes.esw.gwmc30demo.domain.model.entity.can.B1CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B2CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.can.B3CanMessage;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Battery;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.SocTracker;
 import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_BALANCE_DOUBLE_ZERO;
 import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_BALANCE_INTEGER_ZERO;
@@ -14,6 +18,7 @@ import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
+import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.zRangeByScore;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
 
 public interface IBatteryRepository {
@@ -55,5 +60,18 @@ public interface IBatteryRepository {
                 .voltage(BATTERY_BALANCE_DOUBLE_ZERO)
                 .build();
         return battery;
+    }
+
+    static Set<SocTracker> getSocTrackerByPeroid(long startUnixDateTime, long endUnixDateTime) {
+        Set<String> bmsB1RedisResult = zRangeByScore(REDIS_BMS_B1_ZSET,
+                startUnixDateTime, endUnixDateTime);
+        Set<SocTracker> socTrackerSet  = new HashSet<>();
+        bmsB1RedisResult.forEach(s -> {
+            B1CanMessage b1CanMessage = transferFromJSON2Object(s, B1CanMessage.class);
+            socTrackerSet.add(SocTracker.builder()
+                    .soc(b1CanMessage.getPack_Soc_BMS())
+                    .timeStamp(b1CanMessage.getUnixtimestamp()).build());
+        });
+        return socTrackerSet;
     }
 }

@@ -8,23 +8,29 @@ import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.DrivingMode;
 import com.uaes.esw.gwmc30demo.domain.model.entity.vehicle.Vehicle;
 import com.uaes.esw.gwmc30demo.domain.model.entity.weather.Weather;
 import com.uaes.esw.gwmc30demo.domain.model.scenario.batteryStatus.BatteryBalanceInstruction;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.DrivingCycle;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.GeoTracker;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.SpdTracker;
+import com.uaes.esw.gwmc30demo.domain.model.scenario.blackBox.VltTracker;
 import com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility;
 import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
+import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.getSocTrackerByPeroid;
 import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository.transferDrivingModeType2DrivingModeSwitch;
+import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.getWeatherRecordByPeriod;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromJSON2Object;
 import static com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility.transferFromObject2JSON;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.*;
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.getLastOneStringFromZset;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeNowTimeStamp;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.*;
 
 public interface IVehicleRepository {
@@ -209,4 +215,95 @@ public interface IVehicleRepository {
         VCU73CanMessage vcu73CanMessage = getPreviousVCU73MessageFromRedis();
         return vcu73CanMessage.getHV_PowerOn();
     }
+
+    //get last power on timestamp
+    static long getLastPowerOnTimestamp(){
+         return Long.parseLong(getLastOneStringFromZset(REDIS_POWER_ON_TIMESTAMP_ZSET));
+    }
+
+    static void storePowerOnTimestamp(long powerOnTimestamp){
+        inputValue2ZSET(REDIS_POWER_ON_TIMESTAMP_ZSET, powerOnTimestamp,
+                String.valueOf(powerOnTimestamp));
+    }
+
+    static void storePowerOffTimestamp(long powerOffTimestamp){
+        inputValue2ZSET(REDIS_POWER_OFF_TIMESTAMP_ZSET, powerOffTimestamp,
+                String.valueOf(powerOffTimestamp));
+    }
+
+    static void setDrivingCycle(DrivingCycle drivingCycle){
+        inputValue2ZSET(REDIS_DRIVING_CYCLE_TIMESTAMP_ZSET,
+                drivingCycle.getPowerOffTimestamp(),
+                transferFromObject2JSON(drivingCycle));
+    }
+
+    static Set<DrivingCycle> getDrivingCycleByPeriod(String startDateTime, String endDateTime){
+        Set<String> redisResult = zRangeByScore(REDIS_DRIVING_CYCLE_TIMESTAMP_ZSET,
+                transfer2UnixTime(startDateTime), transfer2UnixTime(endDateTime));
+        Set<DrivingCycle> drivingCycleSet = new HashSet<>();
+        for (String s : redisResult) {
+            DrivingCycle dc = transferFromJSON2Object(s, DrivingCycle.class);
+            dc.setGps(getGeoTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            dc.setSpd(getSpdTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            dc.setSoc(getSocTrackerByPeroid(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            dc.setVlt(getVltTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            dc.setWeatherText(getWeatherRecordByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            drivingCycleSet.add(dc);
+        }
+        return drivingCycleSet;
+    }
+
+    static Set<GeoTracker> getGeoTrackerByPeriod(long startUnixDateTime, long endUnixDateTime){
+         Set<String> redisResult = zRangeByScore(REDIS_GPS_TRACKER_ZSET,
+                 startUnixDateTime, endUnixDateTime);
+         Set<GeoTracker> geoTrackerSet = new HashSet<>();
+         for(String s : redisResult) {
+             geoTrackerSet.add(transferFromJSON2Object(s, GeoTracker.class));
+         }
+         return geoTrackerSet;
+    }
+
+    static Set<SpdTracker> getSpdTrackerByPeriod(long startUnixDateTime, long endUnixDateTime) {
+         Set<String> vcu77RedisResult = zRangeByScore(REDIS_VCU_77_ZSET,
+                 startUnixDateTime, endUnixDateTime);
+         Set<SpdTracker> spdTrackerSet = new HashSet<>();
+         vcu77RedisResult.forEach( s -> {
+             VCU77CanMessage vcu77CanMessage = transferFromJSON2Object(s, VCU77CanMessage.class);
+             spdTrackerSet.add(SpdTracker.builder()
+                     .spd(vcu77CanMessage.getCrr_Spd())
+                     .timeStamp(vcu77CanMessage.getUnixtimestamp()).build());
+         });
+         return spdTrackerSet;
+    }
+
+    static Set<VltTracker> getVltTrackerByPeriod(long startUnixDateTime, long endUnixDateTime) {
+         Set<String> vcu79RedisResult = zRangeByScore(REDIS_VCU_79_ZSET,
+                 startUnixDateTime, endUnixDateTime);
+         Set<VltTracker> vltTrackerSet = new HashSet<>();
+         vcu79RedisResult.forEach(s -> {
+             VCU79CanMessage vcu79CanMessage = transferFromJSON2Object(s, VCU79CanMessage.class);
+             vltTrackerSet.add(VltTracker.builder()
+                     .Vlt1st(vcu79CanMessage.getVltg_1st())
+                     .Vlt2nd(vcu79CanMessage.getVltg_2nd())
+                     .VltLow(vcu79CanMessage.getLowVltg())
+                     .timeStamp(vcu79CanMessage.getUnixtimestamp()).build());
+         });
+         return vltTrackerSet;
+    }
+
+    static List<DrivingCycle> transferDrivingCycleSet2ListAndAscendingSortByPowerOffTimestamp(Set<DrivingCycle> drivingCycleSet){
+         List<DrivingCycle> drivingCycleList = new ArrayList<>(drivingCycleSet);
+         Collections.sort(drivingCycleList, new Comparator<DrivingCycle>() {
+             @Override
+             public int compare(DrivingCycle o1, DrivingCycle o2) {
+                 if(o1.getPowerOffTimestamp() > o2.getPowerOffTimestamp())
+                    return 1;
+                 if(o1.getPowerOffTimestamp() == o2.getPowerOffTimestamp())
+                     return 0;
+                 return -1;
+             }
+         });
+         return drivingCycleList;
+    }
+
 }

@@ -11,6 +11,7 @@ public class InfraLog4JConstants {
     public final static String LOG4J_WEBSOCKET = "websocket";
     public final static String LOG4J_VEHICLE = "vehicle";
     public final static String LOG4J_SPDAUX = "speedAux";
+    public final static String LOG4J_BLACKBOX = "blackBox";
     public final static String LOG4J_RETURN = "\n";
     public final static String LOG4J_INPUT = "Input=";
     public final static String LOG4J_OUTPUT = "Output=";
