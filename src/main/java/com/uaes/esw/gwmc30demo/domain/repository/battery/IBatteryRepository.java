@@ -9,8 +9,8 @@ import com.uaes.esw.gwmc30demo.domain.repository.vehicle.IVehicleRepository;
 import com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler;
 import com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_BALANCE_DOUBLE_ZERO;
 import static com.uaes.esw.gwmc30demo.constant.BatteryBalanceConstants.BATTERY_BALANCE_INTEGER_ZERO;
@@ -62,7 +62,16 @@ public interface IBatteryRepository {
         return battery;
     }
 
-    static Set<SocTracker> getSocTrackerByPeroid(long startUnixDateTime, long endUnixDateTime) {
+    static List<SocTracker> sortBySocTrackerTimestamp(List<SocTracker> socTrackerList){
+        return socTrackerList.stream()
+                .sorted(Comparator.comparing(SocTracker::getTimeStamp)).collect(Collectors.toList());
+    }
+
+    static List<SocTracker> getSocTrackerListByPeriodWithTimestampSorted(Set<SocTracker> socTrackerSet){
+        return sortBySocTrackerTimestamp(new ArrayList<>(socTrackerSet));
+    }
+
+    static Set<SocTracker> getSocTrackerByPeriod(long startUnixDateTime, long endUnixDateTime) {
         Set<String> bmsB1RedisResult = zRangeByScore(REDIS_BMS_B1_ZSET,
                 startUnixDateTime, endUnixDateTime);
         Set<SocTracker> socTrackerSet  = new HashSet<>();

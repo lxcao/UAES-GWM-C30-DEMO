@@ -10,7 +10,7 @@ import static com.uaes.esw.gwmc30demo.constant.ChargerConstants.CHARGER_DC_POWER
 
 public interface IChargerRepository {
     static List<Charger> getChargerList(){
-        List<Charger> chargerList = new ArrayList();
+        List<Charger> chargerList = new ArrayList<>();
         Charger ACCharger = Charger.builder().type(CHARGER_AC_POWER_TYPE)
                 .chargingPower(CHARGER_AC_POWER_KW)
                 .build();

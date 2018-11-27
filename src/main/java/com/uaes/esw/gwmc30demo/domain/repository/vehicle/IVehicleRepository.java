@@ -17,11 +17,13 @@ import com.uaes.esw.gwmc30demo.infrastructure.json.JSONUtility;
 import com.uaes.esw.gwmc30demo.infrastructure.kafka.KafkaProducerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.uaes.esw.gwmc30demo.constant.CommonConstants.PERCENTAGE;
 import static com.uaes.esw.gwmc30demo.constant.InfraKafkaConstants.*;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.*;
-import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.getSocTrackerByPeroid;
+import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.getSocTrackerByPeriod;
+import static com.uaes.esw.gwmc30demo.domain.repository.battery.IBatteryRepository.getSocTrackerListByPeriodWithTimestampSorted;
 import static com.uaes.esw.gwmc30demo.domain.repository.can.ICanRepository.*;
 import static com.uaes.esw.gwmc30demo.domain.repository.drivingMode.IDrivingModeRepository.transferDrivingModeType2DrivingModeSwitch;
 import static com.uaes.esw.gwmc30demo.domain.repository.weather.IWeatherRepository.getWeatherRecordByPeriod;
@@ -243,17 +245,31 @@ public interface IVehicleRepository {
         Set<DrivingCycle> drivingCycleSet = new HashSet<>();
         for (String s : redisResult) {
             DrivingCycle dc = transferFromJSON2Object(s, DrivingCycle.class);
-            dc.setGps(getGeoTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
-            dc.setSpd(getSpdTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
-            dc.setSoc(getSocTrackerByPeroid(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
-            dc.setVlt(getVltTrackerByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
+            dc.setGps(getGeoTrackerListByPeriodWithTimestampSorted(getGeoTrackerSetByPeriod(dc.getPowerOnTimestamp(),
+                    dc.getPowerOffTimestamp())));
+            dc.setSpd(getSpdTrackerListByPeriodWithTimestampSorted(getSpdTrackerByPeriod(dc.getPowerOnTimestamp(),
+                    dc.getPowerOffTimestamp())));
+            dc.setSoc(getSocTrackerListByPeriodWithTimestampSorted(getSocTrackerByPeriod(dc.getPowerOnTimestamp(),
+                    dc.getPowerOffTimestamp())));
+            dc.setVlt(getVltTrackerListByPeriodWithTimestampSorted(getVltTrackerByPeriod(dc.getPowerOnTimestamp(),
+                    dc.getPowerOffTimestamp())));
             dc.setWeatherText(getWeatherRecordByPeriod(dc.getPowerOnTimestamp(), dc.getPowerOffTimestamp()));
             drivingCycleSet.add(dc);
         }
         return drivingCycleSet;
     }
 
-    static Set<GeoTracker> getGeoTrackerByPeriod(long startUnixDateTime, long endUnixDateTime){
+
+    static List<GeoTracker> sortByGeoTrackerTimestamp(List<GeoTracker> geoTrackerList){
+         return geoTrackerList.stream()
+                 .sorted(Comparator.comparing(GeoTracker::getTimeStamp)).collect(Collectors.toList());
+    }
+
+    static List<GeoTracker> getGeoTrackerListByPeriodWithTimestampSorted(Set<GeoTracker> geoTrackerSet){
+         return sortByGeoTrackerTimestamp(new ArrayList<>(geoTrackerSet));
+    }
+
+    static Set<GeoTracker> getGeoTrackerSetByPeriod(long startUnixDateTime, long endUnixDateTime){
          Set<String> redisResult = zRangeByScore(REDIS_GPS_TRACKER_ZSET,
                  startUnixDateTime, endUnixDateTime);
          Set<GeoTracker> geoTrackerSet = new HashSet<>();
@@ -261,6 +277,15 @@ public interface IVehicleRepository {
              geoTrackerSet.add(transferFromJSON2Object(s, GeoTracker.class));
          }
          return geoTrackerSet;
+    }
+
+    static List<SpdTracker> sortBySpdTrackerTimestamp(List<SpdTracker> spdTrackerList){
+        return spdTrackerList.stream()
+                .sorted(Comparator.comparing(SpdTracker::getTimeStamp)).collect(Collectors.toList());
+    }
+
+    static List<SpdTracker> getSpdTrackerListByPeriodWithTimestampSorted(Set<SpdTracker> spdTrackerSet){
+        return sortBySpdTrackerTimestamp(new ArrayList<>(spdTrackerSet));
     }
 
     static Set<SpdTracker> getSpdTrackerByPeriod(long startUnixDateTime, long endUnixDateTime) {
@@ -274,6 +299,15 @@ public interface IVehicleRepository {
                      .timeStamp(vcu77CanMessage.getUnixtimestamp()).build());
          });
          return spdTrackerSet;
+    }
+
+    static List<VltTracker> sortByVltTrackerTimestamp(List<VltTracker> vltTrackerList){
+        return vltTrackerList.stream()
+                .sorted(Comparator.comparing(VltTracker::getTimeStamp)).collect(Collectors.toList());
+    }
+
+    static List<VltTracker> getVltTrackerListByPeriodWithTimestampSorted(Set<VltTracker> vltTrackerSet){
+        return sortByVltTrackerTimestamp(new ArrayList<>(vltTrackerSet));
     }
 
     static Set<VltTracker> getVltTrackerByPeriod(long startUnixDateTime, long endUnixDateTime) {
@@ -291,6 +325,7 @@ public interface IVehicleRepository {
          return vltTrackerSet;
     }
 
+    //deprecated: seperate to two method to deal with Set transfer List and List sort
     static List<DrivingCycle> transferDrivingCycleSet2ListAndAscendingSortByPowerOffTimestamp(Set<DrivingCycle> drivingCycleSet){
          List<DrivingCycle> drivingCycleList = new ArrayList<>(drivingCycleSet);
          Collections.sort(drivingCycleList, new Comparator<DrivingCycle>() {
