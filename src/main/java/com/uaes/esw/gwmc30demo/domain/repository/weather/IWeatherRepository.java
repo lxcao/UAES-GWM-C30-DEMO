@@ -21,6 +21,7 @@ import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.inputVal
 import static com.uaes.esw.gwmc30demo.infrastructure.redis.RedisHandler.zRangeByScore;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.getDateTimeString;
 import static com.uaes.esw.gwmc30demo.infrastructure.utils.DateTimeUtils.transfer2UnixTime;
+import static com.uaes.esw.gwmc30demo.infrastructure.utils.LoggerUtils.commonLogInfo;
 import static java.util.stream.Collectors.groupingBy;
 
 public interface IWeatherRepository {
@@ -35,9 +36,9 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         try{
-            System.out.println("Start queryWeatherNow @ "+location);
+            commonLogInfo("Start queryWeatherNow @ "+location);
             String weatherNowResult = httpGetRequest(url,params);
-            System.out.println("Get WeatherNow="+weatherNowResult);
+            commonLogInfo("Get WeatherNow="+weatherNowResult);
             JSONObject weatherNowResultJSONObj = new JSONObject(weatherNowResult);
             JSONObject resultJSONObj = weatherNowResultJSONObj.getJSONArray(WEATHER_JSON_KEY_RESULT)
                     .getJSONObject(WEATHER_JSON_ARRAY_INDEX);
@@ -74,11 +75,11 @@ public interface IWeatherRepository {
         params.put(HTTP_URL_SENIVERSE_LANGUAGE_KEY,HTTP_URL_SENIVERSE_LANGUAGE_VALUE);
         params.put(HTTP_URL_SENIVERSE_UNIT_KEY,HTTP_URL_SENIVERSE_UNIT_VALUE);
         params.put(HTTP_URL_SENIVERSE_SCOPE_KEY,HTTP_URL_SENIVERSE_SCOPE_VALUE);
-        //System.out.println("Start queryAirNow @ "+location);
+        commonLogInfo("Start queryAirNow @ "+location);
         double aqi = 0.0;
         try{
             String airNowResult = httpGetRequest(url,params);
-            System.out.println("Get AirNow="+airNowResult);
+            commonLogInfo("Get AirNow="+airNowResult);
             JSONObject airNowResultJSONObj = new JSONObject(airNowResult);
             JSONObject resultJSONObj = airNowResultJSONObj.getJSONArray(AIR_JSON_KEY_RESULT)
                     .getJSONObject(AIR_JSON_ARRAY_INDEX);
@@ -88,6 +89,7 @@ public interface IWeatherRepository {
         }
         catch(Exception e){
             e.printStackTrace();
+            airNow.setAqi(aqi);
         }
         return airNow;
     }

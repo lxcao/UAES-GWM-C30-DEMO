@@ -10,6 +10,7 @@ import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.
 import static com.uaes.esw.gwmc30demo.application.assembler.EnergySavingService.sendOutEnergySavingRemindNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.SpeedAuxiliaryService.sendOutSpeedAuxStatusNotice;
 import static com.uaes.esw.gwmc30demo.application.assembler.VehicleService.sendOutFrontPageNotice;
+import static com.uaes.esw.gwmc30demo.constant.CommonConstants.WAITING_INTERVAL_SECONDS;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_CONFIG_PORT;
 import static com.uaes.esw.gwmc30demo.constant.InfraHttpConstants.HTTP_URL_SENIVERSE_QUERY_INTERVAL_MINUTES;
 import static com.uaes.esw.gwmc30demo.constant.InfraRedisConstants.REDIS_VEHICLE_HASH_NAME;
@@ -32,7 +33,7 @@ public class GWMC30DemoFactory {
         setWebSocketProperties(WEBSOCKET_URL_ENERGY_SAVING_REMIND);
         setHttpServerProperties(HTTP_CONFIG_PORT);
         setRouter();
-
+        sleepSeconds(WAITING_INTERVAL_SECONDS);
     }
 
     //开始WebSocket服务
@@ -125,8 +126,8 @@ public class GWMC30DemoFactory {
 
     public static void main(String[] args) {
         startVehicleDataService();
-        queryWeatherManager(WEATHER_LOCATION);
         startRestfulService();
+        queryWeatherManager(WEATHER_LOCATION);
         startPushMessageService();
 
     }

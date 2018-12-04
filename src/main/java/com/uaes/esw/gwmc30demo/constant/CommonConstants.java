@@ -33,4 +33,6 @@ public class CommonConstants {
     //地球半径 公里
     public final static double EARTH_REDIUS = 6367.0;
 
+    public final static int WAITING_INTERVAL_SECONDS = 3;
+
 }

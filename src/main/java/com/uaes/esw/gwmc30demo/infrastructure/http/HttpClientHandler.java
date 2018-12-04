@@ -46,14 +46,14 @@ public class HttpClientHandler {
     }
 
     public static String httpGetRequest(String url){
-        System.out.println("url="+url);
+        //System.out.println("url="+url);
         HttpGet httpGet = new HttpGet(url);
         return getResult(httpGet);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params){
         try{
-            System.out.println("url="+url);
+            //System.out.println("url="+url);
             URIBuilder ub = new URIBuilder();
             ub.setPath(url);
 
@@ -61,7 +61,7 @@ public class HttpClientHandler {
             ub.setParameters(pairs);
 
             HttpGet httpGet = new HttpGet(ub.build());
-            System.out.println(httpGet.toString());
+           //System.out.println(httpGet.toString());
             return getResult(httpGet);
         }catch (Exception e){
             e.printStackTrace();
